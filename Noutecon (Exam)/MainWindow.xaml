@@ -1,0 +1,142 @@
+﻿<Window x:Class="Noutecon__Exam_.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Noutecon__Exam_"
+        xmlns:viewModel="clr-namespace:Noutecon__Exam_.ViewModel"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="1300"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        SizeChanged="Window_SizeChanged">
+
+    <Window.DataContext>
+        <viewModel:MainViewViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="8"
+        BorderThickness="1">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
+                <GradientStop Color="{StaticResource BorderColorMagenta}" Offset="0"/>
+                <GradientStop Color="{StaticResource BorderColorBordoviy}" Offset="0.85"/>
+                <GradientStop Color="{StaticResource BorderColorPink}" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Side Bar-->
+            <Border CornerRadius="10, 0, 0, 10"
+                    Grid.Column="0">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1, 1" EndPoint="0, 0">
+                        <GradientStop Color="{StaticResource SideBarColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource SideBarColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Height="35"
+                                Margin="15, 25, 0, 40">
+                        <Image Source="/Images/Icon.png"/>
+                        <TextBlock Text="NOUTECON"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Gautami"
+                                   FontSize="24"
+                                   FontWeight="Black"
+                                   Margin="12, 0, 0, 0"
+                                   Foreground="{StaticResource HeaderColor}"/>
+                    </StackPanel>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource Color4}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                                Tag="{StaticResource Color1}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Tests" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+            Tag="{StaticResource Color3}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="UserAlt" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Your Profile" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                                Tag="{StaticResource Color2}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="MagnifyingGlass" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Explore" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+            Tag="{StaticResource Color5}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                </StackPanel>
+                
+            </Border>
+
+            <!--Main Area-->
+            <Border CornerRadius="0, 10, 10, 0"
+                    Grid.Column="1">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1, 0" EndPoint="0, 1">
+                        <GradientStop Color="{StaticResource MainUIColorDarkBlue}" Offset="1"/>
+                        <GradientStop Color="{StaticResource MainUIColorLightBlue}" Offset="0"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel x:Name="pnkControlBar"
+                                Orientation="Horizontal"
+                                Grid.Row="0"
+                                FlowDirection="RightToLeft"
+                                Background="Transparent"
+                                Margin="0, 0, 5, 0"
+                                MouseDown="pnkControlBar_MouseDown"
+                                MouseEnter="pnkControlBar_MouseEnter">
+                        
+                    </StackPanel>
+                    
+                </Grid>
+                
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>

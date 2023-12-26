@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>Noutecon__Exam_</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Icon.png" />
+    <None Remove="Images\KeyIcon.png" />
+    <None Remove="Images\LoginIcon.png" />
+    <None Remove="Images\StudentIcon.png" />
+    <None Remove="Images\TeacherIcon.png" />
+    <None Remove="Images\test.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Icon.png" />
+    <Resource Include="Images\KeyIcon.png" />
+    <Resource Include="Images\LoginIcon.png" />
+    <Resource Include="Images\StudentIcon.png" />
+    <Resource Include="Images\TeacherIcon.png" />
+    <Resource Include="Images\test.png" />
+  </ItemGroup>
+
+</Project>
