@@ -5,17 +5,243 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Noutecon__Exam_.View"
         xmlns:viewModel="clr-namespace:Noutecon__Exam_.ViewModel"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         mc:Ignorable="d"
-        Title="TeacherView" Height="450" Width="800">
+        Title="TeacherView" Height="700" Width="1300"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        SizeChanged="Window_SizeChanged"
+        WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <viewModel:TeacherViewViewModel/>
     </Window.DataContext>
-    
-    <Grid>
-        <TextBlock>
-            <Run Text="Hello, teacher "/>
-            <Run Text="{Binding CurrentTeacher.Username}"/>
-        </TextBlock>
-    </Grid>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:TeacherHomeViewModel}">
+            <local:TeacherHomeView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:TeacherTestsViewModel}">
+            <local:TeacherTestsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:TeacherProfileViewModel}">
+            <local:TeacherProfileView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:TeacherExploreViewModel}">
+            <local:TeacherExploreView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:TeacherSettingsViewModel}">
+            <local:TeacherSettingsView/>
+        </DataTemplate>
+
+    </Window.Resources>
+
+    <Border CornerRadius="8"
+    BorderThickness="1">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
+                <GradientStop Color="{StaticResource BorderColorMagenta}" Offset="0"/>
+                <GradientStop Color="{StaticResource BorderColorBordoviy}" Offset="0.85"/>
+                <GradientStop Color="{StaticResource BorderColorPink}" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Side Bar-->
+            <Border CornerRadius="10, 0, 0, 10"
+                Grid.Column="0">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1, 1" EndPoint="0, 0">
+                        <GradientStop Color="{StaticResource SideBarColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource SideBarColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                            Height="35"
+                            Margin="15, 25, 0, 40">
+                        <Image Source="/Images/Icon.png"/>
+                        <TextBlock Text="NOUTECON"
+                               VerticalAlignment="Center"
+                               FontFamily="Gautami"
+                               FontSize="24"
+                               FontWeight="Black"
+                               Margin="12, 0, 0, 0"
+                               Foreground="{StaticResource HeaderColor}"/>
+                    </StackPanel>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                             Tag="{StaticResource Color4}"
+                                 Command="{Binding ShowHomeView}"
+                                 IsChecked="{Binding IsStartViewChecked}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                            Tag="{StaticResource Color1}"
+                                 Command="{Binding ShowTestsView}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Tests" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+        Tag="{StaticResource Color3}"
+                                 Command="{Binding ShowProfileView}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="UserAlt" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Your Profile" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                            Tag="{StaticResource Color2}"
+                                 Command="{Binding ShowExploreView}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="MagnifyingGlass" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Explore" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+        Tag="{StaticResource Color5}"
+                                 Command="{Binding ShowSettingsView}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                </StackPanel>
+
+            </Border>
+
+            <!--Main Area-->
+            <Border CornerRadius="0, 10, 10, 0"
+                Grid.Column="1">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1, 0" EndPoint="0, 1">
+                        <GradientStop Color="{StaticResource MainUIColorDarkBlue}" Offset="1"/>
+                        <GradientStop Color="{StaticResource MainUIColorLightBlue}" Offset="0"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+
+                    <StackPanel x:Name="pnkControlBar"
+                            Orientation="Horizontal"
+                            Grid.Row="0"
+                            FlowDirection="RightToLeft"
+                            Background="Transparent"
+                            Margin="0, 0, 5, 0"
+                            MouseDown="pnkControlBar_MouseDown"
+                            MouseEnter="pnkControlBar_MouseEnter">
+                        <Button x:Name="btnClose"
+                            Style="{StaticResource controlBarButton}"
+                            Tag="{StaticResource Color2}"
+                            Click="btnClose_Click">
+                            <fa:IconImage Icon="Close" Style="{StaticResource controlBarButtonIcon}"/>
+                        </Button>
+                        <Button x:Name="btnMaximize"
+                            Style="{StaticResource controlBarButton}"
+                            Tag="{StaticResource Color4}"
+                            Click="btnMaximize_Click">
+                            <fa:IconImage Icon="WindowMaximize" Style="{StaticResource controlBarButtonIcon}"/>
+                        </Button>
+                        <Button x:Name="btnMinimize"
+                            Style="{StaticResource controlBarButton}"
+                            Tag="{StaticResource Color1}"
+                            Click="btnMinimize_Click">
+                            <fa:IconImage Icon="WindowMinimize" Width="16" Style="{StaticResource controlBarButtonIcon}"/>
+                        </Button>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                            <fa:IconImage Icon="{Binding Icon}"
+                                      Height="30"
+                                      Width="30"
+                                      Foreground="{StaticResource TextColor}"
+                                      Margin="35, 0, 10, 0"/>
+                            <TextBlock Text="{Binding Caption}"
+                                   Foreground="{StaticResource TextColor}"
+                                   VerticalAlignment="Bottom"
+                                   FontFamily="Gautami"
+                                   FontSize="22"
+                                   FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                FlowDirection="RightToLeft"
+                                Margin="0, 0, 10, 0">
+                            <Button Style="{StaticResource IconButton}"
+                                Tag="{StaticResource TextColor}">
+                                <fa:IconImage Icon="AngleDown" Style="{StaticResource IconButtonIcon}"/>
+                            </Button>
+
+                            <TextBlock Text="{Binding CurrentTeacher.Username}"
+                                   Foreground="{StaticResource TextColor}"
+                                   FontFamily="Gautami"
+                                   FontSize="16"
+                                   VerticalAlignment="Center"
+                                   Margin="5, 0, 0, 0"/>
+
+                            <Ellipse Height="35" Width="35"
+                                 Margin="10, 0, 10, 0"
+                                 Stroke="{StaticResource Color3}"
+                                 StrokeThickness="2">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="/Images/TeacherIcon.png"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                    <ContentControl Content="{Binding CurrentChildView}"
+                                Grid.Row="2"
+                                Margin="25"/>
+
+                </Grid>
+
+            </Border>
+
+        </Grid>
+    </Border>
 </Window>

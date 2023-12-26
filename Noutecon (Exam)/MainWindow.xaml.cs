@@ -53,5 +53,23 @@ namespace Noutecon__Exam_
                 this.BorderThickness = new System.Windows.Thickness(0);
             }
         }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void btnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if(this.WindowState != WindowState.Maximized)
+                this.WindowState = WindowState.Maximized;
+            else
+                this.WindowState = WindowState.Normal;
+        }
+
+        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
     }
 }
