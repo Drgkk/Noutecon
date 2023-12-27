@@ -19,7 +19,7 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "insert into [Teacher] values (@username, @password, @firstname, @lastname, @school)";
+                    command.CommandText = "insert into [Teacher] ([Username], [Password], [FirstName], [LastName], [School]) values (@username, @password, @firstname, @lastname, @school)";
                     command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = teacherModel.Username;
                     command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = teacherModel.Password;
                     command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = teacherModel.FirstName;

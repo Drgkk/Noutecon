@@ -76,7 +76,7 @@ namespace Noutecon__Exam_.ViewModel
                 Password = nc.Password,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
-                School = this.School
+                ClassId = -1//////
             };
             studentRepository.Add(student);
             ExecuteCancelRegistry(null);

@@ -29,9 +29,11 @@ namespace Noutecon__Exam_.ViewModel
             var student = studentRepository.GetByUsername(Thread.CurrentPrincipal.Identity.Name);
             if(student != null)
             {
+                CurrentStudentAccount.Id = student.Id;
                 CurrentStudentAccount.Username = student.Username;
                 CurrentStudentAccount.FirstName = student.FirstName;
                 CurrentStudentAccount.LastName = student.LastName;             
+                CurrentStudentAccount.ClassId = student.ClassId;
             }
             else
             {

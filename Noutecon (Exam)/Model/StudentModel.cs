@@ -8,7 +8,6 @@ namespace Noutecon__Exam_.Model
 {
     public class StudentModel : User
     {
-        
-
+        public int ClassId { get; set; }
     }
 }

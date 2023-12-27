@@ -19,12 +19,12 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "insert into [Student] values (@username, @password, @firstname, @lastname, @school)";
+                    command.CommandText = "insert into [Student] ([Username], [Password], [FirstName], [LastName], [ClassId]) values (@username, @password, @firstname, @lastname, @classId)";
                     command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = studentModel.Username;
                     command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = studentModel.Password;
                     command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = studentModel.FirstName;
                     command.Parameters.Add("@lastname", System.Data.SqlDbType.NVarChar).Value = studentModel.LastName;
-                    command.Parameters.Add("@school", System.Data.SqlDbType.NVarChar).Value = studentModel.School;
+                    command.Parameters.Add("@classId", System.Data.SqlDbType.NVarChar).Value = studentModel.ClassId;
                     command.ExecuteNonQuery();
                 }
             }
@@ -85,6 +85,7 @@ namespace Noutecon__Exam_.Repositories
                                 Password = string.Empty,
                                 FirstName = reader.GetString(3),
                                 LastName = reader.GetString(4),
+                                ClassId = reader.GetInt32(5)
                             };
                         }
                     }

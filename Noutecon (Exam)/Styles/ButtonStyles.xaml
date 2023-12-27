@@ -154,5 +154,81 @@ TargetType="Button">
         <Setter Property="Height" Value="16"/>
     </Style>
 
+    <Style x:Key="AddButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="7, 0, 7, 0"/>
+        <Setter Property="Foreground" Value="{StaticResource Color6}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                    CornerRadius="5"
+                            BorderThickness="1"
+                            >
+                        
+                        <Border.BorderBrush>
+                            <DrawingBrush Viewport="0, 0, 4, 4" ViewportUnits="Absolute" TileMode="Tile">
+                                <DrawingBrush.Drawing>
+                                    <DrawingGroup>
+                                        <GeometryDrawing Brush="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                                            <GeometryDrawing.Geometry>
+                                                <GeometryGroup>
+                                                    <RectangleGeometry Rect="0, 0, 50, 50"/>
+                                                    <RectangleGeometry Rect="50, 50, 50, 50"/>
+                                                </GeometryGroup>
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                    </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Border.BorderBrush>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Color7}"/>
+            </Trigger>
+        </Style.Triggers>
+        
+    </Style>
+
+    <Style x:Key="ClassButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="{StaticResource Color6}"/>
+        <Setter Property="Margin" Value="7, 7, 7, 0"/>
+        <Setter Property="Height" Value="90"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                    CornerRadius="5">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Color7}"/>
+            </Trigger>
+
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ClassButtonText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="FontFamily" Value="Gautami"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
 
 </ResourceDictionary>

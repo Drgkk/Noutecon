@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Noutecon__Exam_.ViewModel
 {
-    class TeacherViewViewModel : ViewModelBase
+    public class TeacherViewViewModel : ViewModelBase
     {
         private TeacherAccountModel currentTeacher;
         private ITeacherRepository teacherRepository;
@@ -34,6 +34,8 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowProfileView { get; }
         public ICommand ShowExploreView { get; }
         public ICommand ShowSettingsView { get; }
+        public ICommand ShowClassesView { get; }    
+        public ICommand ShowClassesRegisterView { get; }    
        
 
         public TeacherViewViewModel()
@@ -46,7 +48,21 @@ namespace Noutecon__Exam_.ViewModel
             ShowProfileView = new ViewModelCommand(ExecuteShowProfileView);
             ShowExploreView = new ViewModelCommand(ExecuteShowExploreView);
             ShowSettingsView = new ViewModelCommand(ExecuteShowSettingsView);
+            ShowClassesView = new ViewModelCommand(ExecuteShowClassesView);
+            ShowClassesRegisterView = new ViewModelCommand(ExecuteShowClassesRegisterView);
             ExecuteShowHomeView(null);
+        }
+
+        private void ExecuteShowClassesRegisterView(object obj)
+        {
+            CurrentChildView = new ClassRegisterViewModel(this);
+        }
+
+        private void ExecuteShowClassesView(object obj)
+        {
+            CurrentChildView = new TeacherClassesViewModel(this);
+            Caption = "Manage Classes";
+            Icon = IconChar.UserGroup;
         }
 
         private void ExecuteShowSettingsView(object obj)
@@ -91,6 +107,7 @@ namespace Noutecon__Exam_.ViewModel
             {
                 CurrentTeacher = new TeacherAccountModel()
                 {
+                    Id = teacher.Id,
                     Username = teacher.Username,
                     FirstName = teacher.FirstName,
                     LastName = teacher.LastName,

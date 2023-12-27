@@ -73,10 +73,6 @@ namespace Noutecon__Exam_.ViewModel
                 
                 return;
             }
-            else
-            {
-                ErrorMessage = "* Invalid username or password";
-            }
             var isValidTeacher = teacherRepository.AuthenticateUser(nc);
             if (isValidTeacher)
             {

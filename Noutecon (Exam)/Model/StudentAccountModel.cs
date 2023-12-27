@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Noutecon__Exam_.Model
 {
-    class StudentAccountModel
+    class StudentAccountModel : UserAccountModel
     {
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string ProfilePicturePath { get; set; }
+       
+        public int ClassId { get; set; }
     }
 }

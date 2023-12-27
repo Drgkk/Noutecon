@@ -31,12 +31,20 @@
             <local:TeacherProfileView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModel:TeacherClassesViewModel}">
+            <local:TeacherClassesView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type viewModel:TeacherExploreViewModel}">
             <local:TeacherExploreView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModel:TeacherSettingsViewModel}">
             <local:TeacherSettingsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:ClassRegisterViewModel}">
+            <local:ClassRegisterView/>
         </DataTemplate>
 
     </Window.Resources>
@@ -110,6 +118,16 @@
                             <TextBlock Text="Your Profile" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
+
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource Color3}"
+                         Command="{Binding ShowClassesView}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="UserGroup" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Manage Classes" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
 
                     <RadioButton Style="{StaticResource menuButton}"
                             Tag="{StaticResource Color2}"
