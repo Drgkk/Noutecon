@@ -1,15 +1,33 @@
 ﻿using Noutecon__Exam_.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Noutecon__Exam_.Repositories
 {
     public class ClassRepository : RepositoryBase, IClassRepository
     {
+        public bool ValidateClass(string uniqueId)
+        {
+            bool isValid;
+            using (SqlConnection conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select * from [Class] where [UniqueId] = @uniqueId";
+                    command.Parameters.Add("@uniqueId", System.Data.SqlDbType.NVarChar).Value = uniqueId;
+                    isValid = command.ExecuteScalar() == null ? false : true;
+                }
+            }
+            return isValid;
+        }
         public void Add(ClassModel classModel)
         {
             using(SqlConnection conn = GetConnection())
@@ -73,9 +91,88 @@ namespace Noutecon__Exam_.Repositories
             return classModel;
         }
 
+        public int GetId(string uniqueId)
+        {
+            int classId = 0;
+            using (SqlConnection conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select Id from [Class] where [UniqueId] = @uniqueId";
+                    command.Parameters.Add("@uniqueId", System.Data.SqlDbType.NVarChar).Value = uniqueId;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            classId = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return classId;
+        }
+
         public void Remove(ClassModel classModel)
         {
             throw new NotImplementedException();
         }
+
+        public ObservableCollection<ClassModel> GetClassesByTeacherId(int teacherId)
+        {
+            ObservableCollection<ClassModel> classes = new ObservableCollection<ClassModel>();
+            using (SqlConnection conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select * from [Class] where [CuratorId] = @curatorId";
+                    command.Parameters.Add("@curatorId", System.Data.SqlDbType.NVarChar).Value = teacherId;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int classId = reader.GetInt32(0);
+                            classes.Add( new ClassModel()
+                            {
+                                Id = classId,
+                                UniqueId = reader.GetString(1),
+                                Name = reader.GetString(2),
+                                Grade = reader.GetInt32(3),
+                                CuratorId = reader.GetInt32(4),
+                                NumOfStudents = CountStudentsInClass(classId)
+                            });
+                        }
+                    }
+                }
+            }
+            return classes;
+        }
+
+        private int CountStudentsInClass(int Id)
+        {
+            int count = 0;
+            using (SqlConnection conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select COUNT(*) from [Student] where [ClassId] = @uniqueId";
+                    command.Parameters.Add("@uniqueId", System.Data.SqlDbType.Int).Value = Id;
+                    using(var reader = command.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            count = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return count;
+        }
+
     }
 }

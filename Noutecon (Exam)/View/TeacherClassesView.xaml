@@ -13,46 +13,77 @@
             <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Vertical"
-                    >
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
             <Button Style="{StaticResource AddButtonStyle}"
-                    Tag="{StaticResource Color6}"
-                    Command="{Binding ShowClassRegisterView}">
+        Tag="{StaticResource Color6}"
+        Command="{Binding ShowClassRegisterView}"
+                    Grid.Row="0">
                 <TextBlock Text="+"
-                           FontFamily="Gautami"
-                           FontSize="30"
-                           FontWeight="Black"
-                           Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+               FontFamily="Gautami"
+               FontSize="30"
+               FontWeight="Black"
+               Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
             </Button>
 
-            <Button Style="{StaticResource ClassButtonStyle}"
-                    HorizontalContentAlignment="Stretch">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Grid.Column="0" Margin="12, 3, 0, 0">
-                        <TextBlock Text="VPD221"
-                                   FontSize="30"
-                                   Foreground="{StaticResource PanelActiveColor}"
-                                   FontWeight="Bold"/>
-                        <TextBlock Text="Number of Students: "
-                                   Style="{StaticResource ClassButtonText}"/>
-                        <TextBlock Text="Average Grade: "
-                                    Style="{StaticResource ClassButtonText}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0, 3, 12, 0" FlowDirection="RightToLeft">
-                        <TextBlock Text="A25XR3"
-                                   FontSize="40"
-                                   Foreground="{StaticResource PanelActiveColor}"
-                                   FontWeight="Bold"/>
-                        <fa:IconImage Icon="ArrowRight" Width="26" Height="26" HorizontalAlignment="Left" Foreground="AntiqueWhite" Margin="0, 0, 0 ,0"/>
-                    </StackPanel>
-                </Grid>
-            </Button>
-            
-        </StackPanel>
+            <ListView ItemContainerStyle="{StaticResource ClassItemListViewStyle}"
+          ItemsSource="{Binding Classes}"
+          Background="Transparent"
+          BorderThickness="0"
+          SelectionMode="Single"
+          SelectedItem="{Binding SelectedClass}"
+                      Grid.Row="1">
+
+            </ListView>
+
+        </Grid>
         
+        
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Search"
+           FontSize="20"
+           FontFamily="Gautami"
+           FontWeight="Bold"
+           Foreground="{StaticResource HeaderColor}"
+           Margin="10, 0, 0, 0"/>
+                <fa:IconImage Icon="Search" Height="26" Width="26" Margin="10, 0, 0, 0" Foreground="{StaticResource Color1}"/>
+            </StackPanel>
+            
+            <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                FontSize="16"
+                    FontWeight="Medium"
+                    FontFamily="Gautami"
+                    Foreground="{StaticResource TextColor}"
+                    CaretBrush="LightGray"
+                    BorderBrush="DarkGray"
+                    BorderThickness="0, 0, 0, 2"
+                    Height="30"
+                    VerticalContentAlignment="Bottom"
+                    Padding="0, 0, 0, 2"
+                    Margin="10, 5, 10, 0"
+                    MaxLength="20"
+                     Background="Transparent"/>
+            <!--<Button Style="{StaticResource buttonWithIcon}"
+                    Tag="{StaticResource Color1}"
+                    Margin="0, 20, 0, 0"
+                    Width="120"
+                    Command="{Binding Search}">
+                <StackPanel Orientation="Horizontal" Width="110" Height="40">
+                    <TextBlock Text="Search" VerticalAlignment="Center"
+                 Foreground="{StaticResource TextColor}"
+                 FontSize="20"
+                            FontWeight="Bold"
+                 FontFamily="Gautami"
+                Margin="10, 0, 10, 0"/>
+                    <fa:IconImage Icon="Search" Height="26" Width="26"  />
+                </StackPanel>
+            </Button>-->
+        </StackPanel>
     </Grid>
 </UserControl>

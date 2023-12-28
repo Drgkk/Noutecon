@@ -23,7 +23,7 @@
                    Margin="0, 5, 0, 0"/>
 
 
-        <TextBlock Text="UniqueId:"
+        <!--<TextBlock Text="UniqueId:"
               Foreground="{StaticResource TextColor}"
               FontSize="12"
               FontFamily="Gautami"
@@ -52,7 +52,7 @@
                    FontFamily="Gaugami"
                    FontSize="12"
                    Margin="0, 15, 0, 0"
-                   TextWrapping="Wrap"/>
+                   TextWrapping="Wrap"/>-->
 
         <TextBlock Text="Name:"
       Foreground="{StaticResource TextColor}"

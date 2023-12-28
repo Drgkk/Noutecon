@@ -122,7 +122,7 @@ xmlns:converters="clr-namespace:Noutecon__Exam_.Converters"
                 
             </StackPanel>
 
-            <TextBlock Text="Your School:"
+            <TextBlock Text="Invite Code:"
                       Foreground="{StaticResource TextColor}"
                       FontSize="12"
                       FontFamily="Gautami"
@@ -130,7 +130,7 @@ xmlns:converters="clr-namespace:Noutecon__Exam_.Converters"
                       Margin="0, 25, 0, 0"/>
 
             <TextBox x:Name="txtSchoolWhereWork"
-                    Text = "{Binding School, UpdateSourceTrigger=PropertyChanged}"
+                    Text = "{Binding InviteCode, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     FontSize="16"
                     FontWeight="Medium"
                     FontFamily="Gautami"
@@ -146,6 +146,12 @@ xmlns:converters="clr-namespace:Noutecon__Exam_.Converters"
                     Background="Transparent">
             </TextBox>
 
+            <TextBlock Text="{Binding InviteCodeErrorMessage, Mode=TwoWay}"
+           Foreground="{StaticResource Color2}"
+           FontFamily="Gaugami"
+           FontSize="12"
+           Margin="0, 15, 0, 0"
+           TextWrapping="Wrap"/>
 
             <StackPanel Orientation="Horizontal" Margin="0, 40, 0, 0">
                 <Button x:Name="btnRegister" 
