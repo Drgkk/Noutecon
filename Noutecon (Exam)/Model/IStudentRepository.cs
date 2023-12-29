@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -13,8 +14,9 @@ namespace Noutecon__Exam_.Model
         void Add(StudentModel studentModel);
         void Edit(StudentModel studentModel);
         void Remove(StudentModel studentModel);
+        void RemoveById(int id);
         StudentModel GetById(int id);
         StudentModel GetByUsername(string username);
-        IEnumerable<StudentModel> GetAll();
+        ObservableCollection<StudentAccountModel> GetStudentsAccountsByClassId(int Id);
     }
 }

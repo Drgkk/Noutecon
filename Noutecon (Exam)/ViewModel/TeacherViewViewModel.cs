@@ -36,6 +36,8 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowSettingsView { get; }
         public ICommand ShowClassesView { get; }    
         public ICommand ShowClassesRegisterView { get; }    
+        public ICommand ShowDetailedClassView { get; }
+        public ICommand ShowTeachersStudentCreationView { get; }
        
 
         public TeacherViewViewModel()
@@ -50,7 +52,19 @@ namespace Noutecon__Exam_.ViewModel
             ShowSettingsView = new ViewModelCommand(ExecuteShowSettingsView);
             ShowClassesView = new ViewModelCommand(ExecuteShowClassesView);
             ShowClassesRegisterView = new ViewModelCommand(ExecuteShowClassesRegisterView);
+            ShowDetailedClassView = new ViewModelCommand(ExecuteShowDetailedClassView);
+            ShowTeachersStudentCreationView = new ViewModelCommand(ExecuteShowTeachersStudentCreationView);
             ExecuteShowHomeView(null);
+        }
+
+        private void ExecuteShowTeachersStudentCreationView(object obj)
+        {
+            CurrentChildView = new TeachersStudentCreationViewModel(new object[2] { this, obj });
+        }
+
+        private void ExecuteShowDetailedClassView(object obj)
+        {
+            CurrentChildView = new DetailedTeachersClassViewModel(new object[2] { obj, this } );
         }
 
         private void ExecuteShowClassesRegisterView(object obj)
@@ -111,6 +125,8 @@ namespace Noutecon__Exam_.ViewModel
                     Username = teacher.Username,
                     FirstName = teacher.FirstName,
                     LastName = teacher.LastName,
+                    School = teacher.School,
+                    ProfilePicturePath = teacher.ProfilePicturePath
                 };
             }
             else

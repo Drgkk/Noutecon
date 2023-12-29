@@ -88,7 +88,8 @@ namespace Noutecon__Exam_.ViewModel
                 Password = nc.Password,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
-                ClassId = classRepository.GetId(InviteCode)
+                ClassId = classRepository.GetId(InviteCode),
+                ProfilePicturePath = "/Images/StudentIcon.png"
             };
             studentRepository.Add(student);
             ExecuteCancelRegistry(null);

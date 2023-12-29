@@ -197,7 +197,7 @@
                                      Stroke="{StaticResource Color3}"
                                      StrokeThickness="2">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="/Images/StudentIcon.png"/>
+                                    <ImageBrush ImageSource="{Binding CurrentStudentAccount.ProfilePicturePath}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
                             

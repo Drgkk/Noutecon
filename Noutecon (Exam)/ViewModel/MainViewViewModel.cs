@@ -22,6 +22,9 @@ namespace Noutecon__Exam_.ViewModel
             studentRepository = new StudentRepository();
             CurrentStudentAccount = new StudentAccountModel();
             LoadCurrentUserData();
+            Thread validateStudentThread = new Thread(new ThreadStart(ThreadWorkValidateUser));
+            validateStudentThread.IsBackground = true;
+            validateStudentThread.Start();  
         }
 
         private void LoadCurrentUserData()
@@ -34,6 +37,7 @@ namespace Noutecon__Exam_.ViewModel
                 CurrentStudentAccount.FirstName = student.FirstName;
                 CurrentStudentAccount.LastName = student.LastName;             
                 CurrentStudentAccount.ClassId = student.ClassId;
+                CurrentStudentAccount.ProfilePicturePath = student.ProfilePicturePath;
             }
             else
             {
@@ -41,5 +45,19 @@ namespace Noutecon__Exam_.ViewModel
                 Application.Current.Shutdown();
             }
         }
+
+        private void ThreadWorkValidateUser()
+        {
+            while (true)
+            {
+                var student = studentRepository.GetByUsername(CurrentStudentAccount.Username);
+                if (student == null)
+                {
+                    Application.Current.Shutdown();
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
     }
 }

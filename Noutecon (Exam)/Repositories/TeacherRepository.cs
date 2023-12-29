@@ -19,12 +19,13 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "insert into [Teacher] ([Username], [Password], [FirstName], [LastName], [School]) values (@username, @password, @firstname, @lastname, @school)";
+                    command.CommandText = "insert into [Teacher] ([Username], [Password], [FirstName], [LastName], [School], [ProfilePicturePath]) values (@username, @password, @firstname, @lastname, @school, @pfp)";
                     command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = teacherModel.Username;
                     command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = teacherModel.Password;
                     command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = teacherModel.FirstName;
                     command.Parameters.Add("@lastname", System.Data.SqlDbType.NVarChar).Value = teacherModel.LastName;
                     command.Parameters.Add("@school", System.Data.SqlDbType.NVarChar).Value = teacherModel.School;
+                    command.Parameters.Add("@pfp", System.Data.SqlDbType.NVarChar).Value = teacherModel.ProfilePicturePath;
                     command.ExecuteNonQuery();
                 }
             }
@@ -84,7 +85,9 @@ namespace Noutecon__Exam_.Repositories
                                 Username = reader.GetString(1),
                                 Password = string.Empty,
                                 FirstName = reader.GetString(3),
-                                LastName = reader.GetString(4)
+                                LastName = reader.GetString(4),
+                                School = reader.GetString(5),
+                                ProfilePicturePath = reader.GetString(6)
                             };
                         }
                     }

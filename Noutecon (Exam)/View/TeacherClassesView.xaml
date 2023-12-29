@@ -69,6 +69,24 @@
                     Margin="10, 5, 10, 0"
                     MaxLength="20"
                      Background="Transparent"/>
+
+            <Button Style="{StaticResource buttonWithIcon}"
+                    Width="240"
+                    Height="50"
+                    Margin="0, 12, 0, 0"
+                    Tag="{StaticResource Color1}"
+                    Command="{Binding Refresh}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Refresh" VerticalAlignment="Center"
+                                 Foreground="{StaticResource TextColor}"
+                                 FontSize="20"
+                                            FontWeight="Bold"
+                                 FontFamily="Gautami"
+                                Margin="10, 0, 10, 0"/>
+                    <fa:IconImage Icon="RotateRight" Height="26" Width="26"  Foreground="{StaticResource Color3}"/>
+                </StackPanel>
+            </Button>
+
             <!--<Button Style="{StaticResource buttonWithIcon}"
                     Tag="{StaticResource Color1}"
                     Margin="0, 20, 0, 0"

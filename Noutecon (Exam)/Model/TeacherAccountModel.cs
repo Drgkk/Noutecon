@@ -8,6 +8,6 @@ namespace Noutecon__Exam_.Model
 {
     public class TeacherAccountModel : UserAccountModel
     {
-
+        public string School { get; set; }
     }
 }

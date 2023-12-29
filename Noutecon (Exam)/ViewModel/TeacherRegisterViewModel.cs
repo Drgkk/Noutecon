@@ -76,7 +76,8 @@ namespace Noutecon__Exam_.ViewModel
                 Password = nc.Password,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
-                School = this.School
+                School = this.School,
+                ProfilePicturePath = "/Images/TeacherIcon.png"
             };
             teacherRepository.Add(teacher);
             ExecuteCancelRegistry(null);

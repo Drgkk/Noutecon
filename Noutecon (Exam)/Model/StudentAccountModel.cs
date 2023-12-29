@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noutecon__Exam_.Model
 {
-    class StudentAccountModel : UserAccountModel
+    public class StudentAccountModel : UserAccountModel
     {
        
         public int ClassId { get; set; }

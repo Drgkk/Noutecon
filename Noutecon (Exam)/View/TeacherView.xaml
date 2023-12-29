@@ -47,6 +47,14 @@
             <local:ClassRegisterView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModel:DetailedTeachersClassViewModel}">
+            <local:DetailedTeachersClassView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:TeachersStudentCreationViewModel}">
+            <local:TeacherStudentCreationView/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Border CornerRadius="8"
@@ -244,7 +252,7 @@
                                  Stroke="{StaticResource Color3}"
                                  StrokeThickness="2">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="/Images/TeacherIcon.png"/>
+                                    <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
 

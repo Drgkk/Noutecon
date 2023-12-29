@@ -51,12 +51,21 @@ namespace Noutecon__Exam_.ViewModel
         private ObservableCollection<ClassModel> AllClasses;
         private IClassRepository classRepository;
         public ICommand ShowClassRegisterView { get; }
+        public ICommand Refresh { get; }
 
         public TeacherClassesViewModel(TeacherViewViewModel tvvm) 
         {
             teacherViewViewModel = tvvm;
             ShowClassRegisterView = new ViewModelCommand(ExecuteShowClassRegisterView);
             classRepository = new ClassRepository();
+            AllClasses = classRepository.GetClassesByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
+            Classes = AllClasses;
+            Refresh = new ViewModelCommand(ExecuteRefresh);
+        }
+
+        private void ExecuteRefresh(object obj)
+        {
+            SearchText = "";
             AllClasses = classRepository.GetClassesByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
             Classes = AllClasses;
         }
@@ -69,7 +78,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowClassDetailsView(object obj)
         {
-            MessageBox.Show($"Class: {SelectedClass.UniqueId}");
+            teacherViewViewModel.ShowDetailedClassView.Execute(SelectedClass);
         }
 
         private void ExecuteShowClassRegisterView(object obj)
