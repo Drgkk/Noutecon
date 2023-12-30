@@ -46,9 +46,20 @@ namespace Noutecon__Exam_.Repositories
             }
         }
 
-        public void Edit(ClassModel classModel)
+        public void UpdateUniqueIdOfClassWithId(int id, string uniqueId)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Class] set uniqueId = @uniqueId where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.Parameters.Add("@uniqueId", System.Data.SqlDbType.NVarChar).Value = uniqueId;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         public IEnumerable<ClassModel> GetAll()

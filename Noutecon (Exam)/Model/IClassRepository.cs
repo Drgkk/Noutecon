@@ -12,7 +12,7 @@ namespace Noutecon__Exam_.Model
     {
         bool ValidateClass(string uniqueId);
         void Add(ClassModel classModel);
-        void Edit(ClassModel classModel);
+        void UpdateUniqueIdOfClassWithId(int id, string uniqueId);
         void Remove(ClassModel classModel);
         ClassModel GetById(int id);
         ClassModel GetByUniqueId(string uniqueId);

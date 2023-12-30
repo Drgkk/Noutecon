@@ -22,7 +22,8 @@
             <Button Style="{StaticResource AddButtonStyle}"
         Tag="{StaticResource Color6}"
         Command="{Binding ShowClassRegisterView}"
-                    Grid.Row="0">
+                    Grid.Row="0"
+                    ToolTip="Add Class">
                 <TextBlock Text="+"
                FontFamily="Gautami"
                FontSize="30"

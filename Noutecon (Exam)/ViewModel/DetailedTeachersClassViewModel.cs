@@ -27,11 +27,13 @@ namespace Noutecon__Exam_.ViewModel
 		private TeacherViewViewModel teacherViewViewModel;
 		public ClassModel CurrentClass {  get { return currentClass; } set { currentClass = value; OnPropertyChanged(nameof(CurrentClass)); } }
 		private IStudentRepository studentRepository;
+		private IClassRepository classRepository;
 
 		public ICommand ShowStudentDetails { get; }
 		public ICommand DeleteStudent { get; }
 		public ICommand ShowStudentCreationView { get; }
 		public ICommand GoBack { get; }
+		public ICommand GenerateNewUniqueCode { get; }
 
 		public DetailedTeachersClassViewModel(object c)
 		{
@@ -39,11 +41,23 @@ namespace Noutecon__Exam_.ViewModel
             CurrentClass = (ClassModel)args[0];
             teacherViewViewModel = (TeacherViewViewModel)args[1];
 			studentRepository = new StudentRepository();
+			classRepository = new ClassRepository();
 			Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
 			ShowStudentDetails = new ViewModelCommand(ExecuteShowStudentDetails);
 			DeleteStudent = new ViewModelCommand(ExecuteDeleteStudent);
 			ShowStudentCreationView = new ViewModelCommand(ExecuteShowStudentCreationView);
 			GoBack = new ViewModelCommand(ExecuteGoBack);
+			GenerateNewUniqueCode = new ViewModelCommand(ExecuteGenerateNewUniqueCode);
+        }
+
+        private void ExecuteGenerateNewUniqueCode(object obj)
+        {
+            ClassCodeGenerator generator = new ClassCodeGenerator();
+			string newUniqueId = generator.GenerateCode();
+            classRepository.UpdateUniqueIdOfClassWithId(CurrentClass.Id, newUniqueId);
+			ClassModel newClassModel = CurrentClass;
+			newClassModel.UniqueId = newUniqueId;
+            CurrentClass = newClassModel;
         }
 
         private void ExecuteGoBack(object obj)
@@ -59,6 +73,10 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteDeleteStudent(object obj)
         {
 			StudentAccountModel currentStudent = (StudentAccountModel)obj;
+			if(MessageBox.Show($"Are you sure you want to delete student {currentStudent.Username}?", "Delete a Student", MessageBoxButton.YesNo) == MessageBoxResult.No)
+			{
+				return;
+			}
 			studentRepository.RemoveById(currentStudent.Id);
             Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
         }
@@ -66,7 +84,7 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteShowStudentDetails(object obj)
         {
             StudentAccountModel currentStudent = (StudentAccountModel)obj;
-
+			throw new NotImplementedException();
         }
     }
 }

@@ -55,10 +55,10 @@
                                     <Run Text="Average Grade: "/>
                                     <Run Text="NOT IMPLEMENTED"/>
                                 </TextBlock>
-                                <Button Style="{StaticResource ClassStudentsListViewItemButtonStyle}" Margin="12, 0, 0, 0" Command="{Binding DataContext.DeleteStudent, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" VerticalAlignment="Center" Background="{StaticResource Color3}">
+                                <Button Style="{StaticResource ClassStudentsListViewItemButtonStyle}" Margin="12, 0, 0, 0" Command="{Binding DataContext.DeleteStudent, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" VerticalAlignment="Center" Background="{StaticResource Color3}"  ToolTip="Delete Student">
                                     <fa:IconImage Icon="TrashCan" Foreground="{StaticResource Color6}" Height="15" Width="15" Cursor="Hand"/>
                                 </Button>
-                                <Button Style="{StaticResource ClassStudentsListViewItemButtonStyle}" Margin="7, 0, 7, 0" Command="{Binding DataContext.ShowStudentDetails, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" VerticalAlignment="Center" Background="{StaticResource Color3}">
+                                <Button Style="{StaticResource ClassStudentsListViewItemButtonStyle}" Margin="7, 0, 7, 0" Command="{Binding DataContext.ShowStudentDetails, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" VerticalAlignment="Center" Background="{StaticResource Color3}" ToolTip="Show Student Details">
                                     <fa:IconImage Icon="ArrowRight" Foreground="{StaticResource HeaderColor}" Height="15" Width="15" Cursor="Hand"/>
                                 </Button>
                             </StackPanel>

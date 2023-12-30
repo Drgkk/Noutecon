@@ -40,6 +40,7 @@ namespace Noutecon__Exam_
                 {
                     break;
                 }
+                sb.Clear();
             }
             return sb.ToString();
         }
