@@ -24,5 +24,20 @@ namespace Noutecon__Exam_.View
         {
             InitializeComponent();
         }
+
+        private void Box_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            TextBox txtBox = sender as TextBox;
+            if(txtBox.Visibility == Visibility.Visible)
+            {
+                txtBox.Focus();
+            }
+        }
+
+        private void UsernameTxtBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox txtBox = sender as TextBox;
+            txtBox.Visibility = Visibility.Hidden;
+        }
     }
 }

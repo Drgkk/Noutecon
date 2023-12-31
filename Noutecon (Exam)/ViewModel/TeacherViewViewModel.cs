@@ -95,7 +95,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowProfileView(object obj)
         {
-            CurrentChildView = new TeacherProfileViewModel();
+            CurrentChildView = new TeacherProfileViewModel(this);
             Caption = "Your Profile";
             Icon = IconChar.UserAlt;
         }

@@ -122,7 +122,7 @@ xmlns:converters="clr-namespace:Noutecon__Exam_.Converters"
                 
             </StackPanel>
 
-            <TextBlock Text="Invite Code:"
+            <!--<TextBlock Text="Invite Code:"
                       Foreground="{StaticResource TextColor}"
                       FontSize="12"
                       FontFamily="Gautami"
@@ -151,7 +151,7 @@ xmlns:converters="clr-namespace:Noutecon__Exam_.Converters"
            FontFamily="Gaugami"
            FontSize="12"
            Margin="0, 15, 0, 0"
-           TextWrapping="Wrap"/>
+           TextWrapping="Wrap"/>-->
 
             <StackPanel Orientation="Horizontal" Margin="0, 40, 0, 0">
                 <Button x:Name="btnRegister" 

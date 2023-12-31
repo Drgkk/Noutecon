@@ -73,11 +73,11 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteDeleteStudent(object obj)
         {
 			StudentAccountModel currentStudent = (StudentAccountModel)obj;
-			if(MessageBox.Show($"Are you sure you want to delete student {currentStudent.Username}?", "Delete a Student", MessageBoxButton.YesNo) == MessageBoxResult.No)
+			if(MessageBox.Show($"Are you sure you want to delete student {currentStudent.Username} from class {currentClass.Name}?", "Delete a Student", MessageBoxButton.YesNo) == MessageBoxResult.No)
 			{
 				return;
 			}
-			studentRepository.RemoveById(currentStudent.Id);
+			studentRepository.RemoveFromClassById(currentStudent.Id, currentClass.Id);
             Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
         }
 

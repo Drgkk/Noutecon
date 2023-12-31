@@ -11,10 +11,12 @@ namespace Noutecon__Exam_.Model
     {
         bool AuthenticateUser(NetworkCredential credential);
         void Add(TeacherModel teacherModel);
-        void Edit(TeacherModel teacherModel);
+        void EditPfpById(int id, string pfpPath);
         void Remove(TeacherModel teacherModel);
-        TeacherModel GetById(int id);
+        TeacherAccountModel GetAccountById(int id);
         TeacherModel GetByUsername(string username);
         IEnumerable<TeacherModel> GetAll();
+        void EditTeacherUsername(int id, string userName);
+        void EditTeacherFirstName(int id, string firstName);
     }
 }

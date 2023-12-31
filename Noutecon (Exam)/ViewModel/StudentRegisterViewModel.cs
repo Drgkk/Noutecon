@@ -19,7 +19,7 @@ namespace Noutecon__Exam_.ViewModel
         private string? _lastName;
         private string? _inviteCode;
         private string? _usernameErrorMessage;
-        private string? _inviteCodeErrorMessage;
+        //private string? _inviteCodeErrorMessage;
 
         public string? Username { get => _username; set { _username = value; OnPropertyChanged(nameof(Username)); } }
         public SecureString? Password { get => _password; set { _password = value; OnPropertyChanged(nameof(Password)); } }
@@ -27,7 +27,7 @@ namespace Noutecon__Exam_.ViewModel
         public string? LastName { get => _lastName; set { _lastName = value; OnPropertyChanged(nameof(LastName)); } }
         public string? InviteCode { get => _inviteCode; set { _inviteCode = value; OnPropertyChanged(nameof(InviteCode)); } }
         public string? UsernameErrorMessage { get => _usernameErrorMessage; set { _usernameErrorMessage = value; OnPropertyChanged(nameof(UsernameErrorMessage)); } }
-        public string? InviteCodeErrorMessage { get => _inviteCodeErrorMessage; set { _inviteCodeErrorMessage = value; OnPropertyChanged(nameof(InviteCodeErrorMessage)); } }
+        //public string? InviteCodeErrorMessage { get => _inviteCodeErrorMessage; set { _inviteCodeErrorMessage = value; OnPropertyChanged(nameof(InviteCodeErrorMessage)); } }
 
         private LoginViewModel loginViewModel;
 
@@ -59,8 +59,8 @@ namespace Noutecon__Exam_.ViewModel
             bool isValid = true;
             if (string.IsNullOrEmpty(Username) || Username.Length <= 3 || Password == null || Password.Length <= 3 ||
                 string.IsNullOrEmpty(FirstName) || FirstName.Length <=3 ||
-                string.IsNullOrEmpty(LastName) || LastName.Length <= 3 ||
-                string.IsNullOrEmpty(InviteCode) || InviteCode.Length != 6)
+                string.IsNullOrEmpty(LastName) || LastName.Length <= 3 //||
+                /*string.IsNullOrEmpty(InviteCode) || InviteCode.Length != 6*/)
             {
                 isValid = false;
             }
@@ -70,17 +70,17 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteRegisterStudent(object obj)
         {
             UsernameErrorMessage = "";
-            InviteCodeErrorMessage = "";
+            //InviteCodeErrorMessage = "";
             if(studentRepository.GetByUsername(Username) != null || teacherRepository.GetByUsername(Username) != null)
             {
                 UsernameErrorMessage = "User with the same username already exists!";
                 return;
             }
-            if(!classRepository.ValidateClass(InviteCode))
-            {
-                InviteCodeErrorMessage = "Invalid Invite Code!";
-                return;
-            }
+            //if(!classRepository.ValidateClass(InviteCode))
+            //{
+            //    InviteCodeErrorMessage = "Invalid Invite Code!";
+            //    return;
+            //}
             NetworkCredential nc = new NetworkCredential(Username, Password);
             StudentModel student = new StudentModel()
             {
@@ -88,7 +88,7 @@ namespace Noutecon__Exam_.ViewModel
                 Password = nc.Password,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
-                ClassId = classRepository.GetId(InviteCode),
+                //ClassId = classRepository.GetId(InviteCode),
                 ProfilePicturePath = "/Images/StudentIcon.png"
             };
             studentRepository.Add(student);

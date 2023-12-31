@@ -247,4 +247,26 @@ TargetType="Button">
         </Setter>
     </Style>
 
+    <Style x:Key="EllipseButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Ellipse Height="150" Width="150"
+                             Margin="20, 10, 0, 10"
+                             Stroke="{StaticResource Color3}"
+                             StrokeThickness="2"
+                             VerticalAlignment="Center">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        
+    </Style>
+
 </ResourceDictionary>

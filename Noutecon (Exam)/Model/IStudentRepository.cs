@@ -14,9 +14,12 @@ namespace Noutecon__Exam_.Model
         void Add(StudentModel studentModel);
         void Edit(StudentModel studentModel);
         void Remove(StudentModel studentModel);
-        void RemoveById(int id);
+        void RemoveFromClassById(int studentId, int classId);
         StudentModel GetById(int id);
         StudentModel GetByUsername(string username);
         ObservableCollection<StudentAccountModel> GetStudentsAccountsByClassId(int Id);
+        void AddStudentToClassById(int studentId, int classId);
+        int GetStudentIdByUsername(string username);
+        bool IsStudentInClass(int studentId, int classId);
     }
 }

@@ -107,10 +107,10 @@ namespace Noutecon__Exam_.ViewModel
                 Password = nc.Password,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
-                ClassId = classRepository.GetId(currentClass.UniqueId),
                 ProfilePicturePath = "/Images/StudentIcon.png"
             };
             studentRepository.Add(student);
+            studentRepository.AddStudentToClassById(studentRepository.GetStudentIdByUsername(student.Username), currentClass.Id);
             ExecuteCancelRegistry(null);
         }
 

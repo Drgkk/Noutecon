@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Noutecon__Exam_"
         xmlns:viewModel="clr-namespace:Noutecon__Exam_.ViewModel"
         xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+        xmlns:views="clr-namespace:Noutecon__Exam_.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1300"
         WindowStyle="None"
@@ -17,6 +18,28 @@
     <Window.DataContext>
         <viewModel:MainViewViewModel/>
     </Window.DataContext>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:StudentClassesViewModel}">
+            <views:StudentClassesView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:StudentHomeViewModel}">
+            <views:StudentHomeView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:StudentTestsViewModel}">
+            <views:StudentTestsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:StudentProfileViewModel}">
+            <views:StudentProfileView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:StudentSettingsViewModel}">
+            <views:StudentSettingsView/>
+        </DataTemplate>
+    </Window.Resources>
 
     <Border CornerRadius="8"
         BorderThickness="1">
@@ -61,7 +84,9 @@
                     </StackPanel>
 
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource Color4}">
+                                 Tag="{StaticResource Color4}"
+                                 Command="{Binding ShowHomeView}"
+                                 IsChecked="True">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
@@ -69,7 +94,8 @@
                     </RadioButton>
 
                     <RadioButton Style="{StaticResource menuButton}"
-                                Tag="{StaticResource Color1}">
+                                Tag="{StaticResource Color1}"
+                                 Command="{Binding ShowTestsView}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Tests" Style="{StaticResource menuButtonText}"/>
@@ -77,7 +103,8 @@
                     </RadioButton>
 
                     <RadioButton Style="{StaticResource menuButton}"
-            Tag="{StaticResource Color3}">
+            Tag="{StaticResource Color3}"
+                                 Command="{Binding ShowProfileView}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="UserAlt" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Your Profile" Style="{StaticResource menuButtonText}"/>
@@ -85,15 +112,17 @@
                     </RadioButton>
 
                     <RadioButton Style="{StaticResource menuButton}"
-                                Tag="{StaticResource Color2}">
+                                Tag="{StaticResource Color2}"
+                                 Command="{Binding ShowClassesView}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="UserGroup" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="My Class" Style="{StaticResource menuButtonText}"/>
+                            <TextBlock Text="My Classes" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
 
                     <RadioButton Style="{StaticResource menuButton}"
-            Tag="{StaticResource Color5}">
+            Tag="{StaticResource Color5}"
+                                 Command="{Binding ShowSettingsView}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
@@ -162,12 +191,12 @@
                         <StackPanel Grid.Column="0"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center">
-                            <fa:IconImage Icon="Home"
+                            <fa:IconImage Icon="{Binding Icon}"
                                           Height="30"
                                           Width="30"
                                           Foreground="{StaticResource TextColor}"
                                           Margin="35, 0, 10, 0"/>
-                            <TextBlock Text="Home"
+                            <TextBlock Text="{Binding Label}"
                                        Foreground="{StaticResource TextColor}"
                                        VerticalAlignment="Bottom"
                                        FontFamily="Gautami"
@@ -205,7 +234,7 @@
                         
                     </Grid>
 
-                    <ContentControl Content=""
+                    <ContentControl Content="{Binding CurrentChildView}"
                                     Grid.Row="2"
                                     Margin="25"/>
 

@@ -18,6 +18,7 @@ namespace Noutecon__Exam_.Model
         ClassModel GetByUniqueId(string uniqueId);
         IEnumerable<ClassModel> GetAll();
         ObservableCollection<ClassModel> GetClassesByTeacherId(int teacherId);
+        ObservableCollection<ClassModel> GetClassesByStudentId(int studentId);
         int GetId(string uniqueId);
     }
 }

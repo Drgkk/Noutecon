@@ -14,5 +14,6 @@ namespace Noutecon__Exam_.Model
         public int Grade { get; set; }
         public int CuratorId { get; set; }
         public int NumOfStudents { get; set; }
+        public TeacherAccountModel ClassTeacher { get; set; }
     }
 }

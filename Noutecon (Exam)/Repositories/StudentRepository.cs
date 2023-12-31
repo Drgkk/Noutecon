@@ -21,12 +21,11 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "insert into [Student] ([Username], [Password], [FirstName], [LastName], [ClassId], [ProfilePicturePath]) values (@username, @password, @firstname, @lastname, @classId, @pfp)";
+                    command.CommandText = "insert into [Student] ([Username], [Password], [FirstName], [LastName], [ProfilePicturePath]) values (@username, @password, @firstname, @lastname, @pfp)";
                     command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = studentModel.Username;
                     command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = studentModel.Password;
                     command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = studentModel.FirstName;
                     command.Parameters.Add("@lastname", System.Data.SqlDbType.NVarChar).Value = studentModel.LastName;
-                    command.Parameters.Add("@classId", System.Data.SqlDbType.NVarChar).Value = studentModel.ClassId;
                     command.Parameters.Add("@pfp", System.Data.SqlDbType.NVarChar).Value = studentModel.ProfilePicturePath;
                     command.ExecuteNonQuery();
                 }
@@ -88,8 +87,7 @@ namespace Noutecon__Exam_.Repositories
                                 Password = string.Empty,
                                 FirstName = reader.GetString(3),
                                 LastName = reader.GetString(4),
-                                ClassId = reader.GetInt32(5),
-                                ProfilePicturePath = reader.GetString(6),
+                                ProfilePicturePath = reader.GetString(5),
                             };
                         }
                     }
@@ -112,7 +110,7 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "select * from [Student] where ClassId = @Id";
+                    command.CommandText = "select * from [Student] where Id in (select StudentId from [StudentClass] Where ClassId = @Id)";
                     command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = Id;
                     using (var reader = command.ExecuteReader())
                     {
@@ -124,8 +122,7 @@ namespace Noutecon__Exam_.Repositories
                                 Username = reader.GetString(1),
                                 FirstName = reader.GetString(3),
                                 LastName = reader.GetString(4),
-                                ClassId = reader.GetInt32(5),
-                                ProfilePicturePath = reader.GetString(6),
+                                ProfilePicturePath = reader.GetString(5),
                             });
                         }
                     }
@@ -134,7 +131,7 @@ namespace Noutecon__Exam_.Repositories
             return students;
         }
 
-        public void RemoveById(int id)
+        public void RemoveFromClassById(int studentId, int classId)
         {
             using (var connection = GetConnection())
             {
@@ -142,11 +139,69 @@ namespace Noutecon__Exam_.Repositories
                 {
                     connection.Open();
                     command.Connection = connection;
-                    command.CommandText = "delete from [Student] where Id = @Id";
-                    command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = id;
+                    command.CommandText = "delete from [StudentClass] where StudentId = @studentId and ClassId = @classId";
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = studentId;
+                    command.Parameters.Add("@classId", System.Data.SqlDbType.Int).Value = classId;
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        public void AddStudentToClassById(int studentId, int classId)
+        {
+            using (var connection = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = "insert into [StudentClass] ([ClassId], [StudentId]) values (@classId, @studentId)";
+                    command.Parameters.Add("@classId", System.Data.SqlDbType.Int).Value = classId;
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = studentId;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public int GetStudentIdByUsername(string username)
+        {
+            int studentId = 0;
+            using (var connection = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = "select Id from [Student] where username = @username";
+                    command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = username;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            studentId = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return studentId;
+        }
+
+        public bool IsStudentInClass(int studentId, int classId)
+        {
+            bool isStudentInClass = false;
+            using (var connection = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = "select * from [StudentClass] Where StudentId = @studentId and ClassId = @classId";
+                    command.Parameters.Add("@classId", System.Data.SqlDbType.Int).Value = classId;
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = studentId;
+                    isStudentInClass = command.ExecuteScalar() == null ?  false : true;
+                }
+            }
+            return isStudentInClass;
         }
 
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Noutecon__Exam_.Repositories
 {
@@ -49,9 +50,20 @@ namespace Noutecon__Exam_.Repositories
             return isValidTeacher;
         }
 
-        public void Edit(TeacherModel teacherModel)
+        public void EditPfpById(int id, string pfpPath)
         {
-            throw new NotImplementedException();
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Teacher] set ProfilePicturePath = @pfp where Id = @id";
+                    command.Parameters.Add("@pfp", System.Data.SqlDbType.NVarChar).Value = pfpPath;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         public IEnumerable<TeacherModel> GetAll()
@@ -59,9 +71,35 @@ namespace Noutecon__Exam_.Repositories
             throw new NotImplementedException();
         }
 
-        public TeacherModel GetById(int id)
+        public TeacherAccountModel GetAccountById(int id)
         {
-            throw new NotImplementedException();
+            TeacherAccountModel teacherAccountModel = null;
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select * from [Teacher] where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            teacherAccountModel = new TeacherAccountModel()
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                FirstName = reader.GetString(3),
+                                LastName = reader.GetString(4),
+                                School = reader.GetString(5),
+                                ProfilePicturePath = reader.GetString(6)
+                            };
+                        }
+                    }
+                }
+            }
+            return teacherAccountModel;
         }
 
         public TeacherModel GetByUsername(string username)
@@ -100,5 +138,38 @@ namespace Noutecon__Exam_.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public void EditTeacherUsername(int id, string userName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Teacher] set Username = @username where Id = @id";
+                    command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = userName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditTeacherFirstName(int id, string firstName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Teacher] set FirstName = @firstname where Id = @id";
+                    command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = firstName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }
