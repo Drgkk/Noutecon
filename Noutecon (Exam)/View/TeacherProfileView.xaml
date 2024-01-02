@@ -37,7 +37,7 @@
                 <StackPanel Orientation="Horizontal"
                                VerticalAlignment="Top">
                     <StackPanel FocusManager.FocusedElement="{Binding ElementName=UsernameTxtBox}">
-                        <TextBox x:Name="UsernameTxtBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="40"  Visibility="{Binding UsernameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"
+                        <TextBox x:Name="UsernameTxtBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="40"  Visibility="{Binding UsernameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}" MaxLength="20"
                                 Foreground="{StaticResource HeaderColor}"
                                 FontFamily="Gautami"
                                 FontWeight="Medium"
@@ -99,6 +99,7 @@
                                Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
                     <StackPanel FocusManager.FocusedElement="{Binding ElementName=FirstNameTextBox}">
                         <TextBox x:Name="FirstNameTextBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="16"  Visibility="{Binding FirstnameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"
+                                 MaxLength="20"
                 Foreground="{StaticResource HeaderColor}"
                 FontFamily="Gautami"
                 FontWeight="Medium"
@@ -116,12 +117,12 @@
                         </TextBox>
                     </StackPanel>
 
-                    <TextBlock Text="{Binding CurrentTeacher.Firstname}"
+                    <!--<TextBlock Text="{Binding CurrentTeacher.Firstname}"
                FontSize="40"
                Foreground="{StaticResource HeaderColor}"
                FontFamily="Gautami"
                FontWeight="Bold"
-               Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
+               Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>-->
                     <Button Style="{StaticResource IconButton}"
             Margin="5, 0, 0, 7"
             HorizontalAlignment="Left"
@@ -141,6 +142,69 @@
                FontSize="12"
                Margin="0, 15, 0, 0"
                TextWrapping="Wrap"/>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Last Name: "
+                   FontSize="16"
+                    Foreground="{StaticResource HeaderColor}"
+                    FontFamily="Gautami"
+                    FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   Margin="0, 0, 12, 0"/>
+                    <TextBlock Text="{Binding CurrentTeacher.LastName}"
+                   FontSize="16"
+                    Foreground="{StaticResource HeaderColor}"
+                    FontFamily="Gautami"
+                    FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   Margin="0, 0, 12, 0"
+                   Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
+                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=LastNameTextBox}">
+                        <TextBox x:Name="LastNameTextBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="16"  Visibility="{Binding LastnameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"
+                                 MaxLength="20"
+    Foreground="{StaticResource HeaderColor}"
+    FontFamily="Gautami"
+    FontWeight="Medium"
+     Width="150"
+                     Margin="0, 10, 0, 0"
+     CaretBrush="LightGray"
+     BorderBrush="{StaticResource TextColor}"
+     BorderThickness="0, 0, 0, 2"
+     Background="Transparent"
+     Padding="0, 0, 0, 2"
+     Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding ChangeLastName}" Key="Enter"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <!--<TextBlock Text="{Binding CurrentTeacher.LastName}"
+   FontSize="40"
+   Foreground="{StaticResource HeaderColor}"
+   FontFamily="Gautami"
+   FontWeight="Bold"
+   Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>-->
+                    <Button Style="{StaticResource IconButton}"
+Margin="5, 0, 0, 7"
+HorizontalAlignment="Left"
+VerticalAlignment="Bottom"
+Width="17"
+Height="17"
+Tag="{StaticResource Color2}"
+Foreground="{StaticResource Color1}"
+Command="{Binding ChangeLastNameVisibility}"
+Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}">
+                        <fa:IconImage Icon="Pen" Style="{StaticResource IconButtonIcon}"/>
+                    </Button>
+
+                    <TextBlock Text="{Binding LastNameErrorMessage, Mode=TwoWay}"
+   Foreground="{StaticResource Color2}"
+   FontFamily="Gaugami"
+   FontSize="12"
+   Margin="0, 15, 0, 0"
+   TextWrapping="Wrap"/>
 
                 </StackPanel>
             </StackPanel>

@@ -18,5 +18,6 @@ namespace Noutecon__Exam_.Model
         IEnumerable<TeacherModel> GetAll();
         void EditTeacherUsername(int id, string userName);
         void EditTeacherFirstName(int id, string firstName);
+        void EditTeacherLastName(int id, string lastName);
     }
 }

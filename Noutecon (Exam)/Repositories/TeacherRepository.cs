@@ -171,5 +171,21 @@ namespace Noutecon__Exam_.Repositories
             }
         }
 
+        public void EditTeacherLastName(int id, string lastName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Teacher] set LastName = @lastname where Id = @id";
+                    command.Parameters.Add("@lastname", System.Data.SqlDbType.NVarChar).Value = lastName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

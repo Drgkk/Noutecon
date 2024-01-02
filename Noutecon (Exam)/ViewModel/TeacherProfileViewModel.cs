@@ -1,12 +1,16 @@
-﻿using Noutecon__Exam_.Model;
+﻿using Microsoft.Win32;
+using Noutecon__Exam_.Model;
 using Noutecon__Exam_.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace Noutecon__Exam_.ViewModel
 {
@@ -85,6 +89,41 @@ namespace Noutecon__Exam_.ViewModel
             set { firstName = value; OnPropertyChanged(nameof(FirstName)); }
         }
 
+        //
+
+        private bool lastnameTextBoxVisibility;
+
+        public bool LastnameTextBoxVisibility
+        {
+            get { return lastnameTextBoxVisibility; }
+            set { lastnameTextBoxVisibility = value; OnPropertyChanged(nameof(LastnameTextBoxVisibility)); LastNameTextBoxLostFocus(); }
+        }
+
+        private bool lastNameTextVisibility;
+
+        public bool LastNameTextVisibility
+        {
+            get { return lastNameTextVisibility; }
+            set { lastNameTextVisibility = value; OnPropertyChanged(nameof(LastNameTextVisibility)); }
+        }
+
+        private string lastNameErrorMessage;
+
+        public string LastNameErrorMessage
+        {
+            get { return lastNameErrorMessage; }
+            set { lastNameErrorMessage = value; OnPropertyChanged(nameof(LastNameErrorMessage)); }
+        }
+
+        private string lastName;
+
+        public string LastName
+        {
+            get { return lastName; }
+            set { lastName = value; OnPropertyChanged(nameof(LastName)); }
+        }
+
+        //
 
         private TeacherViewViewModel teacherViewViewModel;
         private ITeacherRepository teacherRepository;
@@ -97,6 +136,9 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ChangeFirstName { get; }
         public ICommand ChangeFirstNameVisibility { get; }
 
+        public ICommand ChangeLastName { get; }
+        public ICommand ChangeLastNameVisibility { get; }
+
         public TeacherProfileViewModel(TeacherViewViewModel tvvm)
         {
             teacherViewViewModel = tvvm;
@@ -108,8 +150,44 @@ namespace Noutecon__Exam_.ViewModel
             ChangeUsernameVisibility = new ViewModelCommand(ExecuteChangeUsernameVisibility);
             ChangeFirstName = new ViewModelCommand(ExecuteChangeFirstName);
             ChangeFirstNameVisibility = new ViewModelCommand(ExecuteChangeFirstNameVisibility);
+            ChangeLastName = new ViewModelCommand(ExecuteChangeLastName);
+            ChangeLastNameVisibility = new ViewModelCommand(ExecuteChangeLastNameVisibility);
             UsernameTextBoxVisibility = false;
             UsernameTextVisibility = true;
+            FirstnameTextBoxVisibility = false;
+            FirstNameTextVisibility = true;
+            LastnameTextBoxVisibility = false;
+            LastNameTextVisibility = true;
+        }
+        private void LastNameTextBoxLostFocus()
+        {
+            if (lastnameTextBoxVisibility == false)
+            {
+                lastnameTextBoxVisibility = false;
+                LastNameTextVisibility = true;
+            }
+        }
+        private void ExecuteChangeLastNameVisibility(object obj)
+        {
+            LastNameErrorMessage = "";
+            LastName = currentTeacher.LastName;
+            LastNameTextVisibility = false;
+            LastnameTextBoxVisibility = true;
+        }
+
+        private void ExecuteChangeLastName(object obj)
+        {
+            LastNameTextVisibility = true;
+            LastnameTextBoxVisibility = false;
+            if (string.IsNullOrEmpty(LastName))
+            {
+                LastNameErrorMessage = "Cannot be null";
+                return;
+            }
+            teacherRepository.EditTeacherLastName(currentTeacher.Id, LastName);
+            TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
+            teacherViewViewModel.CurrentTeacher = model;
+            CurrentTeacher = model;
         }
 
         private void FirstNameTextBoxLostFocus()
@@ -132,6 +210,11 @@ namespace Noutecon__Exam_.ViewModel
         {
             FirstNameTextVisibility = true;
             FirstnameTextBoxVisibility = false;
+            if(string.IsNullOrEmpty(FirstName))
+            {
+                FirstNameErrorMessage = "Cannot be null";
+                return;
+            }
             teacherRepository.EditTeacherFirstName(currentTeacher.Id, FirstName);
             TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
             teacherViewViewModel.CurrentTeacher = model;
@@ -164,25 +247,47 @@ namespace Noutecon__Exam_.ViewModel
                 UsernameErrorMessage = "Account with that username already exists!";
                 return;
             }
+            if (string.IsNullOrEmpty(Username))
+            {
+                UsernameErrorMessage = "Cannot be null";
+                return;
+            }
+            if(MessageBox.Show($"Are you sure you want to change username: {CurrentTeacher.Username} to {Username}?", "Change Username", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            string filePathOld = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";            
+            string filePathNew = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{Username}.jpg";
+            using (File.Create(filePathNew)) { } 
+            System.IO.File.Copy(filePathOld, filePathNew, true);
+
+
             teacherRepository.EditTeacherUsername(currentTeacher.Id, Username);
+            teacherRepository.EditPfpById(currentTeacher.Id, filePathNew);
             TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
             teacherViewViewModel.CurrentTeacher = model;
             CurrentTeacher = model;
+            //File.Delete(filePathOld);
         }
 
         private void ExecuteChangePFP(object obj)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
             if(fileDialog.ShowDialog()  == DialogResult.OK)
             {
-                teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, fileDialog.FileName);
+                string filePath = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";
+                using (File.Create(filePath)) { } 
+                System.IO.File.Copy(fileDialog.FileName, filePath, true);
+                teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
                 TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
                 teacherViewViewModel.CurrentTeacher = model;
                 CurrentTeacher = model;
             }
 
         }
+
 
 
     }
