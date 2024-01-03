@@ -233,19 +233,11 @@
                         <StackPanel Grid.Column="1"
                                 Orientation="Horizontal"
                                 VerticalAlignment="Center"
-                                FlowDirection="RightToLeft"
+                                    HorizontalAlignment="Right"
                                 Margin="0, 0, 10, 0">
-                            <Button Style="{StaticResource IconButton}"
-                                Tag="{StaticResource TextColor}">
-                                <fa:IconImage Icon="AngleDown" Style="{StaticResource IconButtonIcon}"/>
-                            </Button>
+                            
 
-                            <TextBlock Text="{Binding CurrentTeacher.Username}"
-                                   Foreground="{StaticResource TextColor}"
-                                   FontFamily="Gautami"
-                                   FontSize="16"
-                                   VerticalAlignment="Center"
-                                   Margin="5, 0, 0, 0"/>
+                            
 
                             <Ellipse Height="35" Width="35"
                                  Margin="10, 0, 10, 0"
@@ -255,6 +247,18 @@
                                     <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
+
+                            <TextBlock Text="{Binding CurrentTeacher.Username}"
+       Foreground="{StaticResource TextColor}"
+       FontFamily="Gautami"
+       FontSize="16"
+       VerticalAlignment="Center"
+       Margin="5, 0, 0, 0"/>
+                            
+                            <Button Style="{StaticResource IconButton}"
+    Tag="{StaticResource TextColor}">
+                                <fa:IconImage Icon="AngleDown" Style="{StaticResource IconButtonIcon}"/>
+                            </Button>
 
                         </StackPanel>
 

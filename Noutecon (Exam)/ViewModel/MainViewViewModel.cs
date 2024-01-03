@@ -76,7 +76,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowProfileView(object obj)
         {
-            CurrentChildView = new StudentProfileViewModel();
+            CurrentChildView = new StudentProfileViewModel(this);
             Icon = IconChar.UserAlt;
             Label = "Your Profile";
         }

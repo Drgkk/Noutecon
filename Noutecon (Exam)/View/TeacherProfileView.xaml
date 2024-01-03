@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Noutecon__Exam_.View"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
               xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:customcontrols="clr-namespace:Noutecon__Exam_.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="590" d:DesignWidth="1000">
 
@@ -23,15 +24,6 @@
                     VerticalAlignment="Center">
             <Button Style="{StaticResource EllipseButton}"
                     Command="{Binding ChangePFP}"/>
-            <!--<Ellipse Height="150" Width="150"
-                     Margin="20, 10, 0, 10"
-                     Stroke="{StaticResource Color3}"
-                     StrokeThickness="2"
-                     VerticalAlignment="Center">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
-                            </Ellipse.Fill>
-            </Ellipse>-->
             <StackPanel Orientation="Vertical"
                            Margin="20, 20, 0, 0">
                 <StackPanel Orientation="Horizontal"
@@ -208,6 +200,60 @@ Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResou
 
                 </StackPanel>
             </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="30, 0, 0, 0">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontFamily="Gautami"
+               FontSize="35"
+               FontWeight="Bold"
+               Foreground="{StaticResource HeaderColor}"
+               Text="Change Password"
+               />
+                    <TextBlock FontFamily="Gautami"
+               FontSize="16"
+               Foreground="{StaticResource HeaderColor}"
+               Text="Current password:"
+               />
+                    <customcontrols:BindablePasswordBox Password="{Binding PreviousPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height = "30" Margin="0, 5, 0, 0"/>
+                    <TextBlock FontFamily="Gautami"
+               FontSize="16"
+               Foreground="{StaticResource HeaderColor}"
+               Text="New password:"
+               />
+                    <customcontrols:BindablePasswordBox Password="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height = "30" Margin="0, 5, 0, 0"/>
+                    
+                </StackPanel>
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding PasswordErrorMessage, Mode=TwoWay}"
+Foreground="{StaticResource Color2}"
+FontFamily="Gaugami"
+FontSize="12"
+Margin="0, 0, 0, 15"
+                               Width="190"
+                               Height="70"
+TextWrapping="Wrap"
+                               VerticalAlignment="Top"/>
+                    <Button Style="{StaticResource buttonWithIcon}"
+                        VerticalAlignment="Bottom"
+             Width="190"
+             Height="60"
+             Tag="{StaticResource Color2}"
+             Margin="10, 0, 0, 20"
+                            Command="{Binding ChangePassword}">
+                        <TextBlock FontFamily="Gautami"
+FontSize="22"
+Foreground="{StaticResource HeaderColor}"
+                    FontWeight="Bold"
+Text="Change Password"
+/>
+                    </Button>
+                </StackPanel>
+                
+
+            </StackPanel>
+                        
+            
             
         </StackPanel>
         

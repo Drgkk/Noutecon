@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,5 +20,7 @@ namespace Noutecon__Exam_.Model
         void EditTeacherUsername(int id, string userName);
         void EditTeacherFirstName(int id, string firstName);
         void EditTeacherLastName(int id, string lastName);
+        void EditPassword(int id, NetworkCredential nc);
+        NetworkCredential GetNetworkCredential(int id);
     }
 }

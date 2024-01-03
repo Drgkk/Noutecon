@@ -64,6 +64,35 @@ namespace Noutecon__Exam_.Repositories
         {
             throw new NotImplementedException();
         }
+        public StudentAccountModel GetAccountById(int id)
+        {
+            StudentAccountModel studentAccountModel = null;
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select * from [Student] where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            studentAccountModel = new StudentAccountModel()
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                FirstName = reader.GetString(3),
+                                LastName = reader.GetString(4),
+                                ProfilePicturePath = reader.GetString(5)
+                            };
+                        }
+                    }
+                }
+            }
+            return studentAccountModel;
+        }
 
         public StudentModel GetByUsername(string username)
         {
@@ -202,6 +231,109 @@ namespace Noutecon__Exam_.Repositories
                 }
             }
             return isStudentInClass;
+        }
+
+        public void EditStudentUsername(int id, string userName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Student] set Username = @username where Id = @id";
+                    command.Parameters.Add("@username", System.Data.SqlDbType.NVarChar).Value = userName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditStudentFirstName(int id, string firstName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Student] set FirstName = @firstname where Id = @id";
+                    command.Parameters.Add("@firstname", System.Data.SqlDbType.NVarChar).Value = firstName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditStudentLastName(int id, string lastName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Student] set LastName = @lastname where Id = @id";
+                    command.Parameters.Add("@lastname", System.Data.SqlDbType.NVarChar).Value = lastName;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditPfpById(int id, string pfpPath)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Student] set ProfilePicturePath = @pfp where Id = @id";
+                    command.Parameters.Add("@pfp", System.Data.SqlDbType.NVarChar).Value = pfpPath;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditPassword(int id, NetworkCredential nc)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Student] set Password = @password where Id = @id";
+                    command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = nc.Password;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public NetworkCredential GetNetworkCredential(int id)
+        {
+            NetworkCredential nc = null;
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select Username, Password from [Student] where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            nc = new NetworkCredential(reader.GetString(0), reader.GetString(1));
+                        }
+                    }
+                }
+            }
+            return nc;
         }
 
     }

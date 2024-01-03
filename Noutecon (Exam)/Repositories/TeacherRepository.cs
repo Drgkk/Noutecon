@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
@@ -185,6 +186,45 @@ namespace Noutecon__Exam_.Repositories
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        public void EditPassword(int id, NetworkCredential nc)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Teacher] set Password = @password where Id = @id";
+                    command.Parameters.Add("@password", System.Data.SqlDbType.NVarChar).Value = nc.Password;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public NetworkCredential GetNetworkCredential(int id)
+        {
+            NetworkCredential nc = null;
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select Username, Password from [Teacher] where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            nc = new NetworkCredential(reader.GetString(0), reader.GetString(1));
+                        }
+                    }
+                }
+            }
+            return nc;
         }
 
     }

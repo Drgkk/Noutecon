@@ -4,9 +4,282 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Noutecon__Exam_.View"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+             xmlns:customcontrols="clr-namespace:Noutecon__Exam_.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="590" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+    </UserControl.Resources>
+
     <Grid>
-        <TextBlock Text="Your Profile"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="170"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center">
+            <Button Background="Transparent"
+                    Cursor="Hand"
+                    Command="{Binding ChangePFP}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Ellipse Height="150" Width="150"
+                                             Margin="20, 10, 0, 10"
+                                             Stroke="{StaticResource Color3}"
+                                             StrokeThickness="2"
+                                             VerticalAlignment="Center">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding CurrentStudent.ProfilePicturePath}"/>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <!--<Ellipse Height="150" Width="150"
+                     Margin="20, 10, 0, 10"
+                     Stroke="{StaticResource Color3}"
+                     StrokeThickness="2"
+                     VerticalAlignment="Center">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
+                            </Ellipse.Fill>
+            </Ellipse>-->
+            <StackPanel Orientation="Vertical"
+                           Margin="20, 20, 0, 0">
+                <StackPanel Orientation="Horizontal"
+                               VerticalAlignment="Top">
+                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=UsernameTxtBox}">
+                        <TextBox x:Name="UsernameTxtBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="40"  Visibility="{Binding UsernameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}" MaxLength="20"
+                                Foreground="{StaticResource HeaderColor}"
+                                FontFamily="Gautami"
+                                FontWeight="Medium"
+                                 Width="250"
+                                 CaretBrush="LightGray"
+                                 BorderBrush="{StaticResource TextColor}"
+                                 BorderThickness="0, 0, 0, 2"
+                                 Background="Transparent"
+                                 Padding="0, 0, 0, 2"
+                                 Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding ChangeUsername}" Key="Enter"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding CurrentStudent.Username}"
+                               FontSize="40"
+                               Foreground="{StaticResource HeaderColor}"
+                               FontFamily="Gautami"
+                               FontWeight="Bold"
+                               Visibility="{Binding UsernameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
+                    <Button Style="{StaticResource IconButton}"
+                            Margin="5, 0, 0, 7"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Width="17"
+                            Height="17"
+                            Tag="{StaticResource Color2}"
+                            Foreground="{StaticResource Color1}"
+                            Command="{Binding ChangeUsernameVisibility}"
+                            Visibility="{Binding UsernameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}">
+                        <fa:IconImage Icon="Pen" Style="{StaticResource IconButtonIcon}"/>
+                    </Button>
+
+                    <TextBlock Text="{Binding UsernameErrorMessage, Mode=TwoWay}"
+                               Foreground="{StaticResource Color2}"
+                               FontFamily="Gaugami"
+                               FontSize="12"
+                               Margin="0, 15, 0, 0"
+                               TextWrapping="Wrap"/>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="First Name:"
+                               FontSize="16"
+                                Foreground="{StaticResource HeaderColor}"
+                                FontFamily="Gautami"
+                                FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0, 0, 12, 0"/>
+                    <TextBlock Text="{Binding CurrentStudent.FirstName}"
+                               FontSize="16"
+                                Foreground="{StaticResource HeaderColor}"
+                                FontFamily="Gautami"
+                                FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0, 0, 12, 0"
+                               Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
+                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=FirstNameTextBox}">
+                        <TextBox x:Name="FirstNameTextBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="16"  Visibility="{Binding FirstnameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"
+                                 MaxLength="20"
+                Foreground="{StaticResource HeaderColor}"
+                FontFamily="Gautami"
+                FontWeight="Medium"
+                 Width="150"
+                                 Margin="0, 10, 0, 0"
+                 CaretBrush="LightGray"
+                 BorderBrush="{StaticResource TextColor}"
+                 BorderThickness="0, 0, 0, 2"
+                 Background="Transparent"
+                 Padding="0, 0, 0, 2"
+                 Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding ChangeFirstName}" Key="Enter"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <!--<TextBlock Text="{Binding CurrentTeacher.Firstname}"
+               FontSize="40"
+               Foreground="{StaticResource HeaderColor}"
+               FontFamily="Gautami"
+               FontWeight="Bold"
+               Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>-->
+                    <Button Style="{StaticResource IconButton}"
+            Margin="5, 0, 0, 7"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Width="17"
+            Height="17"
+            Tag="{StaticResource Color2}"
+            Foreground="{StaticResource Color1}"
+            Command="{Binding ChangeFirstNameVisibility}"
+            Visibility="{Binding FirstNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}">
+                        <fa:IconImage Icon="Pen" Style="{StaticResource IconButtonIcon}"/>
+                    </Button>
+
+                    <TextBlock Text="{Binding FirstNameErrorMessage, Mode=TwoWay}"
+               Foreground="{StaticResource Color2}"
+               FontFamily="Gaugami"
+               FontSize="12"
+               Margin="0, 15, 0, 0"
+               TextWrapping="Wrap"/>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Last Name: "
+                   FontSize="16"
+                    Foreground="{StaticResource HeaderColor}"
+                    FontFamily="Gautami"
+                    FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   Margin="0, 0, 12, 0"/>
+                    <TextBlock Text="{Binding CurrentStudent.LastName}"
+                   FontSize="16"
+                    Foreground="{StaticResource HeaderColor}"
+                    FontFamily="Gautami"
+                    FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   Margin="0, 0, 12, 0"
+                   Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>
+                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=LastNameTextBox}">
+                        <TextBox x:Name="LastNameTextBox" Focusable="True" IsVisibleChanged="Box_IsVisibleChanged" LostFocus="UsernameTxtBox_LostFocus" FontSize="16"  Visibility="{Binding LastnameTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"
+                                 MaxLength="20"
+    Foreground="{StaticResource HeaderColor}"
+    FontFamily="Gautami"
+    FontWeight="Medium"
+     Width="150"
+                     Margin="0, 10, 0, 0"
+     CaretBrush="LightGray"
+     BorderBrush="{StaticResource TextColor}"
+     BorderThickness="0, 0, 0, 2"
+     Background="Transparent"
+     Padding="0, 0, 0, 2"
+     Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding ChangeLastName}" Key="Enter"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <!--<TextBlock Text="{Binding CurrentTeacher.LastName}"
+   FontSize="40"
+   Foreground="{StaticResource HeaderColor}"
+   FontFamily="Gautami"
+   FontWeight="Bold"
+   Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"/>-->
+                    <Button Style="{StaticResource IconButton}"
+Margin="5, 0, 0, 7"
+HorizontalAlignment="Left"
+VerticalAlignment="Bottom"
+Width="17"
+Height="17"
+Tag="{StaticResource Color2}"
+Foreground="{StaticResource Color1}"
+Command="{Binding ChangeLastNameVisibility}"
+Visibility="{Binding LastNameTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}">
+                        <fa:IconImage Icon="Pen" Style="{StaticResource IconButtonIcon}"/>
+                    </Button>
+
+                    <TextBlock Text="{Binding LastNameErrorMessage, Mode=TwoWay}"
+   Foreground="{StaticResource Color2}"
+   FontFamily="Gaugami"
+   FontSize="12"
+   Margin="0, 15, 0, 0"
+   TextWrapping="Wrap"/>
+
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="30, 0, 0, 0">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontFamily="Gautami"
+               FontSize="35"
+               FontWeight="Bold"
+               Foreground="{StaticResource HeaderColor}"
+               Text="Change Password"
+               />
+                    <TextBlock FontFamily="Gautami"
+               FontSize="16"
+               Foreground="{StaticResource HeaderColor}"
+               Text="Current password:"
+               />
+                    <customcontrols:BindablePasswordBox Password="{Binding PreviousPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height = "30" Margin="0, 5, 0, 0"/>
+                    <TextBlock FontFamily="Gautami"
+               FontSize="16"
+               Foreground="{StaticResource HeaderColor}"
+               Text="New password:"
+               />
+                    <customcontrols:BindablePasswordBox Password="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height = "30" Margin="0, 5, 0, 0"/>
+
+                </StackPanel>
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding PasswordErrorMessage, Mode=TwoWay}"
+Foreground="{StaticResource Color2}"
+FontFamily="Gaugami"
+FontSize="12"
+Margin="0, 0, 0, 15"
+                               Width="190"
+                               Height="70"
+TextWrapping="Wrap"
+                               VerticalAlignment="Top"/>
+                    <Button Style="{StaticResource buttonWithIcon}"
+                        VerticalAlignment="Bottom"
+             Width="190"
+             Height="60"
+             Tag="{StaticResource Color2}"
+             Margin="10, 0, 0, 20"
+                            Command="{Binding ChangePassword}">
+                        <TextBlock FontFamily="Gautami"
+FontSize="22"
+Foreground="{StaticResource HeaderColor}"
+                    FontWeight="Bold"
+Text="Change Password"
+/>
+                    </Button>
+                </StackPanel>
+
+
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </UserControl>

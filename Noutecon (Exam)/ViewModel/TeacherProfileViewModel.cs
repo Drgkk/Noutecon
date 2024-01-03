@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,6 +126,30 @@ namespace Noutecon__Exam_.ViewModel
         }
 
         //
+        private SecureString previousPassword;
+
+        public SecureString PreviousPassword
+        {
+            get { return previousPassword; }
+            set { previousPassword = value; OnPropertyChanged(nameof(PreviousPassword)); }
+        }
+
+        private SecureString newPassword;
+
+        public SecureString NewPassword
+        {
+            get { return newPassword; }
+            set { newPassword = value; OnPropertyChanged(nameof(NewPassword)); }
+        }
+
+        private string passwordErrorMessage;
+
+        public string PasswordErrorMessage
+        {
+            get { return passwordErrorMessage; }
+            set { passwordErrorMessage = value; OnPropertyChanged(nameof(PasswordErrorMessage)); }
+        }
+
 
         private TeacherViewViewModel teacherViewViewModel;
         private ITeacherRepository teacherRepository;
@@ -138,6 +164,8 @@ namespace Noutecon__Exam_.ViewModel
 
         public ICommand ChangeLastName { get; }
         public ICommand ChangeLastNameVisibility { get; }
+
+        public ICommand ChangePassword { get; }
 
         public TeacherProfileViewModel(TeacherViewViewModel tvvm)
         {
@@ -158,7 +186,32 @@ namespace Noutecon__Exam_.ViewModel
             FirstNameTextVisibility = true;
             LastnameTextBoxVisibility = false;
             LastNameTextVisibility = true;
+            ChangePassword = new ViewModelCommand(ExecuteChangePassword, CanExecuteChangePassword);
         }
+
+        private bool CanExecuteChangePassword(object obj)
+        {
+            bool isValid = true;
+            if(PreviousPassword == null || PreviousPassword.Length <= 3
+                || NewPassword == null || NewPassword.Length <= 3)
+            {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        private void ExecuteChangePassword(object obj)
+        {
+            PasswordErrorMessage = "";
+            if(new NetworkCredential("", PreviousPassword).Password != teacherRepository.GetNetworkCredential(teacherViewViewModel.CurrentTeacher.Id).Password)
+            {
+                PasswordErrorMessage = "Previous password does not match with your current password!";
+                return;
+            }
+            teacherRepository.EditPassword(teacherViewViewModel.CurrentTeacher.Id, new System.Net.NetworkCredential("", newPassword));
+            MessageBox.Show("Password has been succesfully changed!", "Password change success", MessageBoxButtons.OK);
+        }
+
         private void LastNameTextBoxLostFocus()
         {
             if (lastnameTextBoxVisibility == false)
@@ -257,11 +310,14 @@ namespace Noutecon__Exam_.ViewModel
                 return;
             }
 
+
             string filePathOld = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";            
             string filePathNew = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{Username}.jpg";
-            using (File.Create(filePathNew)) { } 
-            System.IO.File.Copy(filePathOld, filePathNew, true);
-
+            if (File.Exists(filePathOld))
+            {
+                using (File.Create(filePathNew)) { }
+                System.IO.File.Copy(filePathOld, filePathNew, true);
+            }
 
             teacherRepository.EditTeacherUsername(currentTeacher.Id, Username);
             teacherRepository.EditPfpById(currentTeacher.Id, filePathNew);
