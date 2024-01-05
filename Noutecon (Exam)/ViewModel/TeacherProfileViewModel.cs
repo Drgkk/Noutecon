@@ -334,7 +334,10 @@ namespace Noutecon__Exam_.ViewModel
             if(fileDialog.ShowDialog()  == DialogResult.OK)
             {
                 string filePath = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";
-                using (File.Create(filePath)) { } 
+                if(!File.Exists(filePath))
+                {
+                    using (File.Create(filePath)) { }
+                }
                 System.IO.File.Copy(fileDialog.FileName, filePath, true);
                 teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
                 TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);

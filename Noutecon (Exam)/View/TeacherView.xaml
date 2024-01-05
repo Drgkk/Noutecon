@@ -244,7 +244,7 @@
                                  Stroke="{StaticResource Color3}"
                                  StrokeThickness="2">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
+                                    <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
 

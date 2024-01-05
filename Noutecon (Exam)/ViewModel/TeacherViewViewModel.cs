@@ -29,6 +29,8 @@ namespace Noutecon__Exam_.ViewModel
         public IconChar Icon { get => icon; set { icon = value; OnPropertyChanged(nameof(Icon)); } }
         public bool IsStartViewChecked { get => isStartViewChecked; set { isStartViewChecked = value; OnPropertyChanged(nameof(IsStartViewChecked)); } }
 
+
+
         public ICommand ShowHomeView { get; }
         public ICommand ShowTestsView { get; }
         public ICommand ShowProfileView { get; }
@@ -135,6 +137,7 @@ namespace Noutecon__Exam_.ViewModel
                 Application.Current.Shutdown();
             }
         }
+
 
 
     }

@@ -259,7 +259,7 @@ TargetType="Button">
                              StrokeThickness="2"
                              VerticalAlignment="Center">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath}"/>
+                            <ImageBrush ImageSource="{Binding CurrentTeacher.ProfilePicturePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                 </ControlTemplate>
