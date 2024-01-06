@@ -40,6 +40,7 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowClassesRegisterView { get; }    
         public ICommand ShowDetailedClassView { get; }
         public ICommand ShowTeachersStudentCreationView { get; }
+        public ICommand ShowTestsCreationView { get; }
        
 
         public TeacherViewViewModel()
@@ -56,7 +57,13 @@ namespace Noutecon__Exam_.ViewModel
             ShowClassesRegisterView = new ViewModelCommand(ExecuteShowClassesRegisterView);
             ShowDetailedClassView = new ViewModelCommand(ExecuteShowDetailedClassView);
             ShowTeachersStudentCreationView = new ViewModelCommand(ExecuteShowTeachersStudentCreationView);
+            ShowTestsCreationView = new ViewModelCommand(ExecuteShowTestsCreationView);
             ExecuteShowHomeView(null);
+        }
+
+        private void ExecuteShowTestsCreationView(object obj)
+        {
+            CurrentChildView = new TestCreationViewModel();
         }
 
         private void ExecuteShowTeachersStudentCreationView(object obj)
@@ -104,7 +111,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowTestsView(object obj)
         {
-            CurrentChildView = new TeacherTestsViewModel();
+            CurrentChildView = new TeacherTestsViewModel(this);
             Caption = "Tests";
             Icon = IconChar.Book;
         }

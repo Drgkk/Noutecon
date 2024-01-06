@@ -12,6 +12,7 @@
     <None Remove="Images\Icon.png" />
     <None Remove="Images\KeyIcon.png" />
     <None Remove="Images\LoginIcon.png" />
+    <None Remove="Images\NoImageIcon.png" />
     <None Remove="Images\StudentIcon.png" />
     <None Remove="Images\TeacherIcon.png" />
     <None Remove="Images\test.png" />
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
@@ -26,6 +28,7 @@
     <Resource Include="Images\Icon.png" />
     <Resource Include="Images\KeyIcon.png" />
     <Resource Include="Images\LoginIcon.png" />
+    <Resource Include="Images\NoImageIcon.png" />
     <Resource Include="Images\StudentIcon.png" />
     <Resource Include="Images\TeacherIcon.png" />
     <Resource Include="Images\test.png" />

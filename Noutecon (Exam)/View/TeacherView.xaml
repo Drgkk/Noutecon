@@ -55,6 +55,10 @@
             <local:TeacherStudentCreationView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModel:TestCreationViewModel}">
+            <local:TestCreationView/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Border CornerRadius="8"
