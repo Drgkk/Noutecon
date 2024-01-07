@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="/Styles/CustomScrollbar.xaml"/>
                 <ResourceDictionary Source="/Styles/ClassStudentsListViewStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/ClassItemForStudentListViewStyle.xaml"/>
+                <ResourceDictionary Source="/Styles/SoundSliderStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

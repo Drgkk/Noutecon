@@ -24,5 +24,20 @@ namespace Noutecon__Exam_.View
         {
             InitializeComponent();
         }
+
+        private void RichTextBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            if(richTextBox.Visibility == Visibility.Visible)
+            {
+                richTextBox.Focus();
+            }
+        }
+
+        private void RichTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            richTextBox.Visibility = Visibility.Collapsed;
+        }
     }
 }

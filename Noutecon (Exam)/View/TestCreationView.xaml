@@ -7,6 +7,9 @@
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              mc:Ignorable="d" 
              d:DesignHeight="590" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -25,43 +28,191 @@
             <Image Source="/Images/NoImageIcon.png"/>
         </Button>
 
-        <StackPanel Orientation="Vertical"
+        <Grid
                     Grid.Row="0"
                     Grid.Column="1">
-            <Button Background="Transparent"
-                    HorizontalAlignment="Left"
-                    BorderThickness="0">
-                <TextBlock FontFamily="Gautami"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock FontFamily="Gautami"
                    FontSize="40"
                    Foreground="{StaticResource HeaderColor}"
                    FontWeight="Bold"
-                   Text="Title:"/>
-            </Button>
+                   Text="Question 1:"
+                         Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-            <Button Background="Transparent"
-        HorizontalAlignment="Left"
-        BorderThickness="0"
-                    Margin="0, 10, 0, 0">
-                <TextBlock FontFamily="Gautami"
-                           FontSize="22"
-                           Foreground="{StaticResource HeaderColor}"
-                           FontWeight="Bold"
-                           Text="Question text"
-                           TextWrapping="Wrap"/>
-            </Button>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <Grid>
+                    <Button Background="Transparent"
+HorizontalAlignment="Left"
+BorderThickness="0"
+            Grid.Row="1"
+            VerticalAlignment="Top"
+                            Command="{Binding ChangeQuestionText}"
+                            Visibility="{Binding QuestionTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock FontFamily="Gautami"
+                   FontSize="22"
+                   Foreground="{StaticResource HeaderColor}"
+                   FontWeight="Bold"
+                   Text="Question text"
+                   TextWrapping="Wrap"/>
+                    </Button>
+                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=QuestionTextTextBox}">
+                        <RichTextBox x:Name="QuestionTextTextBox" Grid.Row="1" Background="Transparent" BorderThickness="0" FontFamily="Gautami" FontSize="22"
+                 Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="{Binding QuestionTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 IsVisibleChanged="RichTextBox_IsVisibleChanged" LostFocus="RichTextBox_LostFocus" Focusable="True"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+            
 
-        </StackPanel>
+        </Grid>
 
-        <StackPanel Grid.Row="1"
+        <Grid Grid.Row="1"
                     Grid.Column="0"
-                    Orientation="Horizontal"
                     VerticalAlignment="Center"
                     Margin="20, 0, 0, 0">
-            <Button Background="Transparent"
-                    BorderThickness="0" >
-                <fa:IconImage Icon="PlayCircle" Height="50" Foreground="{StaticResource Color2}"/>
-            </Button>
-        </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <CheckBox x:Name="AudioCheckBox" VerticalAlignment="Center" Margin="0, 0, 10, 0" IsChecked="False"/>
+                <Button Background="Transparent"
+        BorderThickness="0" 
+        IsEnabled="{Binding ElementName=AudioCheckBox, Path=IsChecked}"
+        Style="{StaticResource IsEnabledOpacityStyle}">
+                    <fa:IconImage Icon="PlayCircle" Height="50" Foreground="{StaticResource Color2}"/>
+                </Button>
+            </StackPanel>
+            
+            <Slider Maximum="100" Minimum="0" VerticalAlignment="Center" TickPlacement="None" Margin="10, 0, 10, 0" Style="{StaticResource SoundSliderStyle}" IsEnabled="{Binding ElementName=AudioCheckBox, Path=IsChecked}" Grid.Column="1"/>
+        </Grid>
 
+        <Grid Grid.Row="1" Grid.Column="1" x:Name="AnswerGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <TextBlock FontFamily="Gautami"
+           FontSize="20"
+           Foreground="{StaticResource HeaderColor}"
+           FontWeight="Bold"
+           Text="Answer type:"/>
+                    <ComboBox Margin="10, 0, 0, 0" Width="400" ItemsSource="{Binding AnswerTypes}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="20, 0, 0, 0" Visibility="{Binding OneAnswerVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Vertical">
+                    <RadioButton Margin="0, 10, 0, 0"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="20, 0, 0, 0" Visibility="{Binding MultipleAnswersVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Margin="0, 10, 0, 0"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid Grid.Row="1" Visibility="{Binding ManualAnswerShortVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0, 20, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock FontFamily="Gautami"
+                FontSize="20"
+                Foreground="{StaticResource HeaderColor}"
+                FontWeight="Bold"
+                Text="Answer:"
+                Grid.Column="0"/>
+                <TextBox Height="25" VerticalAlignment="Top" Margin="10, 0, 10, 0" Grid.Column="1"/>
+            </Grid>
+            <Grid Grid.Row="1" Visibility="{Binding ManualAnswerLongVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock FontFamily="Gautami"
+                                FontSize="20"
+                                Foreground="{StaticResource HeaderColor}"
+                                FontWeight="Bold"
+                                Text="Answer:"
+                                Grid.Column="0"/>
+                <RichTextBox Height="Auto" VerticalScrollBarVisibility="Auto" Margin="10, 0, 10, 0" Grid.Column="1"/>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                    <fa:IconImage Icon="ArrowRight" Height="20" Foreground="{StaticResource Color2}"/>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Next Question"/>
+                            <TextBlock FontFamily="Gautami" FontSize="11">
+            Go to next question or
+            <LineBreak/>
+            create new one.
+                            </TextBlock>
+                        </StackPanel>
+                    </Button.ToolTip>
+                </Button>
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                    <fa:IconImage Icon="ArrowLeft" Height="20" Foreground="{StaticResource Color2}"/>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Previous Question"/>
+                            <TextBlock FontFamily="Gautami" FontSize="11">
+            Go to previous question
+                            </TextBlock>
+                        </StackPanel>
+                    </Button.ToolTip>
+                </Button>
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                    <fa:IconImage Icon="Check" Height="20" Foreground="{StaticResource Color2}"/>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Finish Test"/>
+                            <TextBlock FontFamily="Gautami" FontSize="11">
+            Finish creating test
+                            </TextBlock>
+                        </StackPanel>
+                    </Button.ToolTip>
+                </Button>
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                    <fa:IconImage Icon="Xmark" Height="20" Foreground="{StaticResource Color2}"/>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Delete Test"/>
+                            <TextBlock FontFamily="Gautami" FontSize="11">
+            Cancel test creation and
+            <LineBreak/>
+            delete it.
+                            </TextBlock>
+                        </StackPanel>
+                    </Button.ToolTip>
+                </Button>
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                    <fa:IconImage Icon="Bars" Height="20" Foreground="{StaticResource Color2}"/>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="All Questions"/>
+                            <TextBlock FontFamily="Gautami" FontSize="11">
+                                Show all questions in your
+                                <LineBreak/>
+                                test and create new ones.
+                            </TextBlock>
+                        </StackPanel>
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+        </Grid>
+        
+        
     </Grid>
 </UserControl>
