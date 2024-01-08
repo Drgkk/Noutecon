@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,7 @@ namespace Noutecon__Exam_.View
 
         private void RichTextBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            RichTextBox richTextBox = sender as RichTextBox;
+            TextBox richTextBox = sender as TextBox;
             if(richTextBox.Visibility == Visibility.Visible)
             {
                 richTextBox.Focus();
@@ -36,8 +37,35 @@ namespace Noutecon__Exam_.View
 
         private void RichTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            RichTextBox richTextBox = sender as RichTextBox;
+            TextBox richTextBox = sender as TextBox;
             richTextBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private static readonly Regex _regex = new Regex("[^0-9]+");
+        private static bool IsTextAllowed(string text)
+        {
+            return !_regex.IsMatch(text);
+        }
+
+        private void TextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String text = (String)e.DataObject.GetData(typeof(String));
+                if (!IsTextAllowed(text))
+                {
+                    e.CancelCommand();
+                }
+            }
+            else
+            {
+                e.CancelCommand();
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowTestCreationView(object obj)
         {
-            teacherViewViewModel.ShowTestsCreationView.Execute(obj);
+            teacherViewViewModel.ShowTestsSettingsView.Execute(obj);
         }
     }
 }
