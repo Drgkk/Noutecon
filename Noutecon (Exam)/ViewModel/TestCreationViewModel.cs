@@ -108,9 +108,9 @@ namespace Noutecon__Exam_.ViewModel
 
 		//Question Answers
 
-		private ObservableCollection<ChoicesViewModel> oneAnswerAnswers;
+		private ObservableCollection<OneChoicesViewModel> oneAnswerAnswers;
 
-		public ObservableCollection<ChoicesViewModel> OneAnswerAnswers
+		public ObservableCollection<OneChoicesViewModel> OneAnswerAnswers
         {
 			get { return oneAnswerAnswers; }
 			set { oneAnswerAnswers = value; OnPropertyChanged(nameof(OneAnswerAnswers)); }
@@ -126,9 +126,9 @@ namespace Noutecon__Exam_.ViewModel
                 .FirstOrDefault() - 1; }
 		}
 
-		private ObservableCollection<ChoicesViewModel> multipleAnswerAnswers;
+		private ObservableCollection<MultipleChoicesViewModel> multipleAnswerAnswers;
 
-		public ObservableCollection<ChoicesViewModel> MultipleAnswerAnswers
+		public ObservableCollection<MultipleChoicesViewModel> MultipleAnswerAnswers
         {
 			get { return multipleAnswerAnswers; }
 			set { multipleAnswerAnswers = value; OnPropertyChanged(nameof(MultipleAnswerAnswers)); }
@@ -153,13 +153,22 @@ namespace Noutecon__Exam_.ViewModel
 		}
 
 
+        private int currentQuestion;
+
+        public int CurrentQuestion
+        {
+            get { return currentQuestion; }
+            set { currentQuestion = value; OnPropertyChanged(nameof(CurrentQuestion)); }
+        }
 
 
-		private string testName;
+
+
+
+        private string testName;
 		private TeacherViewViewModel teacherViewViewModel;
 
 		private List<QuestionModel> questions;
-		private int currentQuestion;
 		private Func<string, string, string, QuestionModel> createQuestion;
 
 		public ICommand ChangeQuestionTextVisibility { get; }
@@ -167,6 +176,7 @@ namespace Noutecon__Exam_.ViewModel
 		public ICommand ChangeImage { get; }
 		public ICommand SetAudio {  get; }
 		public ICommand NextQuestion { get; }
+		public ICommand PreviousQuestion { get; }
 		public ICommand AddOneAnswerAnswer { get; }
 		public ICommand AddMultipleAnswerAnswer { get; }
 
@@ -177,28 +187,24 @@ namespace Noutecon__Exam_.ViewModel
 			this.testName = testName;
 			questions = new List<QuestionModel>();
 			AnswerTypes = new List<string>() { "One answer test", "Several answer test", "Manual input" };
-			SelectedIndex = 0;
             ChangeQuestionTextVisibility = new ViewModelCommand(ExecuteChangeQuestionTextVisibility);
 			ChangeQuestionText = new ViewModelCommand(ExecuteChangeQuestionText);
 			ChangeImage = new ViewModelCommand(ExecuteChangeImage);
 			SetAudio = new ViewModelCommand(ExecuteSetAudio);
 			NextQuestion = new ViewModelCommand(ExecuteNextQuestion, CanExecuteNextQuestion);
+            PreviousQuestion = new ViewModelCommand(ExecutePreviousQuestion, CanExecutePreviousQuestion);
             AddOneAnswerAnswer = new ViewModelCommand(ExecuteAddOneAnswerAnswer, CanExecuteAddOneAnswerAnswer);
 			AddMultipleAnswerAnswer = new ViewModelCommand(ExecuteAddMultipleAnswerAnswer, CanExecuteAddMultipleAnswerAnswer);
-            QuestionTextVisibility = true;
-            QuestionTextBoxVisibility = false;
-			QuestionText = "Question Text";
-			rememberQuestionText = QuestionText;
-			ImagePath = "/Images/NoImageIcon.png";
-			currentQuestion = 0;
-			OneAnswerAnswers = new ObservableCollection<ChoicesViewModel>();
-			MultipleAnswerAnswers = new ObservableCollection<ChoicesViewModel>();
+            CurrentQuestion = 0;
+            ClearData();
         }
+
+       
 
         private bool CanExecuteAddMultipleAnswerAnswer(object obj)
         {
             bool isValid = true;
-            if (MultipleAnswerAnswers.Count >= 6)
+            if (MultipleAnswerAnswers.Count >= 6 || MultipleAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
             {
                 isValid = false;
             }
@@ -207,13 +213,15 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteAddMultipleAnswerAnswer(object obj)
         {
-			MultipleAnswerAnswers.Add(new ChoicesViewModel() { Answer = "Something", IsChecked = false });
+			MultipleAnswerAnswers.Add(new MultipleChoicesViewModel(this) { Answer = "", IsChecked = false });
+            MultipleAnswerAnswers[MultipleAnswerAnswers.Count - 1].AnswerTextVisibility = false;
+            MultipleAnswerAnswers[MultipleAnswerAnswers.Count - 1].AnswerTextBoxVisibility = true;
         }
 
         private bool CanExecuteAddOneAnswerAnswer(object obj)
         {
 			bool isValid = true;
-			if(OneAnswerAnswers.Count >= 6)
+			if(OneAnswerAnswers.Count >= 6 || OneAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
 			{
 				isValid = false;
 			}
@@ -222,33 +230,138 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteAddOneAnswerAnswer(object obj)
         {
-			OneAnswerAnswers.Add(new ChoicesViewModel() { Answer = "Something", IsChecked = false });
+			OneAnswerAnswers.Add(new OneChoicesViewModel(this) { Answer = "", IsChecked = false });
+			OneAnswerAnswers[OneAnswerAnswers.Count - 1].AnswerTextVisibility = false;
+			OneAnswerAnswers[OneAnswerAnswers.Count - 1].AnswerTextBoxVisibility = true;
+        }
+
+        private bool CanExecutePreviousQuestion(object obj)
+        {
+            bool isValid = true;
+            if (CurrentQuestion == 0)
+            {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        private void ExecutePreviousQuestion(object obj)
+        {
+            if (CurrentQuestion >= questions.Count)
+            {
+                questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+            }
+            else
+            {
+                questions[currentQuestion].QuestionText = QuestionText;
+                questions[currentQuestion].ImagePath = ImagePath;
+                questions[currentQuestion].AudioPath = AudioPath;
+                if ((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
+                    (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
+                    (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
+                {
+                    questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
+                }
+                else if (questions[currentQuestion] is IOneAnswer oneAnswer)
+                {
+                    oneAnswer.Answers = new List<string>();
+                    foreach (var answer in OneAnswerAnswers)
+                    {
+                        oneAnswer.Answers.Add(answer.Answer);
+                    }
+                    oneAnswer.RightAnswer = OneAnswerRightAnswer;
+                }
+                else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
+                {
+                    multipleAnswer.Answers = new List<string>();
+                    foreach (var answer in MultipleAnswerAnswers)
+                    {
+                        multipleAnswer.Answers.Add(answer.Answer);
+                    }
+                    multipleAnswer.RightAnswers = new List<int>();
+                    multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
+                }
+                else if (questions[currentQuestion] is IManualAnswer manualAnswer)
+                {
+                    manualAnswer.RightAnswer = ManualAnswerRightAnswer;
+                }
+            }
+
+            CurrentQuestion--;
+            ClearData();
+            UpdateQuestionData(questions[CurrentQuestion]);
         }
 
         private bool CanExecuteNextQuestion(object obj)
         {
 			bool isValid = true;
-			if(currentQuestion == questions.Count + 1)
-			{
-				isValid = false;
-			}
+			//if(CurrentQuestion == questions.Count)
+			//{
+			//	isValid = false;
+			//}
 			return isValid;
         }
 
+
         private void ExecuteNextQuestion(object obj)
         {
-            currentQuestion++;
-            if (currentQuestion != questions.Count)
+            
+            if (CurrentQuestion + 1 < questions.Count)
 			{
-				UpdateQuestionData(questions[currentQuestion]);
+                questions[currentQuestion].QuestionText = QuestionText;
+                questions[currentQuestion].ImagePath = ImagePath;
+                questions[currentQuestion].AudioPath = AudioPath;
+                if((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
+                    (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
+                    (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
+                {
+                    questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
+                }
+                else if(questions[currentQuestion] is IOneAnswer oneAnswer)
+                {
+                    oneAnswer.Answers = new List<string>();
+                    foreach (var answer in OneAnswerAnswers)
+                    {
+                        oneAnswer.Answers.Add(answer.Answer);
+                    }
+                    oneAnswer.RightAnswer = OneAnswerRightAnswer;
+                }
+                else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
+                {
+                    multipleAnswer.Answers = new List<string>();
+                    foreach (var answer in MultipleAnswerAnswers)
+                    {
+                        multipleAnswer.Answers.Add(answer.Answer);
+                    }
+                    multipleAnswer.RightAnswers = new List<int>();
+                    multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
+                }
+                else if (questions[currentQuestion] is IManualAnswer manualAnswer)
+                {
+                    manualAnswer.RightAnswer = ManualAnswerRightAnswer;
+                }
+                CurrentQuestion++;
+                ClearData();
+                UpdateQuestionData(questions[CurrentQuestion]);                
 				return;
 			}
+            CurrentQuestion++;
+            questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
 
-			questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+            ClearData();
+        }
 
+        private void ClearData()
+        {
+            QuestionTextVisibility = true;
+            QuestionTextBoxVisibility = false;
             QuestionText = "Question Text";
             rememberQuestionText = QuestionText;
             ImagePath = "/Images/NoImageIcon.png";
+            OneAnswerAnswers = new ObservableCollection<OneChoicesViewModel>();
+            MultipleAnswerAnswers = new ObservableCollection<MultipleChoicesViewModel>();
+            ManualAnswerRightAnswer = string.Empty;
+            SelectedIndex = 0;
         }
 
 		private void UpdateQuestionData(QuestionModel q)
@@ -256,7 +369,41 @@ namespace Noutecon__Exam_.ViewModel
             QuestionText = q.QuestionText;
             ImagePath = q.ImagePath;
 			AudioPath = q.AudioPath;
-
+            if(q is IOneAnswer ioa)
+            {
+                OneAnswerAnswers = new ObservableCollection<OneChoicesViewModel>();
+                int i = 0;
+                foreach(var answer in ioa.Answers)
+                {
+                    OneAnswerAnswers.Add(new OneChoicesViewModel(this) { Answer = answer });
+                    if(i == ioa.RightAnswer)
+                    {
+                        OneAnswerAnswers[i].IsChecked = true;
+                    }
+                    i++;
+                }
+                SelectedIndex = 0;
+            }
+            else if (q is IMultipleAnswer ima)
+            {
+                MultipleAnswerAnswers = new ObservableCollection<MultipleChoicesViewModel>();
+                int i = 0;
+                foreach (var answer in ima.Answers)
+                {
+                    MultipleAnswerAnswers.Add(new MultipleChoicesViewModel(this) { Answer = answer });
+                    if (ima.RightAnswers.Contains(i))
+                    {
+                        MultipleAnswerAnswers[i].IsChecked = true;
+                    }
+                    i++;
+                }
+                SelectedIndex = 1;
+            }
+            else if (q is IManualAnswer im)
+            {
+                ManualAnswerRightAnswer = im.RightAnswer;
+                SelectedIndex = 2;
+            }
         }
 
         private void ExecuteSetAudio(object obj)
@@ -321,6 +468,7 @@ namespace Noutecon__Exam_.ViewModel
 					model.QuestionText = QuestionText;
 					model.ImagePath = ImagePath;
 					model.AudioPath = AudioPath;
+                    model.Answers = new List<string>();
                     foreach (var answer in OneAnswerAnswers)
                     {
                         model.Answers.Add(answer.Answer);
@@ -338,11 +486,13 @@ namespace Noutecon__Exam_.ViewModel
                     model.QuestionText = QuestionText;
                     model.ImagePath = ImagePath;
                     model.AudioPath = AudioPath;
+                    model.Answers = new List<string>();
                     foreach (var answer in MultipleAnswerAnswers)
                     {
                         model.Answers.Add(answer.Answer);
                     }
-					model.RightAnswers = MultipleAnswerRightAnswers;
+                    model.RightAnswers = new List<int>();
+                    model.RightAnswers = MultipleAnswerRightAnswers;
                     return model;
                 };
             }
@@ -363,7 +513,7 @@ namespace Noutecon__Exam_.ViewModel
 
     }
 
-	public class ChoicesViewModel : ViewModelBase
+	public class OneChoicesViewModel : ViewModelBase
 	{
 
         private string answer;
@@ -382,12 +532,192 @@ namespace Noutecon__Exam_.ViewModel
 			set { isChecked = value; OnPropertyChanged(nameof(IsChecked)); }
 		}
 
+        private bool answerTextVisibility;
 
-		public ChoicesViewModel()
-		{
+        public bool AnswerTextVisibility
+        {
+            get { return answerTextVisibility; }
+            set { answerTextVisibility = value; OnPropertyChanged(nameof(AnswerTextVisibility)); }
+        }
 
-		}
+        private bool answerTextBoxVisibility;
 
-	}
+        public bool AnswerTextBoxVisibility
+        {
+            get { return answerTextBoxVisibility; }
+            set { answerTextBoxVisibility = value; OnPropertyChanged(nameof(AnswerTextBoxVisibility)); OnAnswerTextBoxVisibilityChange(); }
+        }
+
+        private string answerEditText;
+
+        public string AnswerEditText
+        {
+            get { return answerEditText; }
+            set { answerEditText = value; OnPropertyChanged(nameof(AnswerEditText)); }
+        }
+
+        public ICommand CompleteChangeAnswerText { get; }
+
+        public ICommand DeleteAnswer { get; }
+        public ICommand ChangeAnswerText { get; }
+
+        private TestCreationViewModel testCreationViewModel;
+
+        public OneChoicesViewModel(TestCreationViewModel tcvm)
+        {
+            testCreationViewModel = tcvm;
+            answerTextVisibility = true;
+            answerTextBoxVisibility = false;
+			CompleteChangeAnswerText = new ViewModelCommand(ExecuteCompleteChangeAnswerText, CanExecuteCompleteChangeAnswerText);
+            DeleteAnswer = new ViewModelCommand(ExecuteDeleteAnswer);
+            ChangeAnswerText = new ViewModelCommand(ExecuteChangeAnswerText);
+        }
+
+        private void ExecuteChangeAnswerText(object obj)
+        {
+            AnswerTextVisibility = false;
+            AnswerTextBoxVisibility = true;
+            AnswerEditText = Answer;
+        }
+
+        private void ExecuteDeleteAnswer(object obj)
+        {
+            testCreationViewModel.OneAnswerAnswers.Remove(testCreationViewModel.OneAnswerAnswers.Where(o => o.Answer == this.Answer).First());
+        }
+
+        private bool CanExecuteCompleteChangeAnswerText(object obj)
+        {
+			bool isValid = true;
+			if (string.IsNullOrEmpty(AnswerEditText) || testCreationViewModel.OneAnswerAnswers.Where(o => o.Answer == this.AnswerEditText).FirstOrDefault() != null)
+			{
+				isValid = false;
+			}
+			return isValid;
+        }
+
+        private void ExecuteCompleteChangeAnswerText(object obj)
+        {
+			Answer = AnswerEditText;
+            AnswerTextVisibility = true;
+            AnswerTextBoxVisibility = false;
+        }
+
+        private void OnAnswerTextBoxVisibilityChange()
+        {
+			if(!AnswerTextBoxVisibility)
+            {
+                answerTextVisibility = true;
+                if(string.IsNullOrEmpty(Answer))
+                {
+                    testCreationViewModel.OneAnswerAnswers.Remove(testCreationViewModel.OneAnswerAnswers.Where(o => o.Answer == this.Answer).First());
+                }
+            }
+        }
+
+    }
+
+
+    public class MultipleChoicesViewModel : ViewModelBase
+    {
+
+        private string answer;
+
+        public string Answer
+        {
+            get { return answer; }
+            set { answer = value; OnPropertyChanged(nameof(Answer)); }
+        }
+
+        private bool isChecked;
+
+        public bool IsChecked
+        {
+            get { return isChecked; }
+            set { isChecked = value; OnPropertyChanged(nameof(IsChecked)); }
+        }
+
+        private bool answerTextVisibility;
+
+        public bool AnswerTextVisibility
+        {
+            get { return answerTextVisibility; }
+            set { answerTextVisibility = value; OnPropertyChanged(nameof(AnswerTextVisibility)); }
+        }
+
+        private bool answerTextBoxVisibility;
+
+        public bool AnswerTextBoxVisibility
+        {
+            get { return answerTextBoxVisibility; }
+            set { answerTextBoxVisibility = value; OnPropertyChanged(nameof(AnswerTextBoxVisibility)); OnAnswerTextBoxVisibilityChange(); }
+        }
+
+        private string answerEditText;
+
+        public string AnswerEditText
+        {
+            get { return answerEditText; }
+            set { answerEditText = value; OnPropertyChanged(nameof(AnswerEditText)); }
+        }
+
+        public ICommand CompleteChangeAnswerText { get; }
+
+        public ICommand DeleteAnswer { get; }
+        public ICommand ChangeAnswerText { get; }
+
+        private TestCreationViewModel testCreationViewModel;
+
+        public MultipleChoicesViewModel(TestCreationViewModel tcvm)
+        {
+            testCreationViewModel = tcvm;
+            answerTextVisibility = true;
+            answerTextBoxVisibility = false;
+            CompleteChangeAnswerText = new ViewModelCommand(ExecuteCompleteChangeAnswerText, CanExecuteCompleteChangeAnswerText);
+            DeleteAnswer = new ViewModelCommand(ExecuteDeleteAnswer);
+            ChangeAnswerText = new ViewModelCommand(ExecuteChangeAnswerText);
+        }
+
+        private void ExecuteChangeAnswerText(object obj)
+        {
+            AnswerTextVisibility = false;
+            AnswerTextBoxVisibility = true;
+            AnswerEditText = Answer;
+        }
+
+        private void ExecuteDeleteAnswer(object obj)
+        {
+            testCreationViewModel.MultipleAnswerAnswers.Remove(testCreationViewModel.MultipleAnswerAnswers.Where(o => o.Answer == this.Answer).First());
+        }
+
+        private bool CanExecuteCompleteChangeAnswerText(object obj)
+        {
+            bool isValid = true;
+            if (string.IsNullOrEmpty(AnswerEditText) || testCreationViewModel.MultipleAnswerAnswers.Where(o => o.Answer == this.AnswerEditText).FirstOrDefault() != null)
+            {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        private void ExecuteCompleteChangeAnswerText(object obj)
+        {
+            Answer = AnswerEditText;
+            AnswerTextVisibility = true;
+            AnswerTextBoxVisibility = false;
+        }
+
+        private void OnAnswerTextBoxVisibilityChange()
+        {
+            if (!AnswerTextBoxVisibility)
+            {
+                answerTextVisibility = true;
+                if (string.IsNullOrEmpty(Answer))
+                {
+                    testCreationViewModel.MultipleAnswerAnswers.Remove(testCreationViewModel.MultipleAnswerAnswers.Where(o => o.Answer == this.Answer).First());
+                }
+            }
+        }
+
+    }
 
 }

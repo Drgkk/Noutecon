@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noutecon__Exam_.Model
 {
-    public class ManualQuestionModel : QuestionModel
+    public class ManualQuestionModel : QuestionModel, IManualAnswer
     {
         public string RightAnswer { get; set; }
     }

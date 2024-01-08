@@ -41,8 +41,10 @@
                    FontSize="40"
                    Foreground="{StaticResource HeaderColor}"
                    FontWeight="Bold"
-                   Text="Question 1:"
-                         Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                         Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Run Text="Question "/>
+                <Run Text="{Binding CurrentQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </TextBlock>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                 <Grid>
@@ -118,7 +120,25 @@ Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment=
                     <ItemsControl ItemsSource="{Binding OneAnswerAnswers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton Margin="0, 10, 0, 0" IsChecked="{Binding IsChecked}" Content="{Binding Answer}" GroupName="OneAnswerChoicesGroup"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Margin="0, 10, 0, 0" IsChecked="{Binding IsChecked}" Content="{Binding Answer}" GroupName="OneAnswerChoicesGroup" Visibility="{Binding AnswerTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                 FontFamily="Gautami" FontWeight="Bold" FontSize="16" Foreground="{StaticResource HeaderColor}"/>
+                                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=AnswerEditTextBox}">
+                                        <TextBox x:Name="AnswerEditTextBox" Grid.Row="1" Background="Transparent" BorderThickness="0" FontFamily="Gautami" FontSize="16"
+Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="{Binding AnswerTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                IsVisibleChanged="RichTextBox_IsVisibleChanged" LostFocus="RichTextBox_LostFocus" Focusable="True" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding AnswerEditText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="200">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Return" Command="{Binding CompleteChangeAnswerText}"/>
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <Button Style="{StaticResource buttonWithIcon}" Height="20" Width="20" Tag="{StaticResource Color1}" ToolTip="Edit Answer" HorizontalAlignment="Left" Margin="10, 0, 0, 0" Command="{Binding ChangeAnswerText}" VerticalAlignment="Center">
+                                        <fa:IconImage Icon="Pen" Height="12" Foreground="{StaticResource Color2}"/>
+                                    </Button>
+                                    <Button Style="{StaticResource buttonWithIcon}" Height="20" Width="20" Tag="{StaticResource Color1}" ToolTip="Delete Answer" HorizontalAlignment="Left" Margin="10, 0, 0, 0" Command="{Binding DeleteAnswer}" VerticalAlignment="Center">
+                                        <fa:IconImage Icon="TrashCan" Height="12" Foreground="{StaticResource Color2}"/>
+                                    </Button>
+                                </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -131,10 +151,35 @@ Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment=
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="20, 0, 0, 0" Visibility="{Binding MultipleAnswersVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Orientation="Vertical">
-                    <ItemsControl ItemsSource="{Binding MultipleAnswerAnswers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <!--<ItemsControl ItemsSource="{Binding MultipleAnswerAnswers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox Margin="0, 10, 0, 0" IsChecked="{Binding IsChecked}" Content="{Binding Answer}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>-->
+                    <ItemsControl ItemsSource="{Binding MultipleAnswerAnswers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox Margin="0, 10, 0, 0" IsChecked="{Binding IsChecked}" Content="{Binding Answer}" Visibility="{Binding AnswerTextVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                 FontFamily="Gautami" FontWeight="Bold" FontSize="16" Foreground="{StaticResource HeaderColor}"/>
+                                    <StackPanel FocusManager.FocusedElement="{Binding ElementName=AnswerEditTextBox}">
+                                        <TextBox x:Name="AnswerEditTextBox" Grid.Row="1" Background="Transparent" BorderThickness="0" FontFamily="Gautami" FontSize="16"
+Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="{Binding AnswerTextBoxVisibility, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                IsVisibleChanged="RichTextBox_IsVisibleChanged" LostFocus="RichTextBox_LostFocus" Focusable="True" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding AnswerEditText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="200">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Return" Command="{Binding CompleteChangeAnswerText}"/>
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <Button Style="{StaticResource buttonWithIcon}" Height="20" Width="20" Tag="{StaticResource Color1}" ToolTip="Edit Answer" HorizontalAlignment="Left" Margin="10, 0, 0, 0" Command="{Binding ChangeAnswerText}" VerticalAlignment="Center">
+                                        <fa:IconImage Icon="Pen" Height="12" Foreground="{StaticResource Color2}"/>
+                                    </Button>
+                                    <Button Style="{StaticResource buttonWithIcon}" Height="20" Width="20" Tag="{StaticResource Color1}" ToolTip="Delete Answer" HorizontalAlignment="Left" Margin="10, 0, 0, 0" Command="{Binding DeleteAnswer}" VerticalAlignment="Center">
+                                        <fa:IconImage Icon="TrashCan" Height="12" Foreground="{StaticResource Color2}"/>
+                                    </Button>
+                                </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -183,7 +228,7 @@ Text="Max length of answer:"
                         </StackPanel>
                     </Button.ToolTip>
                 </Button>
-                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0">
+                <Button Style="{StaticResource buttonWithIcon}" Tag="{StaticResource Color1}" Height="40" Width="40" Margin="0, 0, 10, 0" Command="{Binding PreviousQuestion}">
                     <fa:IconImage Icon="ArrowLeft" Height="20" Foreground="{StaticResource Color2}"/>
                     <Button.ToolTip>
                         <StackPanel Orientation="Vertical">
