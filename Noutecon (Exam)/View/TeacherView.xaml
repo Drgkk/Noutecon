@@ -63,6 +63,14 @@
             <local:TestSettingsView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModel:TeacherTestAssignViewModel}">
+            <local:TeacherTestAssignView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:DetailedStudentsSelectionViewModel}">
+            <local:DetailedStudentsSelectionView/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Border CornerRadius="8"

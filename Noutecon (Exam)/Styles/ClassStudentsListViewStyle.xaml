@@ -70,6 +70,73 @@
     </Style>
 
 
-    
-    
+    <Style x:Key="ClassStudentsListViewAssignTestItemStyle" TargetType="ListViewItem">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="{StaticResource Color1}"/>
+        <Setter Property="Margin" Value="7, 7, 7, 0"/>
+        <Setter Property="Height" Value="42"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                        CornerRadius="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left">
+                                <Ellipse Height="35" Width="35"
+                                     Margin="10, 0, 10, 0"
+                                     Stroke="{StaticResource Color3}"
+                                     StrokeThickness="2"
+                                     VerticalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding ProfilePicturePath}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock FontFamily="Gautami"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextColor}"
+                                       VerticalAlignment="Center">
+                                <Run Text="{Binding Username}"/>
+                                <Run Text=" ("/>
+                                <Run Text="{Binding FirstName}"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding LastName}"/>
+                                <Run Text=")"/>
+                                </TextBlock>
+                            </StackPanel>
+
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Column="1"
+                                    HorizontalAlignment="Right">
+                                <TextBlock FontFamily="Gautami"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextColor}"
+                                       VerticalAlignment="Center">
+                                <Run Text="Average Grade: "/>
+                                <Run Text="NOT IMPLEMENTED"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource Color3}"/>
+            </Trigger>
+        </Style.Triggers>
+        
+    </Style>
+
 </ResourceDictionary>

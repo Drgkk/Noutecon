@@ -42,7 +42,8 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowTeachersStudentCreationView { get; }
         public ICommand ShowTestsCreationView { get; }
         public ICommand ShowTestsSettingsView { get; }
-       
+       public ICommand ShowTestsAssignClassesView { get; }
+        public ICommand ShowDetailedStudentsSelectionView { get; }
 
         public TeacherViewViewModel()
         {
@@ -60,7 +61,21 @@ namespace Noutecon__Exam_.ViewModel
             ShowTeachersStudentCreationView = new ViewModelCommand(ExecuteShowTeachersStudentCreationView);
             ShowTestsCreationView = new ViewModelCommand(ExecuteShowTestsCreationView);
             ShowTestsSettingsView = new ViewModelCommand(ExecuteShowTestsSettingsView);
+            ShowTestsAssignClassesView = new ViewModelCommand(ExecuteShowTestsAssignClassesView);
+            ShowDetailedStudentsSelectionView = new ViewModelCommand(ExecuteShowDetailedStudentsSelectionView);
             ExecuteShowHomeView(null);
+        }
+
+        private void ExecuteShowDetailedStudentsSelectionView(object obj)
+        {
+            object[] ar = obj as object[];
+            CurrentChildView = new DetailedStudentsSelectionViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as ClassModel, ar[3] as TestModel);
+        }
+
+        private void ExecuteShowTestsAssignClassesView(object obj)
+        {
+            object[] ar = obj as object[];
+            CurrentChildView = new TeacherTestAssignViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as TestModel);
         }
 
         private void ExecuteShowTestsSettingsView(object obj)

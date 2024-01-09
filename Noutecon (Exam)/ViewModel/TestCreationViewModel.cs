@@ -179,7 +179,11 @@ namespace Noutecon__Exam_.ViewModel
 		public ICommand PreviousQuestion { get; }
 		public ICommand AddOneAnswerAnswer { get; }
 		public ICommand AddMultipleAnswerAnswer { get; }
-
+        public ICommand DeleteQuestion { get; }
+        public ICommand CreateQuestion { get; }
+        public ICommand DeleteTest {  get; }
+        public ICommand CreateTest { get; }
+        public ICommand SaveQuestion { get; }
 
 		public TestCreationViewModel(TeacherViewViewModel tvvm, string testName)
 		{
@@ -195,11 +199,151 @@ namespace Noutecon__Exam_.ViewModel
             PreviousQuestion = new ViewModelCommand(ExecutePreviousQuestion, CanExecutePreviousQuestion);
             AddOneAnswerAnswer = new ViewModelCommand(ExecuteAddOneAnswerAnswer, CanExecuteAddOneAnswerAnswer);
 			AddMultipleAnswerAnswer = new ViewModelCommand(ExecuteAddMultipleAnswerAnswer, CanExecuteAddMultipleAnswerAnswer);
+            DeleteQuestion = new ViewModelCommand(ExecuteDeleteQuestion, CanExecuteDeleteQuestion);
+            CreateQuestion = new ViewModelCommand(ExecuteCreateQuestion);
+            DeleteTest = new ViewModelCommand(ExecuteDeleteTest);
+            CreateTest = new ViewModelCommand(ExecuteCreateTest, CanExecuteCreateTest);
+            SaveQuestion = new ViewModelCommand(ExecuteSaveQuestion);
             CurrentQuestion = 0;
             ClearData();
+            questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
         }
 
-       
+        private void ExecuteSaveQuestion(object obj)
+        {
+            questions[currentQuestion].QuestionText = QuestionText;
+            questions[currentQuestion].ImagePath = ImagePath;
+            questions[currentQuestion].AudioPath = AudioPath;
+            if ((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
+                (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
+                (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
+            {
+                questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
+            }
+            else if (questions[currentQuestion] is IOneAnswer oneAnswer)
+            {
+                oneAnswer.Answers = new List<string>();
+                foreach (var answer in OneAnswerAnswers)
+                {
+                    oneAnswer.Answers.Add(answer.Answer);
+                }
+                oneAnswer.RightAnswer = OneAnswerRightAnswer;
+            }
+            else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
+            {
+                multipleAnswer.Answers = new List<string>();
+                foreach (var answer in MultipleAnswerAnswers)
+                {
+                    multipleAnswer.Answers.Add(answer.Answer);
+                }
+                multipleAnswer.RightAnswers = new List<int>();
+                multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
+            }
+            else if (questions[currentQuestion] is IManualAnswer manualAnswer)
+            {
+                manualAnswer.RightAnswer = ManualAnswerRightAnswer;
+            }
+        }
+
+        private bool CanExecuteCreateTest(object obj)
+        {
+            bool isValid = true;
+            foreach(var question in questions)
+            {
+                if(question is IOneAnswer oneAnswer)
+                {
+                    if(oneAnswer.RightAnswer == null || oneAnswer.RightAnswer == -1)
+                    {
+                        isValid = false;
+                    }
+                }
+                else if (question is IMultipleAnswer multipleAnswer)
+                {
+                    if (multipleAnswer.RightAnswers == null)
+                    {
+                        isValid = false;
+                    }
+                }
+                else if (question is IManualAnswer manualAnswer)
+                {
+                    if (manualAnswer.RightAnswer == null)
+                    {
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
+        }
+
+        private void ExecuteCreateTest(object obj)
+        {
+            TestModel testModel = new TestModel() { Name = testName, NumberOfTries = 5, Category = "Math", TeacherId = teacherViewViewModel.CurrentTeacher.Id, Questions = this.questions  };
+            teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel });
+        }
+
+        private void ExecuteDeleteTest(object obj)
+        {
+            teacherViewViewModel.ShowTestsView.Execute(obj);
+        }
+
+        private void ExecuteCreateQuestion(object obj)
+        {
+            questions[currentQuestion].QuestionText = QuestionText;
+            questions[currentQuestion].ImagePath = ImagePath;
+            questions[currentQuestion].AudioPath = AudioPath;
+            if ((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
+                (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
+                (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
+            {
+                questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
+            }
+            else if (questions[currentQuestion] is IOneAnswer oneAnswer)
+            {
+                oneAnswer.Answers = new List<string>();
+                foreach (var answer in OneAnswerAnswers)
+                {
+                    oneAnswer.Answers.Add(answer.Answer);
+                }
+                oneAnswer.RightAnswer = OneAnswerRightAnswer;
+            }
+            else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
+            {
+                multipleAnswer.Answers = new List<string>();
+                foreach (var answer in MultipleAnswerAnswers)
+                {
+                    multipleAnswer.Answers.Add(answer.Answer);
+                }
+                multipleAnswer.RightAnswers = new List<int>();
+                multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
+            }
+            else if (questions[currentQuestion] is IManualAnswer manualAnswer)
+            {
+                manualAnswer.RightAnswer = ManualAnswerRightAnswer;
+            }
+
+            CurrentQuestion = questions.Count;
+            ClearData();
+            questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+
+        }
+
+        private bool CanExecuteDeleteQuestion(object obj)
+        {
+            bool isValid = true;
+            if(questions.Count <= 1)
+            {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        private void ExecuteDeleteQuestion(object obj)
+        {
+            questions.RemoveAt(CurrentQuestion);
+            CurrentQuestion--;
+            ClearData();
+            UpdateQuestionData(questions[CurrentQuestion]);
+        }
 
         private bool CanExecuteAddMultipleAnswerAnswer(object obj)
         {
@@ -247,12 +391,12 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecutePreviousQuestion(object obj)
         {
-            if (CurrentQuestion >= questions.Count)
-            {
-                questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
-            }
-            else
-            {
+            //if (CurrentQuestion >= questions.Count)
+            //{
+              //  questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+            //}
+            //else
+            //{
                 questions[currentQuestion].QuestionText = QuestionText;
                 questions[currentQuestion].ImagePath = ImagePath;
                 questions[currentQuestion].AudioPath = AudioPath;
@@ -285,7 +429,7 @@ namespace Noutecon__Exam_.ViewModel
                 {
                     manualAnswer.RightAnswer = ManualAnswerRightAnswer;
                 }
-            }
+           // }
 
             CurrentQuestion--;
             ClearData();
@@ -295,60 +439,54 @@ namespace Noutecon__Exam_.ViewModel
         private bool CanExecuteNextQuestion(object obj)
         {
 			bool isValid = true;
-			//if(CurrentQuestion == questions.Count)
-			//{
-			//	isValid = false;
-			//}
-			return isValid;
+            if (CurrentQuestion + 1 == questions.Count)
+            {
+                isValid = false;
+            }
+            return isValid;
         }
 
 
         private void ExecuteNextQuestion(object obj)
         {
-            
-            if (CurrentQuestion + 1 < questions.Count)
-			{
-                questions[currentQuestion].QuestionText = QuestionText;
-                questions[currentQuestion].ImagePath = ImagePath;
-                questions[currentQuestion].AudioPath = AudioPath;
-                if((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
-                    (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
-                    (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
-                {
-                    questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
-                }
-                else if(questions[currentQuestion] is IOneAnswer oneAnswer)
-                {
-                    oneAnswer.Answers = new List<string>();
-                    foreach (var answer in OneAnswerAnswers)
-                    {
-                        oneAnswer.Answers.Add(answer.Answer);
-                    }
-                    oneAnswer.RightAnswer = OneAnswerRightAnswer;
-                }
-                else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
-                {
-                    multipleAnswer.Answers = new List<string>();
-                    foreach (var answer in MultipleAnswerAnswers)
-                    {
-                        multipleAnswer.Answers.Add(answer.Answer);
-                    }
-                    multipleAnswer.RightAnswers = new List<int>();
-                    multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
-                }
-                else if (questions[currentQuestion] is IManualAnswer manualAnswer)
-                {
-                    manualAnswer.RightAnswer = ManualAnswerRightAnswer;
-                }
-                CurrentQuestion++;
-                ClearData();
-                UpdateQuestionData(questions[CurrentQuestion]);                
-				return;
-			}
-            CurrentQuestion++;
-            questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
 
+            questions[currentQuestion].QuestionText = QuestionText;
+            questions[currentQuestion].ImagePath = ImagePath;
+            questions[currentQuestion].AudioPath = AudioPath;
+            if ((questions[currentQuestion] is IOneAnswer && SelectedIndex != 0) ||
+                (questions[currentQuestion] is IMultipleAnswer && SelectedIndex != 1) ||
+                (questions[currentQuestion] is IManualAnswer && SelectedIndex != 2))
+            {
+                questions[currentQuestion] = createQuestion.Invoke(QuestionText, ImagePath, AudioPath);
+            }
+            else if (questions[currentQuestion] is IOneAnswer oneAnswer)
+            {
+                oneAnswer.Answers = new List<string>();
+                foreach (var answer in OneAnswerAnswers)
+                {
+                    oneAnswer.Answers.Add(answer.Answer);
+                }
+                oneAnswer.RightAnswer = OneAnswerRightAnswer;
+            }
+            else if (questions[currentQuestion] is IMultipleAnswer multipleAnswer)
+            {
+                multipleAnswer.Answers = new List<string>();
+                foreach (var answer in MultipleAnswerAnswers)
+                {
+                    multipleAnswer.Answers.Add(answer.Answer);
+                }
+                multipleAnswer.RightAnswers = new List<int>();
+                multipleAnswer.RightAnswers = MultipleAnswerRightAnswers;
+            }
+            else if (questions[currentQuestion] is IManualAnswer manualAnswer)
+            {
+                manualAnswer.RightAnswer = ManualAnswerRightAnswer;
+            }
+            CurrentQuestion++;
             ClearData();
+            UpdateQuestionData(questions[CurrentQuestion]);
+
+            
         }
 
         private void ClearData()
@@ -606,7 +744,7 @@ namespace Noutecon__Exam_.ViewModel
         {
 			if(!AnswerTextBoxVisibility)
             {
-                answerTextVisibility = true;
+                AnswerTextVisibility = true;
                 if(string.IsNullOrEmpty(Answer))
                 {
                     testCreationViewModel.OneAnswerAnswers.Remove(testCreationViewModel.OneAnswerAnswers.Where(o => o.Answer == this.Answer).First());
@@ -710,7 +848,7 @@ namespace Noutecon__Exam_.ViewModel
         {
             if (!AnswerTextBoxVisibility)
             {
-                answerTextVisibility = true;
+                AnswerTextVisibility = true;
                 if (string.IsNullOrEmpty(Answer))
                 {
                     testCreationViewModel.MultipleAnswerAnswers.Remove(testCreationViewModel.MultipleAnswerAnswers.Where(o => o.Answer == this.Answer).First());
