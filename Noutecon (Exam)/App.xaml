@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/Styles/ClassStudentsListViewStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/ClassItemForStudentListViewStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/SoundSliderStyle.xaml"/>
+                <ResourceDictionary Source="/Styles/TestItemListViewStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

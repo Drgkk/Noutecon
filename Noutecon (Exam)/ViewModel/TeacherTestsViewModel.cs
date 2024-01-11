@@ -1,4 +1,5 @@
 ﻿using Noutecon__Exam_.Model;
+using Noutecon__Exam_.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,11 +24,14 @@ namespace Noutecon__Exam_.ViewModel
 
 
         private TeacherViewViewModel teacherViewViewModel;
+        private ITestRepository testRepository;
         public ICommand ShowTestCreationView { get; }
         public TeacherTestsViewModel(TeacherViewViewModel tvvm)
         {
             teacherViewViewModel = tvvm;
             ShowTestCreationView = new ViewModelCommand(ExecuteShowTestCreationView);
+            testRepository = new TestRepository();
+            Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
         }
 
         private void ExecuteShowTestCreationView(object obj)

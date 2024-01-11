@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="TestItemListViewStyle" TargetType="ListViewItem">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="0, 7, 0, 0"/>
+        <Setter Property="Background" Value="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Background="{TemplateBinding Background}"
+                                       CornerRadius="5">
+                        <Grid HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Vertical" Grid.Column="0" Margin="12, 3, 12, 12">
+                                <TextBlock Text="{Binding Name}"
+                    FontSize="30"
+                    Foreground="{StaticResource PanelActiveColor}"
+                    FontWeight="Bold"/>
+                                <TextBlock Style="{StaticResource ClassButtonText}" FontSize="26"
+Foreground="{StaticResource HeaderColor}"
+FontWeight="Bold">
+                                   <Run Text="Category: "/>
+                                   <Run Text="{Binding Category}" Foreground="{StaticResource PanelActiveColor}"/>
+                                </TextBlock>
+                                <TextBlock
+Style="{StaticResource ClassButtonText}" FontSize="16"
+Foreground="{StaticResource HeaderColor}"
+FontWeight="Bold">
+                                    <Run Text="Number of tries: "/>
+                                    <Run Text="{Binding NumberOfTries}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -139,7 +139,139 @@ namespace Noutecon__Exam_.Repositories
                 {
                     conn.Open();
                     command.Connection = conn;
-                    command.CommandText = "";
+                    command.CommandText = "select * from [Test] where [TeacherId] = @teacherId";
+                    command.Parameters.Add("@teacherId", System.Data.SqlDbType.Int).Value = teacherId;
+                    using(var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            TestModel test = new TestModel();
+                            test.Id = reader.GetInt32(0);
+                            test.Name = reader.GetString(1);
+                            test.TeacherId = reader.GetInt32(2);    
+                            test.NumberOfTries = reader.GetInt32(3);
+                            test.Category = reader.GetString(4);
+                            test.Questions = new List<QuestionModel>();
+                            var commandQuestion = new SqlCommand();
+                            commandQuestion.Connection = conn;
+                            commandQuestion.CommandText = "select * from [Question] where [TestId] = @testId";
+                            commandQuestion.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = test.Id;
+                            using(var readerQuestion  = commandQuestion.ExecuteReader())
+                            {
+                                while(readerQuestion.Read())
+                                {
+                                    int answerType = readerQuestion.GetInt32(5);
+                                    if(answerType == 0)
+                                    {
+                                        OneAnswerQuestionModel oneAnswerQuestionModel = new OneAnswerQuestionModel();
+                                        oneAnswerQuestionModel.Id = readerQuestion.GetInt32(0);
+                                        oneAnswerQuestionModel.TestId = readerQuestion.GetInt32(1);
+                                        oneAnswerQuestionModel.QuestionText = readerQuestion.GetString(2);
+                                        oneAnswerQuestionModel.ImagePath = readerQuestion.GetString(3);
+                                        oneAnswerQuestionModel.Answers = new List<string>();
+                                        if(!readerQuestion.IsDBNull(4))
+                                        {
+                                            oneAnswerQuestionModel.AudioPath = readerQuestion.GetString(4);
+                                        }
+                                        var commandAnswer = new SqlCommand();
+                                        commandAnswer.Connection = conn;
+                                        commandAnswer.CommandText = "select * from [Answer] where [QuestionId] = @questionId";
+                                        commandAnswer.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = oneAnswerQuestionModel.Id;
+                                        using(var readerAnswer = commandAnswer.ExecuteReader())
+                                        {
+                                            int i = 0;
+                                            while(readerAnswer.Read())
+                                            {
+                                                oneAnswerQuestionModel.Answers.Add(readerAnswer.GetString(2));
+                                                if(readerAnswer.GetBoolean(3))
+                                                {
+                                                    oneAnswerQuestionModel.RightAnswer = i;
+                                                }
+                                                i++;
+                                            }
+                                        }
+                                        test.Questions.Add(oneAnswerQuestionModel);
+                                    }
+                                    else if (answerType == 1)
+                                    {
+                                        MultipleAnswerQuestionModel multipleAnswerQuestionModel = new MultipleAnswerQuestionModel();
+                                        multipleAnswerQuestionModel.Id = readerQuestion.GetInt32(0);
+                                        multipleAnswerQuestionModel.TestId = readerQuestion.GetInt32(1);
+                                        multipleAnswerQuestionModel.QuestionText= readerQuestion.GetString(2);
+                                        multipleAnswerQuestionModel.ImagePath= readerQuestion.GetString(3);
+                                        if (!readerQuestion.IsDBNull(4))
+                                        {
+                                            multipleAnswerQuestionModel.AudioPath = readerQuestion.GetString(4);
+                                        }
+                                        multipleAnswerQuestionModel.Answers = new List<string>();
+                                        multipleAnswerQuestionModel.RightAnswers = new List<int>();
+                                        var commandAnswer = new SqlCommand();
+                                        commandAnswer.Connection = conn;
+                                        commandAnswer.CommandText = "select * from [Answer] where [QuestionId] = @questionId";
+                                        commandAnswer.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = multipleAnswerQuestionModel.Id;
+                                        using (var readerAnswer = commandAnswer.ExecuteReader())
+                                        {
+                                            int i = 0;
+                                            while (readerAnswer.Read())
+                                            {
+                                                multipleAnswerQuestionModel.Answers.Add(readerAnswer.GetString(2));
+                                                if (readerAnswer.GetBoolean(3))
+                                                {
+                                                    multipleAnswerQuestionModel.RightAnswers.Add(i);
+                                                }
+                                                i++;
+                                            }
+                                        }
+                                        test.Questions.Add(multipleAnswerQuestionModel);
+                                    }
+                                    else if (answerType == 2)
+                                    {
+                                        ManualQuestionModel manualQuestionModel = new ManualQuestionModel();
+                                        manualQuestionModel.Id = readerQuestion.GetInt32(0);
+                                        manualQuestionModel.TestId= readerQuestion.GetInt32(1);
+                                        manualQuestionModel.QuestionText= readerQuestion.GetString(2);
+                                        manualQuestionModel.ImagePath= readerQuestion.GetString(3);
+                                        if (!readerQuestion.IsDBNull(4))
+                                        {
+                                            manualQuestionModel.AudioPath = readerQuestion.GetString(4);
+                                        }
+                                        var commandAnswer = new SqlCommand();
+                                        commandAnswer.Connection = conn;
+                                        commandAnswer.CommandText = "select * from [Answer] where [QuestionId] = @questionId";
+                                        commandAnswer.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = manualQuestionModel.Id;
+                                        using (var readerAnswer = commandAnswer.ExecuteReader())
+                                        {
+                                            while (readerAnswer.Read())
+                                            {
+                                                manualQuestionModel.RightAnswer = readerAnswer.GetString(2);
+                                            }
+                                        }
+                                        test.Questions.Add(manualQuestionModel);
+                                    }
+                                }
+                            }
+
+                            var commandStudent = new SqlCommand();
+                            commandStudent.Connection = conn;
+                            commandStudent.CommandText = "select * from Student where Id in (select StudentId from [TestStudent] where [TestId] = @testId)";
+                            commandStudent.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = test.Id;
+                            test.Students = new List<StudentAccountModel>();
+                            using(var readerStudent = commandStudent.ExecuteReader())
+                            {
+                                while (readerStudent.Read())
+                                {
+                                    StudentAccountModel student = new StudentAccountModel();
+                                    student.Id = readerStudent.GetInt32(0);
+                                    student.Username = readerStudent.GetString(1);
+                                    student.FirstName = readerStudent.GetString(3);
+                                    student.LastName = readerStudent.GetString(4);
+                                    student.ProfilePicturePath = readerStudent.GetString(5);
+                                    test.Students.Add(student);
+                                }
+                            }
+                            tests.Add(test);
+                        }
+                    }
                 }
             }
             return tests;

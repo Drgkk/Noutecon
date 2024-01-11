@@ -8,7 +8,8 @@ namespace Noutecon__Exam_.Model
 {
     public abstract class QuestionModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public int TestId { get; set; }
         public string QuestionText { get; set; }
         public string ImagePath { get; set; }
         public string AudioPath { get; set; }

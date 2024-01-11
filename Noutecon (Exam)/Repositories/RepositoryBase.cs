@@ -12,7 +12,7 @@ namespace Noutecon__Exam_.Repositories
         private readonly string _connectionString;
         public RepositoryBase()
         {
-            _connectionString = "Data Source=DESKTOP-86BBP7I\\SQLEXPRESS;Initial Catalog=NouteconDB(Test);Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            _connectionString = "Data Source=DESKTOP-86BBP7I\\SQLEXPRESS;Initial Catalog=NouteconDB(Test);Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=True";
         }
         protected SqlConnection GetConnection()
         {
