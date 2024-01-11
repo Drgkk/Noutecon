@@ -43,7 +43,7 @@
                    FontWeight="Bold"
                          Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Run Text="Question "/>
-                <Run Text="{Binding CurrentQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Run Text="{Binding CurrentQuestionDisplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </TextBlock>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">

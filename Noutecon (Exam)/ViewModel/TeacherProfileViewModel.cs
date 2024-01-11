@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -316,6 +317,8 @@ namespace Noutecon__Exam_.ViewModel
             string filePathNew = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{Username}.jpg";
             teacherViewViewModel.CurrentTeacher.ProfilePicturePath = filePathNew;
             CurrentTeacher.ProfilePicturePath = filePathNew;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             if (File.Exists(filePathOld))
             {
                 using (File.Create(filePathNew)) { }
@@ -328,104 +331,44 @@ namespace Noutecon__Exam_.ViewModel
             TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
             teacherViewViewModel.CurrentTeacher = model;
             CurrentTeacher = model;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             File.Delete(filePathOld);
         }
 
         private void ExecuteChangePFP(object obj)
         {
-
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                var timer = new System.Windows.Forms.Timer();
                 string filePath = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";
-                string filePathCopy = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}Copy.jpg";
                 if (!File.Exists(filePath))
                 {
                     using (File.Create(filePath)) { }
                 }
                 else
                 {
-                    using (File.Create(filePathCopy)) { }
-                    System.IO.File.Copy(fileDialog.FileName, filePathCopy, true);
-                    TeacherAccountModel teacherAccountModelTemp = new TeacherAccountModel() { Id = teacherViewViewModel.CurrentTeacher.Id, FirstName = teacherViewViewModel.CurrentTeacher.FirstName, LastName = teacherViewViewModel.CurrentTeacher.LastName, Username = teacherViewViewModel.CurrentTeacher.Username, School = teacherViewViewModel.CurrentTeacher.School, ProfilePicturePath = filePathCopy };
+                    TeacherAccountModel teacherAccountModelTemp = new TeacherAccountModel() { Id = teacherViewViewModel.CurrentTeacher.Id, FirstName = teacherViewViewModel.CurrentTeacher.FirstName, LastName = teacherViewViewModel.CurrentTeacher.LastName, Username = teacherViewViewModel.CurrentTeacher.Username, School = teacherViewViewModel.CurrentTeacher.School, ProfilePicturePath = " " };
                     teacherViewViewModel.CurrentTeacher = teacherAccountModelTemp;
                     CurrentTeacher = teacherAccountModelTemp;
-                    timer.Tick += (object? sender, EventArgs? e) =>
-                    {
-                        teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePathCopy);
-                        System.IO.File.Copy(fileDialog.FileName, filePath, true);
-                        teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
-                        TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
-                        teacherViewViewModel.CurrentTeacher = model;
-                        CurrentTeacher = model;
-                        timer.Tag = "Disabled";
-                        timer.Stop();
-                    };
-                    timer.Interval = 12000;
-                    timer.Start();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                if(timer.Interval != 12000)
-                {
-                    teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePathCopy);
-                    System.IO.File.Copy(fileDialog.FileName, filePath, true);
-                    teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
-                    TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
-                    teacherViewViewModel.CurrentTeacher = model;
-                    CurrentTeacher = model;
-                }
+                System.IO.File.Copy(fileDialog.FileName, filePath, true);
+                teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
+                TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
+                teacherViewViewModel.CurrentTeacher = model;
+                CurrentTeacher = model;
+                
 
-                if (File.Exists(filePathCopy))
-                {
-                    var timer2 = new System.Windows.Forms.Timer();
-                    timer2.Tick += (object sender, EventArgs e) =>
-                    {
-                        if (File.Exists(filePathCopy))
-                        {
-                            File.Delete(filePathCopy);
-                        }
-                        timer2.Stop();
-                    };
-                    timer2.Interval = 30000;
-                    timer2.Start();
-                }
-                //Thread thread = new Thread(new ThreadStart(() => ThreadTest(fileDialog)));
-                //thread.IsBackground = true;
-                //thread.Start();
+
+
+
             }
         }
 
-        private void ThreadTest(System.Windows.Forms.OpenFileDialog fileDialog)
-        {
-
-            string filePath = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";
-            string filePathCopy = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}Copy.jpg";
-            if (!File.Exists(filePath))
-            {
-                using (File.Create(filePath)) { }
-            }
-            else
-            {
-                using (File.Create(filePathCopy)) { }
-                System.IO.File.Copy(fileDialog.FileName, filePathCopy, true);
-                TeacherAccountModel teacherAccountModelTemp = new TeacherAccountModel() { Id = teacherViewViewModel.CurrentTeacher.Id, FirstName = teacherViewViewModel.CurrentTeacher.FirstName, LastName = teacherViewViewModel.CurrentTeacher.LastName, Username = teacherViewViewModel.CurrentTeacher.Username, School = teacherViewViewModel.CurrentTeacher.School, ProfilePicturePath = filePathCopy };
-                teacherViewViewModel.CurrentTeacher = teacherAccountModelTemp;
-                CurrentTeacher = teacherAccountModelTemp;
-                Thread.Sleep(12000);
-            }
-            teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePathCopy);
-            System.IO.File.Copy(fileDialog.FileName, filePath, true);
-            teacherRepository.EditPfpById(teacherViewViewModel.CurrentTeacher.Id, filePath);
-            TeacherAccountModel model = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
-            teacherViewViewModel.CurrentTeacher = model;
-            CurrentTeacher = model;
-            Thread.Sleep(12000);
-            if (File.Exists(filePathCopy))
-            {
-                File.Delete(filePathCopy);
-            }
-        }
+        
 
 
 

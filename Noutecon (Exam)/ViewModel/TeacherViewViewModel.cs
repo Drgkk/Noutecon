@@ -85,7 +85,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowTestsCreationView(object obj)
         {
-            CurrentChildView = new TestCreationViewModel(this, obj as string);
+            CurrentChildView = new TestCreationViewModel(this, obj as TestModel);
         }
 
         private void ExecuteShowTeachersStudentCreationView(object obj)

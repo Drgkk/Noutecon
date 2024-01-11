@@ -48,7 +48,7 @@ namespace Noutecon__Exam_.ViewModel
             classRepository = new ClassRepository();
             studentRepository = new StudentRepository();
             testRepository = new TestRepository();
-            AssignStudentsToTest = new ViewModelCommand(ExecuteAssignStudentsToTest);
+            AssignStudentsToTest = new ViewModelCommand(ExecuteAssignStudentsToTest, CanExecuteAssignStudentsToTest);
             DetailedAssignStudents = new ViewModelCommand(ExecuteDetailedAssignStudents, CanExecuteDetailedAssignStudents);
             ObservableCollection<ClassModel> tempClasses = classRepository.GetClassesByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
             foreach(ClassModel tempClass in tempClasses )
@@ -60,6 +60,18 @@ namespace Noutecon__Exam_.ViewModel
                 }
                 Classes.Add(new ClassAssignViewModel { ClassToAssign = tempClass, IsSelected = isCheckedh});
             }
+        }
+
+        private bool CanExecuteAssignStudentsToTest(object obj)
+        {
+            bool isValid = true;
+            System.Collections.IList items = (System.Collections.IList)obj;
+            ObservableCollection<ClassAssignViewModel> selectedClasses = new ObservableCollection<ClassAssignViewModel>(items.Cast<ClassAssignViewModel>());
+            if (assignedClassWithStudentsClasses == null && selectedClasses.Count == 0)
+            {
+                isValid = false;
+            }
+            return isValid;
         }
 
         private bool CanExecuteDetailedAssignStudents(object obj)
@@ -133,7 +145,7 @@ namespace Noutecon__Exam_.ViewModel
             }
             foreach(ClassAssignViewModel cm in selectedClasses)
             {
-                if(!AssignedClassWithStudentsClassesContainsClass(assignedClassWithStudentsClasses, cm.ClassToAssign))
+                if(assignedClassWithStudentsClasses == null || (assignedClassWithStudentsClasses != null && !AssignedClassWithStudentsClassesContainsClass(assignedClassWithStudentsClasses, cm.ClassToAssign)))
                 {
                     foreach(StudentAccountModel sam in studentRepository.GetStudentsAccountsByClassId(cm.ClassToAssign.Id))
                     {
@@ -142,7 +154,7 @@ namespace Noutecon__Exam_.ViewModel
                 }
             }
 
-
+            teacherViewViewModel.ShowTestsView.Execute(obj);
             testRepository.Add(testModel);
 
         }

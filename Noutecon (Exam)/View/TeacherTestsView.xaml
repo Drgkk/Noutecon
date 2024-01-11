@@ -34,7 +34,8 @@ Tag="{StaticResource Color6}"
         <ListView Grid.Column="0"
                   Grid.Row="1"
                   Background="Transparent"
-                  BorderThickness="0"/>
+                  BorderThickness="0"
+                  ItemsSource="{Binding Tests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <StackPanel Orientation="Horizontal"
                     Grid.Row="0"

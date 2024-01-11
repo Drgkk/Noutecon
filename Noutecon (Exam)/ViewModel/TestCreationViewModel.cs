@@ -141,7 +141,7 @@ namespace Noutecon__Exam_.ViewModel
         {
 			get { return MultipleAnswerAnswers.Select((value, index) => new { value, index = index + 1 })
                 .Where(pair => pair.value.IsChecked == true)
-                .Select(pair => pair.index).ToList(); }
+                .Select(pair => pair.index).ToList().Select(o => o - 1).ToList(); }
 		}
 
 		private string manualAnswerRightAnswer;
@@ -158,14 +158,23 @@ namespace Noutecon__Exam_.ViewModel
         public int CurrentQuestion
         {
             get { return currentQuestion; }
-            set { currentQuestion = value; OnPropertyChanged(nameof(CurrentQuestion)); }
+            set { currentQuestion = value; OnPropertyChanged(nameof(CurrentQuestion)); OnCurrentQuestionChanged(); }
+        }
+
+        
+
+        private int currentQuestionDisplay;
+
+        public int CurrentQuestionDisplay
+        {
+            get { return currentQuestionDisplay; }
+            set { currentQuestionDisplay = value; OnPropertyChanged(nameof(CurrentQuestionDisplay)); }
         }
 
 
 
 
-
-        private string testName;
+        private TestModel testModel;
 		private TeacherViewViewModel teacherViewViewModel;
 
 		private List<QuestionModel> questions;
@@ -185,10 +194,10 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand CreateTest { get; }
         public ICommand SaveQuestion { get; }
 
-		public TestCreationViewModel(TeacherViewViewModel tvvm, string testName)
+		public TestCreationViewModel(TeacherViewViewModel tvvm, TestModel testModel)
 		{
 			teacherViewViewModel = tvvm;
-			this.testName = testName;
+			this.testModel = testModel;
 			questions = new List<QuestionModel>();
 			AnswerTypes = new List<string>() { "One answer test", "Several answer test", "Manual input" };
             ChangeQuestionTextVisibility = new ViewModelCommand(ExecuteChangeQuestionTextVisibility);
@@ -277,7 +286,10 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteCreateTest(object obj)
         {
-            TestModel testModel = new TestModel() { Name = testName, NumberOfTries = 5, Category = "Math", TeacherId = teacherViewViewModel.CurrentTeacher.Id, Questions = this.questions, Students = new List<StudentAccountModel>()  };
+            testModel.Category = "Math";
+            testModel.TeacherId = teacherViewViewModel.CurrentTeacher.Id;
+            testModel.Questions = this.questions;
+            testModel.Students = new List<StudentAccountModel>();
             teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel });
         }
 
@@ -542,6 +554,11 @@ namespace Noutecon__Exam_.ViewModel
                 ManualAnswerRightAnswer = im.RightAnswer;
                 SelectedIndex = 2;
             }
+        }
+
+        private void OnCurrentQuestionChanged()
+        {
+            CurrentQuestionDisplay = CurrentQuestion + 1;
         }
 
         private void ExecuteSetAudio(object obj)

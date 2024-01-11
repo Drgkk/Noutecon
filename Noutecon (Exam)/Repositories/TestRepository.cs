@@ -32,7 +32,14 @@ namespace Noutecon__Exam_.Repositories
                         command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
                         command.Parameters.Add("@questionText", System.Data.SqlDbType.NVarChar).Value = questionModel.QuestionText;
                         command.Parameters.Add("@imagePath", System.Data.SqlDbType.NVarChar).Value = questionModel.ImagePath;
-                        command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = questionModel.AudioPath;
+                        if(string.IsNullOrEmpty(questionModel.AudioPath))
+                        {
+                            command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = DBNull.Value;
+                        }
+                        else
+                        {
+                            command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = questionModel.AudioPath;
+                        }
                         int answerType = 0;
                         if(questionModel is IOneAnswer oneAnswer)
                         {
@@ -42,7 +49,7 @@ namespace Noutecon__Exam_.Repositories
                             int i = 0;
                             foreach (string answer in oneAnswer.Answers)
                             {
-                                command.CommandText = "insert into [[Answer]] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                                command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
                                 command.Parameters.Clear();
                                 command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
                                 command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = answer;
@@ -64,7 +71,7 @@ namespace Noutecon__Exam_.Repositories
                             int i = 0;
                             foreach (string answer in multipleAnswer.Answers)
                             {
-                                command.CommandText = "insert into [[Answer]] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                                command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
                                 command.Parameters.Clear();
                                 command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
                                 command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = answer;
@@ -83,7 +90,7 @@ namespace Noutecon__Exam_.Repositories
                             answerType = 2;
                             command.Parameters.Add("@answerType", System.Data.SqlDbType.Int).Value = answerType;
                             int questionId = (int)command.ExecuteScalar();
-                            command.CommandText = "insert into [[Answer]] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                            command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
                             command.Parameters.Clear();
                             command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
                             command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = manualAnswer.RightAnswer;
@@ -97,9 +104,9 @@ namespace Noutecon__Exam_.Repositories
                         command.CommandText = "insert into [TestStudent] ([TestId], [StudentId], [Result], [NumberOfTries]) values (@testId, @studentId, @result, @numOfTriesStud)";
                         command.Parameters.Clear();
                         command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
-                        command.Parameters.Add("@studentId", System.Data.SqlDbType.NVarChar).Value = student.Id;
-                        command.Parameters.Add("@result", System.Data.SqlDbType.NVarChar).Value = 0;
-                        command.Parameters.Add("@numOfTriesStud", System.Data.SqlDbType.NVarChar).Value = 0;
+                        command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = student.Id;
+                        command.Parameters.Add("@result", System.Data.SqlDbType.Int).Value = 0;
+                        command.Parameters.Add("@numOfTriesStud", System.Data.SqlDbType.Int).Value = 0;
                         command.ExecuteNonQuery();
                     }
                     
@@ -125,7 +132,17 @@ namespace Noutecon__Exam_.Repositories
 
         public ObservableCollection<TestModel> GetTestsByTeacherId(int teacherId)
         {
-            throw new NotImplementedException();
+            ObservableCollection<TestModel> tests = new ObservableCollection<TestModel>();
+            using(var conn = GetConnection())
+            {
+                using(var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "";
+                }
+            }
+            return tests;
         }
 
         public void Remove(TestModel testModel)
