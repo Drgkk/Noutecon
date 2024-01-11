@@ -46,17 +46,18 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteAssignStudentsToTest(object obj)
         {
-            ObservableCollection<StudentAccountModel> selectedStudentsHere = obj as ObservableCollection<StudentAccountModel>;
+            System.Collections.IList items = (System.Collections.IList)obj;
+            ObservableCollection<StudentAccountModel> selectedStudentsHere = new ObservableCollection<StudentAccountModel>(items.Cast<StudentAccountModel>());
             if (selectedStudentsHere.Count == 0)
             {
-                assignedClassWithStudentsClasses.Remove(assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass == currentClass).First());
+                assignedClassWithStudentsClasses.Remove(assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First());
                 teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel });
                 return;
             }
-            assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass == currentClass).First().SelectedStudents.Clear();
+            assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First().SelectedStudents.Clear();
             foreach (var st in selectedStudentsHere)
             {
-                assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass == currentClass).First().SelectedStudents.Add(st);
+                assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First().SelectedStudents.Add(st);
             }
             teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel });
         }

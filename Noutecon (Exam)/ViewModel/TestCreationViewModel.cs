@@ -259,14 +259,14 @@ namespace Noutecon__Exam_.ViewModel
                 }
                 else if (question is IMultipleAnswer multipleAnswer)
                 {
-                    if (multipleAnswer.RightAnswers == null)
+                    if (multipleAnswer.RightAnswers == null || multipleAnswer.RightAnswers.Count == 0)
                     {
                         isValid = false;
                     }
                 }
                 else if (question is IManualAnswer manualAnswer)
                 {
-                    if (manualAnswer.RightAnswer == null)
+                    if (manualAnswer.RightAnswer == null || string.IsNullOrEmpty(manualAnswer.RightAnswer))
                     {
                         isValid = false;
                     }
@@ -277,7 +277,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteCreateTest(object obj)
         {
-            TestModel testModel = new TestModel() { Name = testName, NumberOfTries = 5, Category = "Math", TeacherId = teacherViewViewModel.CurrentTeacher.Id, Questions = this.questions  };
+            TestModel testModel = new TestModel() { Name = testName, NumberOfTries = 5, Category = "Math", TeacherId = teacherViewViewModel.CurrentTeacher.Id, Questions = this.questions, Students = new List<StudentAccountModel>()  };
             teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel });
         }
 

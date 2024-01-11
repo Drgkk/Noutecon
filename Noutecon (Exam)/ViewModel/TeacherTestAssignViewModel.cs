@@ -32,6 +32,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private IClassRepository classRepository;
         private IStudentRepository studentRepository;
+        private ITestRepository testRepository;
 
         public ICommand AssignStudentsToTest { get; }
         public ICommand DetailedAssignStudents { get; }
@@ -46,6 +47,7 @@ namespace Noutecon__Exam_.ViewModel
             Classes = new ObservableCollection<ClassAssignViewModel>();
             classRepository = new ClassRepository();
             studentRepository = new StudentRepository();
+            testRepository = new TestRepository();
             AssignStudentsToTest = new ViewModelCommand(ExecuteAssignStudentsToTest);
             DetailedAssignStudents = new ViewModelCommand(ExecuteDetailedAssignStudents, CanExecuteDetailedAssignStudents);
             ObservableCollection<ClassModel> tempClasses = classRepository.GetClassesByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
@@ -86,7 +88,11 @@ namespace Noutecon__Exam_.ViewModel
             }
             foreach (ClassAssignViewModel cm in selectedClasses)
             {
-                assignedClassWithStudentsClasses.Add(new AssignedClassWithStudentsClass() { AlreadySelectedClass = cm.ClassToAssign, SelectedStudents = new List<StudentAccountModel>() });
+                if(!AssignedClassWithStudentsClassesContainsClass(assignedClassWithStudentsClasses, cm.ClassToAssign))
+                {
+                    assignedClassWithStudentsClasses.Add(new AssignedClassWithStudentsClass() { AlreadySelectedClass = cm.ClassToAssign, SelectedStudents = new List<StudentAccountModel>() });
+                }
+                
             }
             
             teacherViewViewModel.ShowDetailedStudentsSelectionView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, selectedClass.ClassToAssign, testModel });
@@ -94,34 +100,58 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteAssignStudentsToTest(object obj)
         {
-            ObservableCollection<ClassModel> selectedClasses = obj as ObservableCollection<ClassModel>;
+            System.Collections.IList items = (System.Collections.IList)obj;
+            ObservableCollection<ClassAssignViewModel> selectedClasses = new ObservableCollection<ClassAssignViewModel>(items.Cast<ClassAssignViewModel>());
             if (assignedClassWithStudentsClasses != null)
             {
                 foreach (AssignedClassWithStudentsClass acwsc in assignedClassWithStudentsClasses)
                 {
-                    foreach (StudentAccountModel sam in acwsc.SelectedStudents)
+                    if(SelectedClassesContainAssignedClassWithStudentsClass(selectedClasses, acwsc))
                     {
-                        testModel.Students.Add(sam);
+                        
+                        foreach (StudentAccountModel sam in acwsc.SelectedStudents)
+                        {
+                            testModel.Students.Add(sam);
+                        }
+                        if (acwsc.SelectedStudents.Count == 0)
+                        {
+                            foreach (StudentAccountModel sam in studentRepository.GetStudentsAccountsByClassId(acwsc.AlreadySelectedClass.Id))
+                            {
+                                testModel.Students.Add(sam);
+                            }
+                        }
                     }
+                    else
+                    {
+                        foreach (StudentAccountModel sam in studentRepository.GetStudentsAccountsByClassId(acwsc.AlreadySelectedClass.Id))
+                        {
+                            testModel.Students.Add(sam);
+                        }
+                    }
+                    
                 }
             }
-            foreach(ClassModel cm in selectedClasses)
+            foreach(ClassAssignViewModel cm in selectedClasses)
             {
-                if(!AssignedClassWithStudentsClassesContainsClass(assignedClassWithStudentsClasses, cm))
+                if(!AssignedClassWithStudentsClassesContainsClass(assignedClassWithStudentsClasses, cm.ClassToAssign))
                 {
-                    foreach(StudentAccountModel sam in studentRepository.GetStudentsAccountsByClassId(cm.Id))
+                    foreach(StudentAccountModel sam in studentRepository.GetStudentsAccountsByClassId(cm.ClassToAssign.Id))
                     {
                         testModel.Students.Add(sam);
                     }
                 }
             }
+
+
+            testRepository.Add(testModel);
+
         }
 
         private bool AssignedClassWithStudentsClassesContainsClass(List<AssignedClassWithStudentsClass> ascwsclist, ClassModel classContainsOrNo)
         {
             foreach(AssignedClassWithStudentsClass ascwsc in ascwsclist)
             {
-                if(ascwsc.AlreadySelectedClass == classContainsOrNo)
+                if(ascwsc.AlreadySelectedClass.UniqueId == classContainsOrNo.UniqueId)
                 {
                     return true;
                 }
@@ -132,7 +162,19 @@ namespace Noutecon__Exam_.ViewModel
         {
             foreach (ClassAssignViewModel cavm in cavmlist)
             {
-                if (cavm.ClassToAssign == classContainsOrNo.ClassToAssign)
+                if (cavm.ClassToAssign.UniqueId == classContainsOrNo.ClassToAssign.UniqueId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool SelectedClassesContainAssignedClassWithStudentsClass(ObservableCollection<ClassAssignViewModel> cavmlist, AssignedClassWithStudentsClass acwsc)
+        {
+            foreach (ClassAssignViewModel cavm in cavmlist)
+            {
+                if (cavm.ClassToAssign.UniqueId == acwsc.AlreadySelectedClass.UniqueId)
                 {
                     return true;
                 }
