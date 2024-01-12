@@ -175,7 +175,9 @@ namespace Noutecon__Exam_.ViewModel
 
 
         private TestModel testModel;
-		private TeacherViewViewModel teacherViewViewModel;
+        private TestModel? testModelToEdit;
+
+        private TeacherViewViewModel teacherViewViewModel;
 
 		private List<QuestionModel> questions;
 		private Func<string, string, string, QuestionModel> createQuestion;
@@ -194,10 +196,11 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand CreateTest { get; }
         public ICommand SaveQuestion { get; }
 
-		public TestCreationViewModel(TeacherViewViewModel tvvm, TestModel testModel)
+		public TestCreationViewModel(TeacherViewViewModel tvvm, TestModel testModel, TestModel? testModelToEdit)
 		{
 			teacherViewViewModel = tvvm;
 			this.testModel = testModel;
+            this.testModelToEdit = testModelToEdit;
 			questions = new List<QuestionModel>();
 			AnswerTypes = new List<string>() { "One answer test", "Several answer test", "Manual input" };
             ChangeQuestionTextVisibility = new ViewModelCommand(ExecuteChangeQuestionTextVisibility);
@@ -215,7 +218,15 @@ namespace Noutecon__Exam_.ViewModel
             SaveQuestion = new ViewModelCommand(ExecuteSaveQuestion);
             CurrentQuestion = 0;
             ClearData();
-            questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+            if(testModelToEdit == null)
+            {
+                questions.Add(createQuestion.Invoke(QuestionText, ImagePath, AudioPath));
+            }
+            else
+            {
+                questions = testModelToEdit.Questions;
+                UpdateQuestionData(questions[0]);
+            }
         }
 
         private void ExecuteSaveQuestion(object obj)
@@ -290,7 +301,17 @@ namespace Noutecon__Exam_.ViewModel
             testModel.TeacherId = teacherViewViewModel.CurrentTeacher.Id;
             testModel.Questions = this.questions;
             testModel.Students = new List<StudentAccountModel>();
-            teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel });
+            if(testModelToEdit == null)
+            {
+                teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel, null });
+            }
+            else
+            {
+                testModelToEdit.Category = testModel.Category;
+                testModelToEdit.TeacherId = teacherViewViewModel.CurrentTeacher.Id;
+                testModelToEdit.Questions = this.questions;
+                teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, null, testModel, testModelToEdit });
+            }
         }
 
         private void ExecuteDeleteTest(object obj)
@@ -517,6 +538,7 @@ namespace Noutecon__Exam_.ViewModel
 		private void UpdateQuestionData(QuestionModel q)
 		{
             QuestionText = q.QuestionText;
+            rememberQuestionText = QuestionText;
             ImagePath = q.ImagePath;
 			AudioPath = q.AudioPath;
             if(q is IOneAnswer ioa)

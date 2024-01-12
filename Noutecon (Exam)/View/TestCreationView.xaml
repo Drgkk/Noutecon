@@ -59,7 +59,7 @@ BorderThickness="0"
                    FontSize="22"
                    Foreground="{StaticResource HeaderColor}"
                    FontWeight="Bold"
-                   Text="{Binding QuestionText, Mode=TwoWay}"
+                   Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    TextWrapping="Wrap"/>
                     </Button>
                     <StackPanel FocusManager.FocusedElement="{Binding ElementName=QuestionTextTextBox}">

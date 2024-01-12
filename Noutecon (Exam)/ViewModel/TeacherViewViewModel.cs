@@ -69,23 +69,24 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteShowDetailedStudentsSelectionView(object obj)
         {
             object[] ar = obj as object[];
-            CurrentChildView = new DetailedStudentsSelectionViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as ClassModel, ar[3] as TestModel);
+            CurrentChildView = new DetailedStudentsSelectionViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as ClassModel, ar[3] as TestModel, ar[4] as TestModel);
         }
 
         private void ExecuteShowTestsAssignClassesView(object obj)
         {
             object[] ar = obj as object[];
-            CurrentChildView = new TeacherTestAssignViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as TestModel);
+            CurrentChildView = new TeacherTestAssignViewModel(ar[0] as TeacherViewViewModel, ar[1] as List<AssignedClassWithStudentsClass>, ar[2] as TestModel, ar[3] as TestModel);
         }
 
         private void ExecuteShowTestsSettingsView(object obj)
         {
-            CurrentChildView = new TestSettingsViewModel(this);
+            CurrentChildView = new TestSettingsViewModel(this, obj as TestModel);
         }
 
         private void ExecuteShowTestsCreationView(object obj)
         {
-            CurrentChildView = new TestCreationViewModel(this, obj as TestModel);
+            object[] ar = obj as object[];
+            CurrentChildView = new TestCreationViewModel(this, ar[0] as TestModel, ar[1] as TestModel);
         }
 
         private void ExecuteShowTeachersStudentCreationView(object obj)

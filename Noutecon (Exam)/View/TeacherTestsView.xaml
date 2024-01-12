@@ -37,7 +37,9 @@ Tag="{StaticResource Color6}"
                   BorderThickness="0"
                   ItemsSource="{Binding Tests, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   ItemContainerStyle="{StaticResource TestItemListViewStyle}"
-                  Tag="{StaticResource Color6}"/>
+                  Tag="{StaticResource Color6}"
+                  SelectedItem="{Binding SelectedTest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  SelectionMode="Single"/>
 
         <StackPanel Orientation="Horizontal"
                     Grid.Row="0"

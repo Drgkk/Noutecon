@@ -6,14 +6,16 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Noutecon__Exam_.Repositories
 {
     public class TestRepository : RepositoryBase, ITestRepository
     {
-        public void Add(TestModel testModel)
+        public int Add(TestModel testModel)
         {
-            using(var conn = GetConnection())
+            int testId = 0;
+            using (var conn = GetConnection())
             {
                 using(var command = new SqlCommand())
                 {
@@ -24,7 +26,7 @@ namespace Noutecon__Exam_.Repositories
                     command.Parameters.Add("@teacherId", System.Data.SqlDbType.Int).Value = testModel.TeacherId;
                     command.Parameters.Add("@numOfTries", System.Data.SqlDbType.Int).Value = testModel.NumberOfTries;
                     command.Parameters.Add("@category", System.Data.SqlDbType.NVarChar).Value = testModel.Category;
-                    int testId = (int)command.ExecuteScalar();
+                    testId = (int)command.ExecuteScalar();
                     foreach (QuestionModel questionModel in testModel.Questions)
                     {
                         command.CommandText = "insert into [Question] ([TestId], [QuestionText], [ImagePath], [AudioPath], [AnswerType]) output INSERTED.ID values (@testId, @questionText, @imagePath, @audioPath, @answerType)";
@@ -113,6 +115,7 @@ namespace Noutecon__Exam_.Repositories
 
                 }
             }
+            return testId;
         }
 
         public TestModel GetById(int id)
@@ -286,5 +289,191 @@ namespace Noutecon__Exam_.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public void EditImageAndAudioById(string imagePath, string audioPath, int testId, int questionNum)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "WITH CTE AS" +
+                        "(SELECT ROW_NUMBER() OVER (ORDER BY Id) AS RowNumber," +
+                        "ImagePath,  AudioPath  FROM  [Question] where TestId = @testId)" +
+                        "update CTE set ImagePath = @imagePath, AudioPath = @audioPath WHERE RowNumber = @questionNum";
+                    command.Parameters.Add("@imagePath", System.Data.SqlDbType.NVarChar).Value = imagePath;
+                    if (string.IsNullOrEmpty(audioPath))
+                    {
+                        command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = audioPath;
+                    }
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.Parameters.Add("@questionNum", System.Data.SqlDbType.Int).Value = questionNum + 1;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Edit(int testId, TestModel testModel)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [Test] set Name = @name, TeacherId = @teacherId, NumberOfTries = @numOfTries, Category = @category where Id = @id";
+                    command.Parameters.Add("@name", System.Data.SqlDbType.NVarChar).Value = testModel.Name;
+                    command.Parameters.Add("@teacherId", System.Data.SqlDbType.Int).Value = testModel.TeacherId;
+                    command.Parameters.Add("@numOfTries", System.Data.SqlDbType.Int).Value = testModel.NumberOfTries;
+                    command.Parameters.Add("@category", System.Data.SqlDbType.NVarChar).Value = testModel.Category;
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = testModel.Id;
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "delete from [Answer] where [QuestionId] IN (select Id from [Question] where TestId = @testId)";
+                    command.Parameters.Clear();
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "delete from [Question] where TestId = @testId";
+                    command.Parameters.Clear();
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+
+                    foreach (QuestionModel questionModel in testModel.Questions)
+                    {
+                        //command.CommandText = "delete from [Answer] where [QuestionId] = @questionId";
+                        //command.Parameters.Clear();
+                        //command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionModel.Id;
+                        //command.ExecuteNonQuery();
+
+                        //command.CommandText = "delete from [Question] where Id = @questionId";
+                        //command.Parameters.Clear();
+                        //command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionModel.Id;
+                        //command.ExecuteNonQuery();
+
+                        command.CommandText = "insert into [Question] ([TestId], [QuestionText], [ImagePath], [AudioPath], [AnswerType]) output INSERTED.ID values (@testId, @questionText, @imagePath, @audioPath, @answerType)";
+                        command.Parameters.Clear();
+                        command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                        command.Parameters.Add("@questionText", System.Data.SqlDbType.NVarChar).Value = questionModel.QuestionText;
+                        command.Parameters.Add("@imagePath", System.Data.SqlDbType.NVarChar).Value = questionModel.ImagePath;
+                        if (string.IsNullOrEmpty(questionModel.AudioPath))
+                        {
+                            command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = DBNull.Value;
+                        }
+                        else
+                        {
+                            command.Parameters.Add("@audioPath", System.Data.SqlDbType.NVarChar).Value = questionModel.AudioPath;
+                        }
+                        int answerType = 0;
+                        if (questionModel is IOneAnswer oneAnswer)
+                        {
+                            answerType = 0;
+                            command.Parameters.Add("@answerType", System.Data.SqlDbType.Int).Value = answerType;
+                            int questionId = (int)command.ExecuteScalar();
+                            int i = 0;
+                            foreach (string answer in oneAnswer.Answers)
+                            {
+                                command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                                command.Parameters.Clear();
+                                command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
+                                command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = answer;
+                                bool isRight = false;
+                                if (i == oneAnswer.RightAnswer)
+                                {
+                                    isRight = true;
+                                }
+                                command.Parameters.Add("@isRight", System.Data.SqlDbType.Bit).Value = isRight;
+                                command.ExecuteNonQuery();
+                                i++;
+                            }
+                        }
+                        else if (questionModel is IMultipleAnswer multipleAnswer)
+                        {
+                            answerType = 1;
+                            command.Parameters.Add("@answerType", System.Data.SqlDbType.Int).Value = answerType;
+                            int questionId = (int)command.ExecuteScalar();
+                            int i = 0;
+                            foreach (string answer in multipleAnswer.Answers)
+                            {
+                                command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                                command.Parameters.Clear();
+                                command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
+                                command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = answer;
+                                bool isRight = false;
+                                if (multipleAnswer.RightAnswers.Contains(i))
+                                {
+                                    isRight = true;
+                                }
+                                command.Parameters.Add("@isRight", System.Data.SqlDbType.Bit).Value = isRight;
+                                command.ExecuteNonQuery();
+                                i++;
+                            }
+                        }
+                        else if (questionModel is IManualAnswer manualAnswer)
+                        {
+                            answerType = 2;
+                            command.Parameters.Add("@answerType", System.Data.SqlDbType.Int).Value = answerType;
+                            int questionId = (int)command.ExecuteScalar();
+                            command.CommandText = "insert into [Answer] ([QuestionId], [Answer], [IsRight]) values (@questionId, @answer, @isRight)";
+                            command.Parameters.Clear();
+                            command.Parameters.Add("@questionId", System.Data.SqlDbType.Int).Value = questionId;
+                            command.Parameters.Add("@answer", System.Data.SqlDbType.NVarChar).Value = manualAnswer.RightAnswer;
+                            command.Parameters.Add("@isRight", System.Data.SqlDbType.Bit).Value = true;
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    command.CommandText = "delete from [TestStudent] where TestId = @testId";
+                    command.Parameters.Clear();
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+                    foreach (StudentAccountModel student in testModel.Students)
+                    {
+                        
+
+                        command.CommandText = "insert into [TestStudent] ([TestId], [StudentId], [Result], [NumberOfTries]) values (@testId, @studentId, @result, @numOfTriesStud)";
+                        command.Parameters.Clear();
+                        command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                        command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = student.Id;
+                        command.Parameters.Add("@result", System.Data.SqlDbType.Int).Value = 0;
+                        command.Parameters.Add("@numOfTriesStud", System.Data.SqlDbType.Int).Value = 0;
+                        command.ExecuteNonQuery();
+                    }
+
+
+                }
+            }
+        }
+
+        public string GetNameById(int testId)
+        {
+            string name = "";
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select [Name] from [Test] where Id = @id";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = testId;
+                    using(var reader = command.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            name = reader.GetString(0);
+                        }
+                    }
+
+
+                }
+            }
+            return name;
+        }
+
     }
 }

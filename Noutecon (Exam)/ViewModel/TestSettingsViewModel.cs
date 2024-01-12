@@ -38,16 +38,23 @@ namespace Noutecon__Exam_.ViewModel
 
 
         private TeacherViewViewModel teacherViewViewModel;
+        private TestModel? testModelToEdit;
 
         public ICommand CancelTestCreation { get; }
         public ICommand CreateNewTest { get; }
 
-        public TestSettingsViewModel(TeacherViewViewModel tvvm) 
+        public TestSettingsViewModel(TeacherViewViewModel tvvm, TestModel? testModelToEdit) 
         {
             teacherViewViewModel = tvvm;
+            this.testModelToEdit = testModelToEdit;
             TestNumOfTries = "1";
             CancelTestCreation = new ViewModelCommand(ExecuteCancelTestCreation);
             CreateNewTest = new ViewModelCommand(ExecuteCreateNewTest, CanExecuteCreateNewTest);
+            if(testModelToEdit != null)
+            {
+                TestName = testModelToEdit.Name;
+                TestNumOfTries = testModelToEdit.NumberOfTries.ToString();
+            }
         }
 
         private bool CanExecuteCreateNewTest(object obj)
@@ -63,8 +70,18 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteCreateNewTest(object obj)
         {
             TestModel testModel = new TestModel() { Name = TestName, NumberOfTries = int.Parse(TestNumOfTries) };
-            teacherViewViewModel.ShowTestsCreationView.Execute(testModel);
-            teacherViewViewModel.Caption = TestName;
+            if (testModelToEdit == null)
+            {
+                teacherViewViewModel.ShowTestsCreationView.Execute(new object[] { testModel, null});
+                teacherViewViewModel.Caption = TestName;
+            }
+            else
+            {
+                testModelToEdit.Name = TestName;
+                testModelToEdit.NumberOfTries = int.Parse(TestNumOfTries);
+                teacherViewViewModel.ShowTestsCreationView.Execute(new object[] { testModel, testModelToEdit });
+                teacherViewViewModel.Caption = TestName;
+            }
         }
 
         private void ExecuteCancelTestCreation(object obj)

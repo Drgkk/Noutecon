@@ -26,12 +26,13 @@ namespace Noutecon__Exam_.ViewModel
         //private List<ClassModel>? alreadySelectedClasses;
         private ClassModel currentClass;
         private TestModel testModel;
+        private TestModel testModelToEdit;
 
         private IStudentRepository studentRepository;
 
         public ICommand AssignStudentsToTest { get; }
 
-        public DetailedStudentsSelectionViewModel(TeacherViewViewModel tvvm, List<AssignedClassWithStudentsClass> assignedClassWithStudentsClasses/*List<StudentAccountModel>? selectedStudents, List<ClassModel>? alreadySelectedClasses*/, ClassModel currentClass, TestModel testModel)
+        public DetailedStudentsSelectionViewModel(TeacherViewViewModel tvvm, List<AssignedClassWithStudentsClass> assignedClassWithStudentsClasses/*List<StudentAccountModel>? selectedStudents, List<ClassModel>? alreadySelectedClasses*/, ClassModel currentClass, TestModel testModel, TestModel testModelToEdit)
         {
             teacherViewViewModel = tvvm;
             //this.selectedStudents = selectedStudents;
@@ -39,6 +40,7 @@ namespace Noutecon__Exam_.ViewModel
             this.assignedClassWithStudentsClasses = assignedClassWithStudentsClasses;
             this.currentClass = currentClass;
             this.testModel = testModel;
+            this.testModelToEdit = testModelToEdit;
             studentRepository = new StudentRepository();
             Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
             AssignStudentsToTest = new ViewModelCommand(ExecuteAssignStudentsToTest);
@@ -51,7 +53,7 @@ namespace Noutecon__Exam_.ViewModel
             if (selectedStudentsHere.Count == 0)
             {
                 assignedClassWithStudentsClasses.Remove(assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First());
-                teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel });
+                teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel, testModelToEdit });
                 return;
             }
             assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First().SelectedStudents.Clear();
@@ -59,7 +61,7 @@ namespace Noutecon__Exam_.ViewModel
             {
                 assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First().SelectedStudents.Add(st);
             }
-            teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel });
+            teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel, testModelToEdit });
         }
 
 

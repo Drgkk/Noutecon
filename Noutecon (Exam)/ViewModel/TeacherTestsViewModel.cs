@@ -22,6 +22,15 @@ namespace Noutecon__Exam_.ViewModel
             set { tests = value; OnPropertyChanged(nameof(Tests)); }
         }
 
+        private TestModel selectedTest;
+
+        public TestModel SelectedTest
+        {
+            get { return selectedTest; }
+            set { selectedTest = value; OnPropertyChanged(nameof(SelectedTest)); OnSelectedTestChanged(); }
+        }
+
+        
 
         private TeacherViewViewModel teacherViewViewModel;
         private ITestRepository testRepository;
@@ -34,9 +43,14 @@ namespace Noutecon__Exam_.ViewModel
             Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
         }
 
+        private void OnSelectedTestChanged()
+        {
+            teacherViewViewModel.ShowTestsSettingsView.Execute(SelectedTest);
+        }
+
         private void ExecuteShowTestCreationView(object obj)
         {
-            teacherViewViewModel.ShowTestsSettingsView.Execute(obj);
+            teacherViewViewModel.ShowTestsSettingsView.Execute(null);
         }
     }
 }
