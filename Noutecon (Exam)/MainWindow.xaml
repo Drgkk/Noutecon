@@ -39,6 +39,11 @@
         <DataTemplate DataType="{x:Type viewModel:StudentSettingsViewModel}">
             <views:StudentSettingsView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:StudentTestCompletionViewModel}">
+            <views:StudentTestCompletionView/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Border CornerRadius="8"

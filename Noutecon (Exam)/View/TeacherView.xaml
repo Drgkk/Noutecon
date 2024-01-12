@@ -71,6 +71,8 @@
             <local:DetailedStudentsSelectionView/>
         </DataTemplate>
 
+        
+
     </Window.Resources>
 
     <Border CornerRadius="8"

@@ -50,6 +50,7 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowTestsView { get; }
         public ICommand ShowProfileView { get; }
         public ICommand ShowSettingsView { get; }
+        public ICommand ShowTestCompletionView { get; }
 
         public MainViewViewModel()
         {
@@ -61,10 +62,16 @@ namespace Noutecon__Exam_.ViewModel
             ShowTestsView = new ViewModelCommand(ExecuteShowTestsView);
             ShowProfileView = new ViewModelCommand(ExecuteShowProfileView);
             ShowSettingsView = new ViewModelCommand(ExecuteShowSettingsView);
+            ShowTestCompletionView = new ViewModelCommand(ExecuteShowTestCompletionView);
             ExecuteShowHomeView(null);
             //Thread validateStudentThread = new Thread(new ThreadStart(ThreadWorkValidateUser));
             //validateStudentThread.IsBackground = true;
             //validateStudentThread.Start();  
+        }
+
+        private void ExecuteShowTestCompletionView(object obj)
+        {
+            CurrentChildView = new StudentTestCompletionViewModel(this, obj as TestModel);
         }
 
         private void ExecuteShowSettingsView(object obj)
@@ -83,7 +90,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteShowTestsView(object obj)
         {
-            CurrentChildView = new StudentTestsViewModel();
+            CurrentChildView = new StudentTestsViewModel(this);
             Icon = IconChar.Book;
             Label = "Tests";
         }
