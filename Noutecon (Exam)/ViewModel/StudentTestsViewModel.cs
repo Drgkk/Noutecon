@@ -32,20 +32,75 @@ namespace Noutecon__Exam_.ViewModel
             set { selectedTest = value; OnPropertyChanged(nameof(SelectedTest)); OnSelectedTestChanged(); }
         }
 
+        private string testName;
 
+        public string TestName
+        {
+            get { return testName; }
+            set { testName = value; OnPropertyChanged(nameof(TestName)); OnTestNameChanged(); }
+        }
+
+
+
+        private string testCategory;
+
+        public string TestCategory
+        {
+            get { return testCategory; }
+            set { testCategory = value; OnPropertyChanged(nameof(TestCategory)); OnCategoryChanged(); }
+        }
 
         private MainViewViewModel mainViewViewModel;
         private ITestRepository testRepository;
         public ICommand ShowTestCreationView { get; }
+        public ICommand ClearSearch { get; }
         public StudentTestsViewModel(MainViewViewModel mvvm)
         {
             mainViewViewModel = mvvm;
             testRepository = new TestRepository();
             Tests = new ObservableCollection<StudentTestViewToShowInList>();
-            foreach(var test in testRepository.GetTestsByStudentId(mainViewViewModel.CurrentStudentAccount.Id))
+            ClearSearch = new ViewModelCommand(ExecuteClearSearch);
+            foreach (var test in testRepository.GetTestsByStudentId(mainViewViewModel.CurrentStudentAccount.Id))
             {
                 Tests.Add(new StudentTestViewToShowInList(mainViewViewModel.CurrentStudentAccount) { Test = test });
             }
+        }
+
+        private void ExecuteClearSearch(object obj)
+        {
+            Tests.Clear();
+            foreach (var test in testRepository.GetTestsByStudentId(mainViewViewModel.CurrentStudentAccount.Id))
+            {
+                Tests.Add(new StudentTestViewToShowInList(mainViewViewModel.CurrentStudentAccount) { Test = test });
+            }
+            TestName = "";
+            TestCategory = "";
+        }
+
+        private void OnTestNameChanged()
+        {
+            ObservableCollection<StudentTestViewToShowInList> testCollectionHelper = new ObservableCollection<StudentTestViewToShowInList>();
+            foreach (StudentTestViewToShowInList test in Tests)
+            {
+                if (test.Test.Name.ToLower().Contains(TestName.ToLower()))
+                {
+                    testCollectionHelper.Add(test);
+                }
+            }
+            Tests = testCollectionHelper;
+        }
+
+        private void OnCategoryChanged()
+        {
+            ObservableCollection<StudentTestViewToShowInList> testCollectionHelper = new ObservableCollection<StudentTestViewToShowInList>();
+            foreach (var test in Tests)
+            {
+                if (test.Test.Category.ToLower().Contains(TestCategory.ToLower()))
+                {
+                    testCollectionHelper.Add(test);
+                }
+            }
+            Tests = testCollectionHelper;
         }
 
         private void OnSelectedTestChanged()

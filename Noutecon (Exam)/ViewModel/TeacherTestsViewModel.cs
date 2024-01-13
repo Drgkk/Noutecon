@@ -30,17 +30,70 @@ namespace Noutecon__Exam_.ViewModel
             set { selectedTest = value; OnPropertyChanged(nameof(SelectedTest)); OnSelectedTestChanged(); }
         }
 
+        private string testName;
+
+        public string TestName
+        {
+            get { return testName; }
+            set { testName = value; OnPropertyChanged(nameof(TestName)); OnTestNameChanged(); }
+        }
+
+        
+
+        private string testCategory;
+
+        public string TestCategory
+        {
+            get { return testCategory; }
+            set { testCategory = value; OnPropertyChanged(nameof(TestCategory)); OnCategoryChanged(); }
+        }
+
         
 
         private TeacherViewViewModel teacherViewViewModel;
         private ITestRepository testRepository;
         public ICommand ShowTestCreationView { get; }
+        public ICommand ClearSearch { get; }
         public TeacherTestsViewModel(TeacherViewViewModel tvvm)
         {
             teacherViewViewModel = tvvm;
             ShowTestCreationView = new ViewModelCommand(ExecuteShowTestCreationView);
+            ClearSearch = new ViewModelCommand(ExecuteClearSearch);
             testRepository = new TestRepository();
             Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
+        }
+
+        private void ExecuteClearSearch(object obj)
+        {
+            Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
+            TestName = "";
+            TestCategory = "";
+        }
+
+        private void OnTestNameChanged()
+        {
+            ObservableCollection<TestModel> testCollectionHelper = new ObservableCollection<TestModel>();
+            foreach (var test in Tests)
+            {
+                if(test.Name.ToLower().Contains(TestName.ToLower()))
+                {
+                    testCollectionHelper.Add(test);
+                }
+            }
+            Tests = testCollectionHelper;
+        }
+
+        private void OnCategoryChanged()
+        {
+            ObservableCollection<TestModel> testCollectionHelper = new ObservableCollection<TestModel>();
+            foreach (var test in Tests)
+            {
+                if (test.Category.ToLower().Contains(TestCategory.ToLower()))
+                {
+                    testCollectionHelper.Add(test);
+                }
+            }
+            Tests = testCollectionHelper;
         }
 
         private void OnSelectedTestChanged()

@@ -297,7 +297,6 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteCreateTest(object obj)
         {
-            testModel.Category = "Math";
             testModel.TeacherId = teacherViewViewModel.CurrentTeacher.Id;
             testModel.Questions = this.questions;
             testModel.Students = new List<StudentAccountModel>();

@@ -35,6 +35,13 @@ namespace Noutecon__Exam_.ViewModel
             set { testNumOfTries = value; OnPropertyChanged(nameof(TestNumOfTries)); }
         }
 
+        private string category;
+
+        public string Category
+        {
+            get { return category; }
+            set { category = value; OnPropertyChanged(nameof(Category)); }
+        }
 
 
         private TeacherViewViewModel teacherViewViewModel;
@@ -54,13 +61,14 @@ namespace Noutecon__Exam_.ViewModel
             {
                 TestName = testModelToEdit.Name;
                 TestNumOfTries = testModelToEdit.NumberOfTries.ToString();
+                Category = testModelToEdit.Category;
             }
         }
 
         private bool CanExecuteCreateNewTest(object obj)
         {
             bool isValid = true;
-            if(string.IsNullOrEmpty(TestName) || TestName.Length < 3 || string.IsNullOrEmpty(TestNumOfTries) || TestNumOfTries == "0")
+            if(string.IsNullOrEmpty(TestName) || TestName.Length < 3 || string.IsNullOrEmpty(TestNumOfTries) || TestNumOfTries == "0" || TestNumOfTries.StartsWith('0') || string.IsNullOrEmpty(Category))
             {
                 isValid = false;
             }
@@ -69,7 +77,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteCreateNewTest(object obj)
         {
-            TestModel testModel = new TestModel() { Name = TestName, NumberOfTries = int.Parse(TestNumOfTries) };
+            TestModel testModel = new TestModel() { Name = TestName, NumberOfTries = int.Parse(TestNumOfTries), Category = Category };
             if (testModelToEdit == null)
             {
                 teacherViewViewModel.ShowTestsCreationView.Execute(new object[] { testModel, null});
@@ -79,6 +87,7 @@ namespace Noutecon__Exam_.ViewModel
             {
                 testModelToEdit.Name = TestName;
                 testModelToEdit.NumberOfTries = int.Parse(TestNumOfTries);
+                testModelToEdit.Category = Category;
                 teacherViewViewModel.ShowTestsCreationView.Execute(new object[] { testModel, testModelToEdit });
                 teacherViewViewModel.Caption = TestName;
             }

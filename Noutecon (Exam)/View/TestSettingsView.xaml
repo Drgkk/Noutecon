@@ -23,7 +23,7 @@
                            FontWeight="Bold"
                            Foreground="{StaticResource HeaderColor}"
                            Text="Test name:"/>
-                <TextBox FontFamily="Gautami"
+                <TextBox FontFamily="Gautami" MaxLength="80"
                            FontSize="32"
                            FontWeight="Bold"
                            Foreground="{StaticResource TextColor}"
@@ -60,6 +60,25 @@
                          CaretBrush="LightGray"
                          Padding="0, 0, 0, 2"
                          Text="{Binding TestNumOfTries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0, 15, 0, 0">
+                <TextBlock FontFamily="Gautami"
+   FontSize="32"
+   FontWeight="Bold"
+   Foreground="{StaticResource HeaderColor}"
+   Text="Category:"/>
+                <TextBox FontFamily="Gautami" MaxLength="50"
+           FontSize="32"
+           FontWeight="Bold"
+           Foreground="{StaticResource TextColor}"
+         Background="Transparent"
+         BorderBrush="{StaticResource HeaderColor}"
+         BorderThickness="0, 0, 0, 3"
+         Width="335"
+         Margin="15, 0, 0, 0"
+         CaretBrush="LightGray"
+         Padding="0, 0, 0, 2"
+         Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="0, 20, 0, 0">
