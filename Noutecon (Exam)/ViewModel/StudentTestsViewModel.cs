@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Noutecon__Exam_.ViewModel
@@ -102,6 +103,13 @@ namespace Noutecon__Exam_.ViewModel
             set { testTeacher = value; }
         }
 
+        private Visibility isGradeVisible;
+
+        public Visibility IsGradeVisible
+        {
+            get { return isGradeVisible; }
+            set { isGradeVisible = value; }
+        }
 
 
 
@@ -113,11 +121,20 @@ namespace Noutecon__Exam_.ViewModel
         {
             this.student = student;
             testRepository = new TestRepository();
+            
         }
 
         private void OnTestChanged()
         {
             (StudentNumberOfTries, Result) = testRepository.GetStudentTriesAndResult(student.Id, Test.Id);
+            if(StudentNumberOfTries == 0 )
+            {
+                IsGradeVisible = Visibility.Collapsed;
+            }
+            else
+            {
+                IsGradeVisible = Visibility.Visible;
+            }
             SeriesCollection = new SeriesCollection()
             {
                 new PieSeries

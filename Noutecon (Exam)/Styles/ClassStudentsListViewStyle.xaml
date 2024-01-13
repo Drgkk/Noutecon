@@ -26,7 +26,7 @@
                                          StrokeThickness="2"
                                          VerticalAlignment="Center">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding ProfilePicturePath}"/>
+                                        <ImageBrush ImageSource="{Binding Student.ProfilePicturePath}"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock FontFamily="Gautami"
@@ -34,11 +34,11 @@
                                            FontWeight="Bold"
                                            Foreground="{StaticResource TextColor}"
                                            VerticalAlignment="Center">
-                                    <Run Text="{Binding Username}"/>
+                                    <Run Text="{Binding Student.Username}"/>
                                     <Run Text=" ("/>
-                                    <Run Text="{Binding FirstName}"/>
+                                    <Run Text="{Binding Student.FirstName}"/>
                                     <Run Text=" "/>
-                                    <Run Text="{Binding LastName}"/>
+                                    <Run Text="{Binding Student.LastName}"/>
                                     <Run Text=")"/>
                                 </TextBlock>
                             </StackPanel>
@@ -53,7 +53,7 @@
                                            Foreground="{StaticResource TextColor}"
                                            VerticalAlignment="Center">
                                     <Run Text="Average Grade: "/>
-                                    <Run Text="NOT IMPLEMENTED"/>
+                                    <Run Text="{Binding AverageGrade}"/>
                                 </TextBlock>
                                 <Button Style="{StaticResource ClassStudentsListViewItemButtonStyle}" Margin="12, 0, 0, 0" Command="{Binding DataContext.DeleteStudent, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" VerticalAlignment="Center" Background="{StaticResource Color3}"  ToolTip="Delete Student">
                                     <fa:IconImage Icon="TrashCan" Foreground="{StaticResource Color6}" Height="15" Width="15" Cursor="Hand"/>

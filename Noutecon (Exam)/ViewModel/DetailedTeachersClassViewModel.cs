@@ -13,9 +13,9 @@ namespace Noutecon__Exam_.ViewModel
 {
     public class DetailedTeachersClassViewModel : ViewModelBase
     {
-		private ObservableCollection<StudentAccountModel> _students;
+		private ObservableCollection<StudentAccountModelForClassDetailedListView> _students;
 
-		public ObservableCollection<StudentAccountModel> Students
+		public ObservableCollection<StudentAccountModelForClassDetailedListView> Students
 		{
 			get { return _students; }
 			set { _students = value; OnPropertyChanged(nameof(Students)); }
@@ -42,7 +42,11 @@ namespace Noutecon__Exam_.ViewModel
             teacherViewViewModel = (TeacherViewViewModel)args[1];
 			studentRepository = new StudentRepository();
 			classRepository = new ClassRepository();
-			Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
+			Students = new ObservableCollection<StudentAccountModelForClassDetailedListView>();
+			foreach(var st in studentRepository.GetStudentsAccountsByClassId(currentClass.Id))
+			{
+				Students.Add(new StudentAccountModelForClassDetailedListView() { Student = st });
+			}
 			ShowStudentDetails = new ViewModelCommand(ExecuteShowStudentDetails);
 			DeleteStudent = new ViewModelCommand(ExecuteDeleteStudent);
 			ShowStudentCreationView = new ViewModelCommand(ExecuteShowStudentCreationView);
@@ -78,13 +82,55 @@ namespace Noutecon__Exam_.ViewModel
 				return;
 			}
 			studentRepository.RemoveFromClassById(currentStudent.Id, currentClass.Id);
-            Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
+            foreach (var st in studentRepository.GetStudentsAccountsByClassId(currentClass.Id))
+            {
+                Students.Add(new StudentAccountModelForClassDetailedListView() { Student = st });
+            }
         }
 
         private void ExecuteShowStudentDetails(object obj)
         {
-            StudentAccountModel currentStudent = (StudentAccountModel)obj;
-			throw new NotImplementedException();
+            StudentAccountModelForClassDetailedListView currentStudent = (StudentAccountModelForClassDetailedListView)obj;
+			teacherViewViewModel.ShowStudentDetailedTestsView.Execute(new object[] { currentStudent.Student, currentClass });
         }
     }
+
+	public class StudentAccountModelForClassDetailedListView
+	{
+		private StudentAccountModel student;
+
+		public StudentAccountModel Student
+		{
+			get { return student; }
+			set { student = value; OnStudentChanged(); }
+		}
+
+        
+
+        private double averageGrade;
+
+		public double AverageGrade
+		{
+			get { return averageGrade; }
+			set { averageGrade = value; }
+		}
+
+		private IStudentRepository studentRepository;
+        public StudentAccountModelForClassDetailedListView()
+        {
+			studentRepository = new StudentRepository();
+        }
+
+        private void OnStudentChanged()
+        {
+			ObservableCollection<double> grades = studentRepository.GetAllGradesFromTeacher(Student.Id);
+		    if(grades.Count > 0)
+			{
+                AverageGrade = Math.Round(grades.Average(), 1);
+            }
+            
+        }
+
+    }
+
 }

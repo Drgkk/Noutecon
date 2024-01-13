@@ -63,6 +63,11 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
                 <CheckBox x:Name="AudioCheckBox" VerticalAlignment="Center" Margin="0, 0, 10, 0" IsChecked="{Binding AudioVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <Button Background="Transparent"
@@ -77,13 +82,7 @@
             <Slider 
                     Value="{Binding SelectedAudioPosition, Mode=TwoWay, UpdateSourceTrigger=Default}" Maximum="{Binding AudioMaxPosition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Minimum="0" VerticalAlignment="Center" TickPlacement="None" Margin="10, 0, 10, 0" Style="{StaticResource SoundSliderStyle}"
-                    Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="">
-                        <i:InvokeCommandAction Command="{Binding DragStarted}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Slider>
+                    Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1"/>
             <TextBlock  VerticalAlignment="Center" Grid.Column="2"
 FontSize="12"
 Foreground="{StaticResource TextColor}" Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -91,7 +90,18 @@ Foreground="{StaticResource TextColor}" Visibility="{Binding ElementName=AudioCh
                     <Run Text="/"/>
                     <Run Text="{Binding AudioMaxValue}"/>
             </TextBlock>
-
+            <fa:IconImage Icon="{Binding IconAudio}" Height="25" Foreground="{StaticResource Color2}" Grid.Column="0" Grid.Row="2" 
+                          Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Slider 
+        Value="{Binding Volume, Mode=TwoWay, UpdateSourceTrigger=Default}" Maximum="1"
+        Minimum="0" VerticalAlignment="Center" TickPlacement="None" Margin="10, 0, 10, 0" Style="{StaticResource SoundSliderStyle}"
+        Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Grid.Row="2"/>
+            <TextBlock  VerticalAlignment="Center" Grid.Column="2" Grid.Row="2"
+FontSize="12"
+Foreground="{StaticResource TextColor}" Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Run Text="{Binding AudioText}"/>
+                    <Run Text="%"/>
+            </TextBlock>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1" x:Name="AnswerGrid">
@@ -143,7 +153,7 @@ Foreground="{StaticResource TextColor}" Visibility="{Binding ElementName=AudioCh
                 Foreground="{StaticResource HeaderColor}"
                 FontWeight="Bold"
                 Text="Answer:"/>
-                    <TextBox MaxLength="{Binding ElementName=MaxLengthAnswerTextBox, Path=Text}" VerticalAlignment="Top" Margin="10, 0, 10, 0" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding ManualAnswerRightAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox MaxLength="80" VerticalAlignment="Top" Margin="10, 0, 10, 0" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding ManualAnswerRightAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
             <StackPanel Orientation="Horizontal"

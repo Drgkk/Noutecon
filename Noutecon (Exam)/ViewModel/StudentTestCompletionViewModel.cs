@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using FontAwesome.Sharp;
+using NAudio.Wave;
 using Noutecon__Exam_.Model;
 using Noutecon__Exam_.Repositories;
 using System;
@@ -59,6 +60,35 @@ namespace Noutecon__Exam_.ViewModel
         
 
         private System.Windows.Forms.Timer audioTimer;
+        private bool isDragging;
+
+        private double volume;
+
+        public double Volume
+        {
+            get { return volume; }
+            set { volume = value; OnPropertyChanged(nameof(Volume)); OnVolumeChanged(); }
+        }
+
+        
+
+        private IconChar iconAudio;
+
+        public IconChar IconAudio
+        {
+            get { return iconAudio; }
+            set { iconAudio = value; OnPropertyChanged(nameof(IconAudio)); }
+        }
+
+        private string audioText;
+
+        public string AudioText
+        {
+            get { return audioText; }
+            set { audioText = value; OnPropertyChanged(nameof(AudioText)); }
+        }
+
+
 
         //Visibilities
 
@@ -220,6 +250,7 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand SaveQuestion { get; }
         public ICommand PlayStopAudio { get; }
         public ICommand DragStarted { get; }
+        public ICommand DragExited { get; }
         public StudentTestCompletionViewModel(MainViewViewModel mvvm, TestModel testModelOriginal)
         {
             mainViewViewModel = mvvm;
@@ -227,6 +258,10 @@ namespace Noutecon__Exam_.ViewModel
             this.testModelOriginal = testModelOriginal;
             testRepository = new TestRepository();
             audioTimer = new System.Windows.Forms.Timer();
+            isDragging = false;
+            Volume = 1;
+            IconAudio = IconChar.VolumeHigh;
+            AudioText = "100";
             foreach (var question in testModelOriginal.Questions)
             {
                 if (question is IOneAnswer oneAnswer)
@@ -250,22 +285,85 @@ namespace Noutecon__Exam_.ViewModel
             SaveQuestion = new ViewModelCommand(ExecuteSaveQuestion);
             PlayStopAudio = new ViewModelCommand(ExecutePlayStopAudio);
             DragStarted = new ViewModelCommand(ExecuteDragStarted);
+            DragExited = new ViewModelCommand(ExecuteDragExited);
             CurrentQuestion = 0;
             ClearData();
             questions = testModelOriginal.Questions;
             UpdateQuestionData(questions[0], CurrentQuestion);
         }
 
+        private void OnVolumeChanged()
+        {
+            IconAudio = IconChar.VolumeMute;
+            if(Volume > 0)
+            {
+                IconAudio = IconChar.VolumeLow;
+            }
+            if(Volume > 0.7)
+            {
+                IconAudio = IconChar.VolumeHigh;
+            }
+            AudioText = Math.Round((Volume * 100)).ToString();
+            if(waveOut != null)
+            {
+                waveOut.Volume = (float)Volume;
+            }
+            
+        }
+
+        private void ExecuteDragExited(object obj)
+        {
+            isDragging = false;
+        }
+
         private void ExecuteDragStarted(object obj)
         {
-            MessageBox.Show("Drag Started");
+            isDragging = true;
         }
 
         private void OnSelectedAudioPositionChanged()
         {
             if(reader != null)
             {
-                reader.CurrentTime = new TimeSpan(0, 0, (int)SelectedAudioPosition);
+                int hours = 0;
+                int minutes = 0;
+                int seconds = 0;
+                seconds = (int)SelectedAudioPosition;
+                if(seconds >= 60)
+                {
+                    minutes = seconds % 60;
+                    seconds -= minutes * 60;
+                    if(minutes >= 60)
+                    {
+                        hours = minutes % 60;
+                        minutes -= hours * 60;
+                    }
+                }
+               
+              
+                reader.CurrentTime = new TimeSpan(hours, minutes, seconds);
+
+                minutes = Convert.ToInt32(Math.Floor(reader.CurrentTime.TotalMinutes));
+                seconds = reader.CurrentTime.Seconds;
+                string minutesString = "";
+                string secondsString = "";
+                if (seconds < 10)
+                {
+                    secondsString = $"0{seconds}";
+                }
+                else
+                {
+                    secondsString = $"{seconds}";
+                }
+                if (minutes < 10)
+                {
+                    minutesString = $"0{minutes}";
+                }
+                else
+                {
+                    minutesString = $"{minutes}";
+                }
+                AudioCurrentValue = $"{minutesString}:{secondsString}";
             }
         }
         private void ExecutePlayStopAudio(object obj)
@@ -338,6 +436,8 @@ namespace Noutecon__Exam_.ViewModel
         {
            ClearData();
             testRepository.SetStudentResult(CalculateResult(), mainViewViewModel.CurrentStudentAccount.Id, testModelOriginal.Id);
+            
+            
             mainViewViewModel.ShowTestsView.Execute(null);
         }
 
@@ -377,7 +477,7 @@ namespace Noutecon__Exam_.ViewModel
                 }
                 else if (question is IManualAnswer manualAnswer)
                 {
-                    if(manualAnswer.RightAnswer == (testModelOriginal.Questions[i] as IManualAnswer).RightAnswer)
+                    if(manualAnswer.RightAnswer.ToLower() == (testModelOriginal.Questions[i] as IManualAnswer).RightAnswer.ToLower())
                     {
                         result += maxPointsPerQuestion;
                     }
@@ -522,10 +622,14 @@ namespace Noutecon__Exam_.ViewModel
                         minutesString = $"{minutes}";
                     }
                     AudioCurrentValue = $"{minutesString}:{secondsString}";
-                    selectedAudioPosition = reader.CurrentTime.Seconds;
-                    OnPropertyChanged(nameof(SelectedAudioPosition));
+                    if(!isDragging)
+                    {
+                        selectedAudioPosition = reader.CurrentTime.TotalSeconds;
+                        OnPropertyChanged(nameof(SelectedAudioPosition));
+                    }
+                    
                 };
-                audioTimer.Interval = 1000;
+                audioTimer.Interval = 1070;
             }
             if (q is IOneAnswer ioa)
             {

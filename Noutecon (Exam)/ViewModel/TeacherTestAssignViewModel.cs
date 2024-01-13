@@ -40,12 +40,12 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand AssignStudentsToTest { get; }
         public ICommand DetailedAssignStudents { get; }
 
-        public TeacherTestAssignViewModel(TeacherViewViewModel tvvm, List<AssignedClassWithStudentsClass> assignedClassWithStudentsClasses, TestModel testModel, TestModel? testModelToEdit/* List<StudentAccountModel>? selectedStudents, List<ClassModel>? alreadySelectedClasses*/)
+        public TeacherTestAssignViewModel(TeacherViewViewModel tvvm, List<AssignedClassWithStudentsClass> assignedClassWithStudentsClassesGiven, TestModel testModel, TestModel? testModelToEdit/* List<StudentAccountModel>? selectedStudents, List<ClassModel>? alreadySelectedClasses*/)
         {
             teacherViewViewModel = tvvm;
             /*this.selectedStudents = selectedStudents;
             this.alreadySelectedClasses = alreadySelectedClasses;*/
-            this.assignedClassWithStudentsClasses = assignedClassWithStudentsClasses;
+            this.assignedClassWithStudentsClasses = assignedClassWithStudentsClassesGiven;
             this.testModel = testModel;
             this.testModelToEdit = testModelToEdit;
             Classes = new ObservableCollection<ClassAssignViewModel>();
@@ -271,8 +271,15 @@ namespace Noutecon__Exam_.ViewModel
             else
             {
                 testModelToEdit.Students = testModel.Students;
-                
-                if(testModel.Name != testRepository.GetNameById(testModelToEdit.Id))
+                TestModel origTest = testRepository.GetById(testModelToEdit.Id);
+                if (TestModelEqual(origTest, testModelToEdit))
+                {
+                    testRepository.UpdateTestMainValuesAndStudents(testModelToEdit.Id, testModelToEdit);
+                    teacherViewViewModel.ShowTestsView.Execute(obj);
+                    return;
+                }
+
+                if (testModel.Name != testRepository.GetNameById(testModelToEdit.Id))
                 {
                     string testDirPath = $"{System.AppDomain.CurrentDomain.BaseDirectory}\\Tests\\{testModel.Name}_{testModelToEdit.Id}";
                     if (!Directory.Exists(testDirPath))
@@ -342,6 +349,9 @@ namespace Noutecon__Exam_.ViewModel
                 }
                 else
                 {
+                    
+                    
+
                     string testDirPath = $"{System.AppDomain.CurrentDomain.BaseDirectory}\\Tests\\{testModel.Name}Helper_{testModelToEdit.Id}";
                     if (!Directory.Exists(testDirPath))
                     {
@@ -476,6 +486,73 @@ namespace Noutecon__Exam_.ViewModel
             }
             teacherViewViewModel.ShowTestsView.Execute(obj);
 
+        }
+
+        private bool TestModelEqual(TestModel testModel1, TestModel testModel2)
+        {
+            if (testModel1.Questions.Count == testModel2.Questions.Count)
+            {
+                int j = 0;
+                foreach (QuestionModel qm in testModel1.Questions)
+                {
+                    QuestionModel testToEditQuestion = testModel2.Questions[j];
+                    //if (qm.QuestionText != testToEditQuestion.QuestionText || qm.ImagePath != testToEditQuestion.ImagePath || qm.AudioPath != testToEditQuestion.AudioPath)
+                    //{
+                    //    return false;
+                    //}
+                    if (qm is IOneAnswer oneAnswer)
+                    {
+                        if (oneAnswer.Answers.Count != (testModel2.Questions[j] as IOneAnswer).Answers.Count || oneAnswer.RightAnswer != (testModel2.Questions[j] as IOneAnswer).RightAnswer)
+                        {
+                            return false;
+                        }
+                        int k = 0;
+                        foreach (string answer in oneAnswer.Answers)
+                        {
+                            if (answer != (testToEditQuestion as IOneAnswer).Answers[k])
+                            {
+                                return false;
+                            }
+                            k++;
+                        }
+                    }
+                    else if (qm is IMultipleAnswer multipleAnswer)
+                    {
+                        if (multipleAnswer.Answers.Count != (testModel2.Questions[j] as IMultipleAnswer).Answers.Count || multipleAnswer.RightAnswers.Count != (testModel2.Questions[j] as IMultipleAnswer).RightAnswers.Count)
+                        {
+                            return false;
+                        }
+                        int k = 0;
+                        foreach (string answer in multipleAnswer.Answers)
+                        {
+                            if (answer != (testToEditQuestion as IMultipleAnswer).Answers[k])
+                            {
+                                return false;
+                            }
+                            k++;
+                        }
+                        k = 0;
+                        foreach (int isRight in multipleAnswer.RightAnswers)
+                        {
+                            if (isRight != (testToEditQuestion as IMultipleAnswer).RightAnswers[k])
+                            {
+                                return false;
+                            }
+                            k++;
+                        }
+                    }
+                    else if (qm is IManualAnswer manualAnswer)
+                    {
+                        if(manualAnswer.RightAnswer != (testModel2.Questions[j] as IManualAnswer).RightAnswer)
+                        {
+                            return false;
+                        }
+                    }
+                    j++;
+                }
+                return true;
+            }
+            return false;
         }
 
         private bool AssignedClassWithStudentsClassesContainsClass(List<AssignedClassWithStudentsClass> ascwsclist, ClassModel classContainsOrNo)

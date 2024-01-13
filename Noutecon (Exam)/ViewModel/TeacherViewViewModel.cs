@@ -44,6 +44,7 @@ namespace Noutecon__Exam_.ViewModel
         public ICommand ShowTestsSettingsView { get; }
        public ICommand ShowTestsAssignClassesView { get; }
         public ICommand ShowDetailedStudentsSelectionView { get; }
+        public ICommand ShowStudentDetailedTestsView { get; }
 
         public TeacherViewViewModel()
         {
@@ -63,7 +64,14 @@ namespace Noutecon__Exam_.ViewModel
             ShowTestsSettingsView = new ViewModelCommand(ExecuteShowTestsSettingsView);
             ShowTestsAssignClassesView = new ViewModelCommand(ExecuteShowTestsAssignClassesView);
             ShowDetailedStudentsSelectionView = new ViewModelCommand(ExecuteShowDetailedStudentsSelectionView);
+            ShowStudentDetailedTestsView = new ViewModelCommand(ExecuteShowStudentDetailedTestsView);
             ExecuteShowHomeView(null);
+        }
+
+        private void ExecuteShowStudentDetailedTestsView(object obj)
+        {
+            object[] ar = obj as object[];
+            CurrentChildView = new StudentDetailedTestsViewModel(this, ar[0] as StudentAccountModel, ar[1] as ClassModel);
         }
 
         private void ExecuteShowDetailedStudentsSelectionView(object obj)

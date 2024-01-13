@@ -31,6 +31,7 @@ namespace Noutecon__Exam_.ViewModel
         private IStudentRepository studentRepository;
 
         public ICommand AssignStudentsToTest { get; }
+        public ICommand AssignAllStudentsToTest { get; }
 
         public DetailedStudentsSelectionViewModel(TeacherViewViewModel tvvm, List<AssignedClassWithStudentsClass> assignedClassWithStudentsClasses/*List<StudentAccountModel>? selectedStudents, List<ClassModel>? alreadySelectedClasses*/, ClassModel currentClass, TestModel testModel, TestModel testModelToEdit)
         {
@@ -44,6 +45,13 @@ namespace Noutecon__Exam_.ViewModel
             studentRepository = new StudentRepository();
             Students = studentRepository.GetStudentsAccountsByClassId(currentClass.Id);
             AssignStudentsToTest = new ViewModelCommand(ExecuteAssignStudentsToTest);
+            AssignAllStudentsToTest = new ViewModelCommand(ExecuteAssignAllStudentsToTest);
+        }
+
+        private void ExecuteAssignAllStudentsToTest(object obj)
+        {
+            assignedClassWithStudentsClasses.Where(o => o.AlreadySelectedClass.UniqueId == currentClass.UniqueId).First().SelectedStudents = studentRepository.GetStudentsAccountsByClassId(currentClass.Id).ToList();
+            teacherViewViewModel.ShowTestsAssignClassesView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, testModel, testModelToEdit });
         }
 
         private void ExecuteAssignStudentsToTest(object obj)

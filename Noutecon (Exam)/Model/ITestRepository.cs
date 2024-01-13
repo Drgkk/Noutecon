@@ -22,5 +22,6 @@ namespace Noutecon__Exam_.Model
         (int, double) GetStudentTriesAndResult(int studentId, int testId);
         void SetStudentResult(double result, int studentId, int testId);
         TeacherAccountModel GetTestTeacher(int testId);
+        void UpdateTestMainValuesAndStudents(int testId, TestModel testModel);
     }
 }

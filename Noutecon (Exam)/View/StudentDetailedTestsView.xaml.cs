@@ -1,6 +1,4 @@
-﻿using Microsoft.Xaml.Behaviors;
-using Noutecon__Exam_.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,17 +16,13 @@ using System.Windows.Shapes;
 namespace Noutecon__Exam_.View
 {
     /// <summary>
-    /// Interaction logic for StudentTestCompletionView.xaml
+    /// Interaction logic for StudentDetailedTestsView.xaml
     /// </summary>
-    public partial class StudentTestCompletionView : UserControl
+    public partial class StudentDetailedTestsView : UserControl
     {
-        public StudentTestCompletionView()
+        public StudentDetailedTestsView()
         {
             InitializeComponent();
         }
-
-        
     }
-
-
 }

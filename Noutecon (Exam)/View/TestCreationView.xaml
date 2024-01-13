@@ -200,15 +200,15 @@ Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment=
                 Foreground="{StaticResource HeaderColor}"
                 FontWeight="Bold"
                 Text="Answer:"/>
-                    <TextBlock FontFamily="Gautami"
+                    <!--<TextBlock FontFamily="Gautami"
 FontSize="16"
 Foreground="{StaticResource HeaderColor}"
 FontWeight="Bold"
 Text="Max length of answer:"
                                TextWrapping="Wrap"/>
-                    <TextBox x:Name="MaxLengthAnswerTextBox" MaxLength="3" PreviewTextInput="TextBox_PreviewTextInput" DataObject.Pasting="TextBox_Pasting" Text="20"/>
+                    <TextBox x:Name="MaxLengthAnswerTextBox" MaxLength="3" PreviewTextInput="TextBox_PreviewTextInput" DataObject.Pasting="TextBox_Pasting" Text="20"/>-->
                 </StackPanel>
-                <TextBox MaxLength="{Binding ElementName=MaxLengthAnswerTextBox, Path=Text}" VerticalAlignment="Top" Margin="10, 0, 10, 0" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding ManualAnswerRightAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox MaxLength="80" VerticalAlignment="Top" Margin="10, 0, 10, 0" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding ManualAnswerRightAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
             <StackPanel Orientation="Horizontal"

@@ -14,6 +14,10 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical"
             VerticalAlignment="Top"
                     HorizontalAlignment="Left"
@@ -44,6 +48,25 @@ Margin="10, 0, 10, 0"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
+
+            <Button Style="{StaticResource buttonWithIcon}"
+                    Grid.Column="1"
+    Width="280"
+    Height="80"
+    VerticalAlignment="Center"
+    Tag="{StaticResource Color1}"
+    Command="{Binding AssignAllStudentsToTest}"
+    HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Assign All Students" VerticalAlignment="Center"
+ Foreground="{StaticResource TextColor}"
+ FontSize="20"
+            FontWeight="Bold"
+ FontFamily="Gautami"
+Margin="10, 0, 10, 0"/>
+                    <fa:IconImage Icon="ArrowLeft" Height="26" Width="26"  Foreground="{StaticResource Color3}"/>
+                </StackPanel>
+            </Button>
 
         </Grid>
 

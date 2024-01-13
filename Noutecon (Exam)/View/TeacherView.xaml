@@ -71,7 +71,9 @@
             <local:DetailedStudentsSelectionView/>
         </DataTemplate>
 
-        
+        <DataTemplate DataType="{x:Type viewModel:StudentDetailedTestsViewModel}">
+            <local:StudentDetailedTestsView/>
+        </DataTemplate>
 
     </Window.Resources>
 

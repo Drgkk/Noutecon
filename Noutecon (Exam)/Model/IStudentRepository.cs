@@ -28,5 +28,6 @@ namespace Noutecon__Exam_.Model
         void EditPfpById(int id, string pfpPath);
         void EditPassword(int id, NetworkCredential nc);
         NetworkCredential GetNetworkCredential(int id);
+        ObservableCollection<double> GetAllGradesFromTeacher(int teacherId);
     }
 }
