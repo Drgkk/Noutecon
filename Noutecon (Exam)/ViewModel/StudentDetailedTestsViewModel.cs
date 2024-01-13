@@ -35,7 +35,7 @@ namespace Noutecon__Exam_.ViewModel
             testRepository = new TestRepository();
             Tests = new ObservableCollection<StudentTestViewToShowInList>();
             GoBack = new ViewModelCommand(ExecuteGoBack);
-            foreach (var test in testRepository.GetTestsByStudentId(currentStudent.Id))
+            foreach (var test in testRepository.GetTestsByStudentIdAndTeacherId(currentStudent.Id, teacherViewViewModel.CurrentTeacher.Id))
             {
                 Tests.Add(new StudentTestViewToShowInList(currentStudent) { Test = test });
             }

@@ -14,6 +14,7 @@ namespace Noutecon__Exam_.Model
         TestModel GetById(int id);
         ObservableCollection<TestModel> GetTestsByTeacherId(int teacherId);
         ObservableCollection<TestModel> GetTestsByStudentId(int studentId);
+        ObservableCollection<TestModel> GetTestsByStudentIdAndTeacherId(int studentId, int teacherId);
         int GetTestId(string name);
         bool ValidateTest(string name);
         void EditImageAndAudioById(string imagePath, string audioPath, int testId, int questionNum);
