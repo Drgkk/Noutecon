@@ -19,8 +19,10 @@ namespace Noutecon__Exam_.ViewModel
         public ViewModelBase CurrentChildView
         {
             get { return currentChildView; }
-            set { currentChildView = value; OnPropertyChanged(nameof(CurrentChildView)); }
+            set { OnCurrentChildViewChanged(); currentChildView = value; OnPropertyChanged(nameof(CurrentChildView)); }
         }
+
+        
 
         private IconChar icon;
 
@@ -67,6 +69,14 @@ namespace Noutecon__Exam_.ViewModel
             //Thread validateStudentThread = new Thread(new ThreadStart(ThreadWorkValidateUser));
             //validateStudentThread.IsBackground = true;
             //validateStudentThread.Start();  
+        }
+
+        private void OnCurrentChildViewChanged()
+        {
+            if(CurrentChildView is StudentTestCompletionViewModel studentTestCompletionViewModel)
+            {
+                studentTestCompletionViewModel.Dispose();
+            }
         }
 
         private void ExecuteShowTestCompletionView(object obj)

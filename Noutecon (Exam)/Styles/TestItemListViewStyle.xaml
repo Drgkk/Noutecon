@@ -16,15 +16,16 @@
                     Foreground="{StaticResource PanelActiveColor}"
                     FontWeight="Bold"/>
                                 <TextBlock Style="{StaticResource ClassButtonText}" FontSize="26"
-Foreground="{StaticResource HeaderColor}"
-FontWeight="Bold">
+                                        Foreground="{StaticResource HeaderColor}"
+                                        FontWeight="Bold">
                                    <Run Text="Category: "/>
                                    <Run Text="{Binding Category}" Foreground="{StaticResource PanelActiveColor}"/>
                                 </TextBlock>
+                                
                                 <TextBlock
-Style="{StaticResource ClassButtonText}" FontSize="16"
-Foreground="{StaticResource HeaderColor}"
-FontWeight="Bold">
+                                    Style="{StaticResource ClassButtonText}" FontSize="16"
+                                    Foreground="{StaticResource HeaderColor}"
+                                    FontWeight="Bold">
                                     <Run Text="Number of tries: "/>
                                     <Run Text="{Binding NumberOfTries}"/>
                                 </TextBlock>

@@ -306,8 +306,21 @@ namespace Noutecon__Exam_.ViewModel
                 return;
             }
 
+           
             string filePathOld = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentStudent.Username}.jpg";
             string filePathNew = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{Username}.jpg";
+            if(!File.Exists(filePathOld))
+            {
+                studentRepository.EditStudentUsername(currentStudent.Id, Username);
+                StudentAccountModel model2 = studentRepository.GetAccountById(mainViewViewModel.CurrentStudentAccount.Id);
+                mainViewViewModel.CurrentStudentAccount = model2;
+                CurrentStudent = model2;
+                return;
+            }
+            mainViewViewModel.CurrentStudentAccount.ProfilePicturePath = filePathNew;
+            CurrentStudent.ProfilePicturePath = filePathNew;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             if (File.Exists(filePathOld))
             {
                 using (File.Create(filePathNew)) { }
@@ -315,21 +328,36 @@ namespace Noutecon__Exam_.ViewModel
             }
 
             studentRepository.EditStudentUsername(currentStudent.Id, Username);
+
             studentRepository.EditPfpById(currentStudent.Id, filePathNew);
             StudentAccountModel model = studentRepository.GetAccountById(mainViewViewModel.CurrentStudentAccount.Id);
             mainViewViewModel.CurrentStudentAccount = model;
             CurrentStudent = model;
-            //File.Delete(filePathOld);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            File.Delete(filePathOld);
         }
 
         private void ExecuteChangePFP(object obj)
         {
+
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filePath = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentStudent.Username}.jpg";
-                using (File.Create(filePath)) { }
+                if (!File.Exists(filePath))
+                {
+                    using (File.Create(filePath)) { }
+                }
+                else
+                {
+                    StudentAccountModel studentAccountModelTemp = new StudentAccountModel() { Id = mainViewViewModel.CurrentStudentAccount.Id, FirstName = mainViewViewModel.CurrentStudentAccount.FirstName, LastName = mainViewViewModel.CurrentStudentAccount.LastName, Username = mainViewViewModel.CurrentStudentAccount.Username, ProfilePicturePath = " " };
+                    mainViewViewModel.CurrentStudentAccount = studentAccountModelTemp;
+                    CurrentStudent = studentAccountModelTemp;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
                 System.IO.File.Copy(fileDialog.FileName, filePath, true);
                 studentRepository.EditPfpById(mainViewViewModel.CurrentStudentAccount.Id, filePath);
                 StudentAccountModel model = studentRepository.GetAccountById(mainViewViewModel.CurrentStudentAccount.Id);

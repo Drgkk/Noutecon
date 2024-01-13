@@ -107,7 +107,7 @@ namespace Noutecon__Exam_.Repositories
                         command.Parameters.Clear();
                         command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
                         command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = student.Id;
-                        command.Parameters.Add("@result", System.Data.SqlDbType.Int).Value = 0;
+                        command.Parameters.Add("@result", System.Data.SqlDbType.Float).Value = 0;
                         command.Parameters.Add("@numOfTriesStud", System.Data.SqlDbType.Int).Value = 0;
                         command.ExecuteNonQuery();
                     }
@@ -582,7 +582,7 @@ namespace Noutecon__Exam_.Repositories
                         command.Parameters.Clear();
                         command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
                         command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = student.Id;
-                        command.Parameters.Add("@result", System.Data.SqlDbType.Int).Value = 0;
+                        command.Parameters.Add("@result", System.Data.SqlDbType.Float).Value = 0;
                         command.Parameters.Add("@numOfTriesStud", System.Data.SqlDbType.Int).Value = 0;
                         command.ExecuteNonQuery();
                     }
@@ -615,6 +615,80 @@ namespace Noutecon__Exam_.Repositories
                 }
             }
             return name;
+        }
+
+        public (int, double) GetStudentTriesAndResult(int studentId, int testId)
+        {
+            int studentTries = 0;
+            double result = 0;
+            using(var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select [NumberOfTries], [Result] from [TestStudent] where [StudentId] = @studentId and [TestId] = @testId";
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = studentId;
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Int).Value = testId;
+                    using(var reader = command.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            studentTries = reader.GetInt32(0);
+                            result = reader.GetDouble(1);
+                        }
+                    }
+                }
+            }
+            return (studentTries, result);
+        }
+
+        public void SetStudentResult(double result, int studentId, int testId)
+        {
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "update [TestStudent] set [NumberOfTries] = [NumberOfTries] + 1, [Result] = @result where [StudentId] = @studentId and [TestId] = @testId";
+                    command.Parameters.Add("@result", System.Data.SqlDbType.Float).Value = result;
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Float).Value = studentId;
+                    command.Parameters.Add("@testId", System.Data.SqlDbType.Float).Value = testId;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public TeacherAccountModel GetTestTeacher(int testId)
+        {
+            TeacherAccountModel teacherAccountModel = new TeacherAccountModel();
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select * from [Teacher] where Id = (select TeacherId from [Test] where Id = @id)";
+                    command.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = testId;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            teacherAccountModel = new TeacherAccountModel()
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                FirstName = reader.GetString(3),
+                                LastName = reader.GetString(4),
+                                School = reader.GetString(5),
+                                ProfilePicturePath = reader.GetString(6)
+                            };
+                        }
+                    }
+                }
+            }
+            return teacherAccountModel;
         }
 
     }

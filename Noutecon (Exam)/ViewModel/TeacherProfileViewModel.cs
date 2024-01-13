@@ -315,6 +315,14 @@ namespace Noutecon__Exam_.ViewModel
 
             string filePathOld = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{CurrentTeacher.Username}.jpg";            
             string filePathNew = $"{System.AppDomain.CurrentDomain.BaseDirectory}ProfilePictures\\{Username}.jpg";
+            if (!File.Exists(filePathOld))
+            {
+                teacherRepository.EditTeacherUsername(currentTeacher.Id, Username);
+                TeacherAccountModel model2 = teacherRepository.GetAccountById(teacherViewViewModel.CurrentTeacher.Id);
+                teacherViewViewModel.CurrentTeacher = model2;
+                CurrentTeacher = model2;
+                return;
+            }
             teacherViewViewModel.CurrentTeacher.ProfilePicturePath = filePathNew;
             CurrentTeacher.ProfilePicturePath = filePathNew;
             GC.Collect();

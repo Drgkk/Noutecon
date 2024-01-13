@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="/Styles/ClassItemForStudentListViewStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/SoundSliderStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/TestItemListViewStyle.xaml"/>
+                <ResourceDictionary Source="/Styles/StudentTestItemListViewStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

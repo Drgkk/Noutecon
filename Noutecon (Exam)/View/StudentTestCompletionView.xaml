@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Noutecon__Exam_.View"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="590" d:DesignWidth="1000">
     <UserControl.Resources>
@@ -60,6 +61,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
                 <CheckBox x:Name="AudioCheckBox" VerticalAlignment="Center" Margin="0, 0, 10, 0" IsChecked="{Binding AudioVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
@@ -67,12 +69,29 @@
         BorderThickness="0" 
         Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
         Style="{StaticResource IsEnabledOpacityStyle}" Cursor="Hand"
-                        Command="{Binding SetAudio}">
+                        Command="{Binding PlayStopAudio}">
                     <fa:IconImage Icon="PlayCircle" Height="50" Foreground="{StaticResource Color2}"/>
                 </Button>
-            </StackPanel>
 
-            <Slider Maximum="100" Minimum="0" VerticalAlignment="Center" TickPlacement="None" Margin="10, 0, 10, 0" Style="{StaticResource SoundSliderStyle}" Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1"/>
+            </StackPanel>
+            <Slider 
+                    Value="{Binding SelectedAudioPosition, Mode=TwoWay, UpdateSourceTrigger=Default}" Maximum="{Binding AudioMaxPosition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Minimum="0" VerticalAlignment="Center" TickPlacement="None" Margin="10, 0, 10, 0" Style="{StaticResource SoundSliderStyle}"
+                    Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="">
+                        <i:InvokeCommandAction Command="{Binding DragStarted}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Slider>
+            <TextBlock  VerticalAlignment="Center" Grid.Column="2"
+FontSize="12"
+Foreground="{StaticResource TextColor}" Visibility="{Binding ElementName=AudioCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Run Text="{Binding AudioCurrentValue}"/>
+                    <Run Text="/"/>
+                    <Run Text="{Binding AudioMaxValue}"/>
+            </TextBlock>
+
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1" x:Name="AnswerGrid">

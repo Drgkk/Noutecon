@@ -1,17 +1,19 @@
-﻿using Noutecon__Exam_.Model;
+﻿using NAudio.Wave;
+using Noutecon__Exam_.Model;
 using Noutecon__Exam_.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace Noutecon__Exam_.ViewModel
 {
-    public class StudentTestCompletionViewModel : ViewModelBase
+    public class StudentTestCompletionViewModel : ViewModelBase, IDisposable
     {
 
         private bool audioVisibility;
@@ -22,6 +24,41 @@ namespace Noutecon__Exam_.ViewModel
             set { audioVisibility = value; OnPropertyChanged(nameof(AudioVisibility)); }
         }
 
+        private string audioCurrentValue;
+
+        public string AudioCurrentValue
+        {
+            get { return audioCurrentValue; }
+            set { audioCurrentValue = value; OnPropertyChanged(nameof(AudioCurrentValue)); }
+        }
+
+        private string audioMaxValue;
+
+        public string AudioMaxValue
+        {
+            get { return audioMaxValue; }
+            set { audioMaxValue = value; OnPropertyChanged(nameof(AudioMaxValue)); }
+        }
+
+        private double audioMaxPosition;
+
+        public double AudioMaxPosition
+        {
+            get { return audioMaxPosition; }
+            set { audioMaxPosition = value; OnPropertyChanged(nameof(AudioMaxPosition)); }
+        }
+
+        private double selectedAudioPosition;
+
+        public double SelectedAudioPosition
+        {
+            get { return selectedAudioPosition; }
+            set { selectedAudioPosition = value; OnPropertyChanged(nameof(SelectedAudioPosition)); OnSelectedAudioPositionChanged(); }
+        }
+
+        
+
+        private System.Windows.Forms.Timer audioTimer;
 
         //Visibilities
 
@@ -171,18 +208,25 @@ namespace Noutecon__Exam_.ViewModel
         private List<QuestionModel> questions;
         private Func<string, string, string, QuestionModel> createQuestion;
 
+        private Mp3FileReader reader;
+        private WaveOut waveOut;
+
+        private ITestRepository testRepository;
         
         public ICommand NextQuestion { get; }
         public ICommand PreviousQuestion { get; }
         public ICommand DeleteTest { get; }
         public ICommand CreateTest { get; }
         public ICommand SaveQuestion { get; }
-
+        public ICommand PlayStopAudio { get; }
+        public ICommand DragStarted { get; }
         public StudentTestCompletionViewModel(MainViewViewModel mvvm, TestModel testModelOriginal)
         {
             mainViewViewModel = mvvm;
             this.testModel = new TestModel() { Questions = new List<QuestionModel>() };
             this.testModelOriginal = testModelOriginal;
+            testRepository = new TestRepository();
+            audioTimer = new System.Windows.Forms.Timer();
             foreach (var question in testModelOriginal.Questions)
             {
                 if (question is IOneAnswer oneAnswer)
@@ -204,10 +248,44 @@ namespace Noutecon__Exam_.ViewModel
             DeleteTest = new ViewModelCommand(ExecuteDeleteTest);
             CreateTest = new ViewModelCommand(ExecuteCreateTest, CanExecuteCreateTest);
             SaveQuestion = new ViewModelCommand(ExecuteSaveQuestion);
+            PlayStopAudio = new ViewModelCommand(ExecutePlayStopAudio);
+            DragStarted = new ViewModelCommand(ExecuteDragStarted);
             CurrentQuestion = 0;
             ClearData();
             questions = testModelOriginal.Questions;
             UpdateQuestionData(questions[0], CurrentQuestion);
+        }
+
+        private void ExecuteDragStarted(object obj)
+        {
+            MessageBox.Show("Drag Started");
+        }
+
+        private void OnSelectedAudioPositionChanged()
+        {
+            if(reader != null)
+            {
+                reader.CurrentTime = new TimeSpan(0, 0, (int)SelectedAudioPosition);
+            }
+        }
+        private void ExecutePlayStopAudio(object obj)
+        {
+            if(waveOut.PlaybackState == PlaybackState.Stopped)
+            {
+                audioTimer.Start();
+                waveOut.Play();
+            }
+            else if (waveOut.PlaybackState == PlaybackState.Paused)
+            {
+                audioTimer.Start();
+                waveOut.Resume();
+            }
+            else if (waveOut.PlaybackState == PlaybackState.Playing)
+            {
+                audioTimer.Stop();
+                waveOut.Pause();
+            }
+
         }
 
         private void ExecuteSaveQuestion(object obj)
@@ -258,11 +336,60 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteCreateTest(object obj)
         {
-            
+           ClearData();
+            testRepository.SetStudentResult(CalculateResult(), mainViewViewModel.CurrentStudentAccount.Id, testModelOriginal.Id);
+            mainViewViewModel.ShowTestsView.Execute(null);
+        }
+
+        private double CalculateResult()
+        {
+            double result = 0;
+            double maxPointsPerQuestion = 100.0 / testModelOriginal.Questions.Count;
+            int i = 0;
+            foreach(var question in testModel.Questions)
+            {
+                if (question is IOneAnswer oneAnswer)
+                {
+                    if(oneAnswer.RightAnswer == (testModelOriginal.Questions[i] as IOneAnswer).RightAnswer)
+                    {
+                        result += maxPointsPerQuestion;
+                    }
+                }
+                else if (question is IMultipleAnswer multipleAnswer)
+                {
+                    double rightAnswersTotal = 0;
+                    foreach(int rightAnswer in multipleAnswer.RightAnswers)
+                    {
+                        if ((testModelOriginal.Questions[i] as IMultipleAnswer).RightAnswers.Contains(rightAnswer))
+                        {
+                            rightAnswersTotal++;
+                        }
+                        else
+                        {
+                            rightAnswersTotal--;
+                        }
+                    }
+                    if(rightAnswersTotal < 0)
+                    {
+                        rightAnswersTotal = 0;
+                    }
+                    result += (rightAnswersTotal/ (testModelOriginal.Questions[i] as IMultipleAnswer).RightAnswers.Count) * maxPointsPerQuestion;
+                }
+                else if (question is IManualAnswer manualAnswer)
+                {
+                    if(manualAnswer.RightAnswer == (testModelOriginal.Questions[i] as IManualAnswer).RightAnswer)
+                    {
+                        result += maxPointsPerQuestion;
+                    }
+                }
+                i++;
+            }
+            return result;
         }
 
         private void ExecuteDeleteTest(object obj)
         {
+            ClearData();
             mainViewViewModel.ShowTestsView.Execute(obj);
         }
 
@@ -312,6 +439,19 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ClearData()
         {
+            if(waveOut != null)
+            {
+                waveOut.Dispose();
+            }
+            if(reader != null)
+            {
+                reader.Dispose();
+            }
+            if(audioTimer != null && audioTimer.Enabled)
+            {
+                audioTimer.Stop();
+            }
+            
             QuestionText = "Question Text";
             ImagePath = "/Images/NoImageIcon.png";
             OneAnswerAnswers = new ObservableCollection<StudentsOneChoicesViewModel>();
@@ -321,12 +461,72 @@ namespace Noutecon__Exam_.ViewModel
 
         private void UpdateQuestionData(QuestionModel q, int questionId)
         {
+            AudioVisibility = false;
             OneAnswerVisibility = false;
             MultipleAnswersVisibility = false;
             ManualAnswerVisibility = false;
             QuestionText = q.QuestionText;
             ImagePath = q.ImagePath;
             AudioPath = q.AudioPath;
+            if(AudioPath != null)
+            {
+                reader = new Mp3FileReader(testModelOriginal.Questions[CurrentQuestion].AudioPath);
+                waveOut = new WaveOut();
+                waveOut.Init(reader);
+                AudioVisibility = true;
+                SelectedAudioPosition = 0;
+                AudioCurrentValue = "00:00";
+                AudioMaxPosition = reader.TotalTime.TotalSeconds;
+                int min = Convert.ToInt32(Math.Floor(reader.TotalTime.TotalMinutes));
+                string minStr = "";
+                if(min < 10)
+                {
+                    minStr = $"0{min}";
+                }
+                else
+                {
+                    minStr = $"{min}";
+                }
+                int sec = reader.TotalTime.Seconds;
+                string secStr = "";
+                if (sec < 10)
+                {
+                    secStr = $"0{sec}";
+                }
+                else
+                {
+                    secStr = $"{sec}";
+                }
+                AudioMaxValue = $"{minStr}:{secStr}";
+                waveOut.Volume = 1.0f;
+                audioTimer.Tick += (object sender, EventArgs e) =>
+                {
+                    int minutes = Convert.ToInt32(Math.Floor(reader.CurrentTime.TotalMinutes));
+                    int seconds = reader.CurrentTime.Seconds;
+                    string minutesString = "";
+                    string secondsString = "";
+                    if(seconds < 10)
+                    {
+                        secondsString = $"0{seconds}";
+                    }
+                    else
+                    {
+                        secondsString = $"{seconds}";
+                    }
+                    if(minutes < 10)
+                    {
+                        minutesString = $"0{minutes}";
+                    }
+                    else
+                    {
+                        minutesString = $"{minutes}";
+                    }
+                    AudioCurrentValue = $"{minutesString}:{secondsString}";
+                    selectedAudioPosition = reader.CurrentTime.Seconds;
+                    OnPropertyChanged(nameof(SelectedAudioPosition));
+                };
+                audioTimer.Interval = 1000;
+            }
             if (q is IOneAnswer ioa)
             {
                 OneAnswerAnswers = new ObservableCollection<StudentsOneChoicesViewModel>();
@@ -369,10 +569,10 @@ namespace Noutecon__Exam_.ViewModel
             CurrentQuestionDisplay = CurrentQuestion + 1;
         }
 
-
-
-        
-
+        public void Dispose()
+        {
+            ClearData();
+        }
     }
 
 

@@ -586,7 +586,7 @@ namespace Noutecon__Exam_.ViewModel
         private void ExecuteSetAudio(object obj)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "AudioFiles|*.mp3;*.wav";
+            openFileDialog.Filter = "AudioFiles|*.mp3";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 AudioPath = openFileDialog.FileName;

@@ -19,5 +19,8 @@ namespace Noutecon__Exam_.Model
         void EditImageAndAudioById(string imagePath, string audioPath, int testId, int questionNum);
         void Edit(int testId, TestModel testModel);
         string GetNameById(int testId);
+        (int, double) GetStudentTriesAndResult(int studentId, int testId);
+        void SetStudentResult(double result, int studentId, int testId);
+        TeacherAccountModel GetTestTeacher(int testId);
     }
 }
