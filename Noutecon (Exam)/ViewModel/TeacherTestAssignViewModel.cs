@@ -152,7 +152,20 @@ namespace Noutecon__Exam_.ViewModel
                 }
                 
             }
-            
+            List<AssignedClassWithStudentsClass> classesToRemove = new List<AssignedClassWithStudentsClass>();
+            foreach (AssignedClassWithStudentsClass acwsc in assignedClassWithStudentsClasses)
+            {
+                if (!ClassAssignViewModelContainsClassModel(selectedClasses.ToList(), acwsc.AlreadySelectedClass))
+                {
+                    classesToRemove.Add(acwsc);
+                }
+
+            }
+            foreach(var cl in classesToRemove)
+            {
+                assignedClassWithStudentsClasses.Remove(cl);
+            }
+
             teacherViewViewModel.ShowDetailedStudentsSelectionView.Execute(new object[] { teacherViewViewModel, assignedClassWithStudentsClasses, selectedClass.ClassToAssign, testModel, testModelToEdit });
         }
 
@@ -496,10 +509,10 @@ namespace Noutecon__Exam_.ViewModel
                 foreach (QuestionModel qm in testModel1.Questions)
                 {
                     QuestionModel testToEditQuestion = testModel2.Questions[j];
-                    //if (qm.QuestionText != testToEditQuestion.QuestionText || qm.ImagePath != testToEditQuestion.ImagePath || qm.AudioPath != testToEditQuestion.AudioPath)
-                    //{
-                    //    return false;
-                    //}
+                    if (qm.QuestionText != testToEditQuestion.QuestionText || qm.ImagePath != testToEditQuestion.ImagePath || qm.AudioPath != testToEditQuestion.AudioPath)
+                    {
+                        return false;
+                    }
                     if (qm is IOneAnswer oneAnswer)
                     {
                         if (oneAnswer.Answers.Count != (testModel2.Questions[j] as IOneAnswer).Answers.Count || oneAnswer.RightAnswer != (testModel2.Questions[j] as IOneAnswer).RightAnswer)
@@ -578,6 +591,18 @@ namespace Noutecon__Exam_.ViewModel
             return false;
         }
 
+        private bool ClassAssignViewModelContainsClassModel(List<ClassAssignViewModel> cavmlist, ClassModel classContainsOrNo)
+        {
+            foreach (ClassAssignViewModel cavm in cavmlist)
+            {
+                if (cavm.ClassToAssign.UniqueId == classContainsOrNo.UniqueId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private bool SelectedClassesContainAssignedClassWithStudentsClass(ObservableCollection<ClassAssignViewModel> cavmlist, AssignedClassWithStudentsClass acwsc)
         {
             foreach (ClassAssignViewModel cavm in cavmlist)
@@ -590,6 +615,7 @@ namespace Noutecon__Exam_.ViewModel
             return false;
         }
 
+        
     }
 
     public class ClassAssignViewModel : ViewModelBase

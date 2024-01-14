@@ -77,9 +77,18 @@ namespace Noutecon__Exam_.ViewModel
 			set { questionTextVisibility = value; OnPropertyChanged(nameof(QuestionTextVisibility)); }
 		}
 
-		//
+        private bool audioCheckBoxVisibility;
 
-		private string rememberQuestionText;
+        public bool AudioCheckBoxVisibility
+        {
+            get { return audioCheckBoxVisibility; }
+            set { audioCheckBoxVisibility = value; OnPropertyChanged(nameof(AudioCheckBoxVisibility)); }
+        }
+
+
+        //
+
+        private string rememberQuestionText;
 
 		private string questionText;
 
@@ -380,7 +389,7 @@ namespace Noutecon__Exam_.ViewModel
         private bool CanExecuteAddMultipleAnswerAnswer(object obj)
         {
             bool isValid = true;
-            if (MultipleAnswerAnswers.Count >= 6 || MultipleAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
+            if (/*MultipleAnswerAnswers.Count >= 6 || */MultipleAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
             {
                 isValid = false;
             }
@@ -397,7 +406,7 @@ namespace Noutecon__Exam_.ViewModel
         private bool CanExecuteAddOneAnswerAnswer(object obj)
         {
 			bool isValid = true;
-			if(OneAnswerAnswers.Count >= 6 || OneAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
+			if(/*OneAnswerAnswers.Count >= 6 || */OneAnswerAnswers.Where(o => o.AnswerTextBoxVisibility == true).FirstOrDefault() != null)
 			{
 				isValid = false;
 			}
@@ -523,11 +532,13 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ClearData()
         {
+            AudioCheckBoxVisibility = false;
             QuestionTextVisibility = true;
             QuestionTextBoxVisibility = false;
             QuestionText = "Question Text";
             rememberQuestionText = QuestionText;
             ImagePath = "/Images/NoImageIcon.png";
+            AudioPath = null;
             OneAnswerAnswers = new ObservableCollection<OneChoicesViewModel>();
             MultipleAnswerAnswers = new ObservableCollection<MultipleChoicesViewModel>();
             ManualAnswerRightAnswer = string.Empty;
@@ -540,6 +551,7 @@ namespace Noutecon__Exam_.ViewModel
             rememberQuestionText = QuestionText;
             ImagePath = q.ImagePath;
 			AudioPath = q.AudioPath;
+            AudioCheckBoxVisibility = AudioPath != null ? true : false;
             if(q is IOneAnswer ioa)
             {
                 OneAnswerAnswers = new ObservableCollection<OneChoicesViewModel>();

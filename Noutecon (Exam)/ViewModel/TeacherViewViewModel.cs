@@ -65,7 +65,7 @@ namespace Noutecon__Exam_.ViewModel
             ShowTestsAssignClassesView = new ViewModelCommand(ExecuteShowTestsAssignClassesView);
             ShowDetailedStudentsSelectionView = new ViewModelCommand(ExecuteShowDetailedStudentsSelectionView);
             ShowStudentDetailedTestsView = new ViewModelCommand(ExecuteShowStudentDetailedTestsView);
-            ExecuteShowHomeView(null);
+            ExecuteShowTestsView(null);
         }
 
         private void ExecuteShowStudentDetailedTestsView(object obj)

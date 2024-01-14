@@ -65,7 +65,7 @@ namespace Noutecon__Exam_.ViewModel
             ShowProfileView = new ViewModelCommand(ExecuteShowProfileView);
             ShowSettingsView = new ViewModelCommand(ExecuteShowSettingsView);
             ShowTestCompletionView = new ViewModelCommand(ExecuteShowTestCompletionView);
-            ExecuteShowHomeView(null);
+            ExecuteShowTestsView(null);
             //Thread validateStudentThread = new Thread(new ThreadStart(ThreadWorkValidateUser));
             //validateStudentThread.IsBackground = true;
             //validateStudentThread.Start();  

@@ -25,8 +25,8 @@
                                    <Run Text="Number of Students: "/>
                                    <Run Text="{Binding NumOfStudents}"/>
                                 </TextBlock>
-                                <TextBlock Text="Your Average Grade: "
-Style="{StaticResource ClassButtonText}"/>
+                                <!--<TextBlock Text="Your Average Grade: "
+Style="{StaticResource ClassButtonText}"/>-->
                             </StackPanel>
                             <StackPanel Orientation="Vertical"
                                         Grid.Column="1"
@@ -53,7 +53,7 @@ Style="{StaticResource ClassButtonText}"/>
                                                FontWeight="Bold"
                                                Foreground="{StaticResource HeaderColor}"/>
                                 </StackPanel>
-                                <fa:IconImage Icon="ArrowRight" Width="26" Height="26" HorizontalAlignment="Right" Foreground="AntiqueWhite"  Grid.Column="1" VerticalAlignment="Center"/>
+                                <!--<fa:IconImage Icon="ArrowRight" Width="26" Height="26" HorizontalAlignment="Right" Foreground="AntiqueWhite"  Grid.Column="1" VerticalAlignment="Center"/>-->
                             </StackPanel>
                             
                             

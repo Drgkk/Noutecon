@@ -88,7 +88,7 @@
                                    Foreground="{StaticResource HeaderColor}"/>
                     </StackPanel>
 
-                    <RadioButton Style="{StaticResource menuButton}"
+                    <!--<RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource Color4}"
                                  Command="{Binding ShowHomeView}"
                                  IsChecked="True">
@@ -96,11 +96,11 @@
                             <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
-                    </RadioButton>
+                    </RadioButton>-->
 
                     <RadioButton Style="{StaticResource menuButton}"
                                 Tag="{StaticResource Color1}"
-                                 Command="{Binding ShowTestsView}">
+                                 Command="{Binding ShowTestsView}" IsChecked="True">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Tests" Style="{StaticResource menuButtonText}"/>
@@ -125,14 +125,14 @@
                         </StackPanel>
                     </RadioButton>
 
-                    <RadioButton Style="{StaticResource menuButton}"
+                    <!--<RadioButton Style="{StaticResource menuButton}"
             Tag="{StaticResource Color5}"
                                  Command="{Binding ShowSettingsView}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
-                    </RadioButton>
+                    </RadioButton>-->
 
                 </StackPanel>
                 

@@ -86,7 +86,7 @@ Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment=
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
-                <CheckBox x:Name="AudioCheckBox" VerticalAlignment="Center" Margin="0, 0, 10, 0" IsChecked="False"/>
+                <CheckBox x:Name="AudioCheckBox" VerticalAlignment="Center" Margin="0, 0, 10, 0" IsChecked="{Binding AudioCheckBoxVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Background="Transparent"
         BorderThickness="0" 
         IsEnabled="{Binding ElementName=AudioCheckBox, Path=IsChecked}"
