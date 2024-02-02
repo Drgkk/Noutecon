@@ -1062,5 +1062,48 @@ namespace Noutecon__Exam_.Repositories
                 }
             }
         }
+
+        public void RemoveTestById(int testId)
+        {
+            using(var conn = GetConnection())
+            {
+                using(var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "delete from [TestStudent] where [TestId] = @testId";
+                    command.Parameters.Add("testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    command.CommandText = "select Id from [Question] where TestId = @testId";
+                    command.Parameters.Add("testId", System.Data.SqlDbType.Int).Value = testId;
+                    using(var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            using(var command2 = new SqlCommand())
+                            {
+                                command2.Connection = conn;
+                                command2.CommandText = "delete from [Answer] where [QuestionId] = @questionId";
+                                command2.Parameters.Add("questionId", System.Data.SqlDbType.Int).Value = reader.GetInt32(0);
+                                command2.ExecuteNonQuery();
+                                command2.Parameters.Clear();
+                            }
+                        }
+                    }
+
+                    command.Parameters.Clear();
+                    command.CommandText = "delete from [Question] where [TestId] = @testId";
+                    command.Parameters.Add("testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    command.CommandText = "delete from [Test] where [Id] = @testId";
+                    command.Parameters.Add("testId", System.Data.SqlDbType.Int).Value = testId;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

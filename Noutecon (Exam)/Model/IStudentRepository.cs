@@ -29,5 +29,6 @@ namespace Noutecon__Exam_.Model
         void EditPassword(int id, NetworkCredential nc);
         NetworkCredential GetNetworkCredential(int id);
         ObservableCollection<double> GetAllGradesFromTeacher(int teacherId);
+        public ObservableCollection<double> GetAllGradesFromStudentOfTeacher(int studentId, int teacherId);
     }
 }

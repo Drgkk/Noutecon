@@ -92,7 +92,7 @@ Foreground="{StaticResource HeaderColor}" FontWeight="Bold" HorizontalAlignment=
         IsEnabled="{Binding ElementName=AudioCheckBox, Path=IsChecked}"
         Style="{StaticResource IsEnabledOpacityStyle}" Cursor="Hand"
                         Command="{Binding SetAudio}">
-                    <fa:IconImage Icon="PlayCircle" Height="50" Foreground="{StaticResource Color2}"/>
+                    <fa:IconImage Icon="PlayCircle" Height="50" Foreground="{StaticResource Color2}" ToolTip="{Binding AudioPath}"/>
                 </Button>
             </StackPanel>
             
@@ -287,9 +287,7 @@ Delete current question.
                         <StackPanel Orientation="Vertical">
                             <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Delete Test"/>
                             <TextBlock FontFamily="Gautami" FontSize="11">
-            Cancel test creation and
-            <LineBreak/>
-            delete it.
+            Cancel test creation
                             </TextBlock>
                         </StackPanel>
                     </Button.ToolTip>

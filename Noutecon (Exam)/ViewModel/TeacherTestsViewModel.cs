@@ -54,12 +54,21 @@ namespace Noutecon__Exam_.ViewModel
         private ITestRepository testRepository;
         public ICommand ShowTestCreationView { get; }
         public ICommand ClearSearch { get; }
+        public ICommand DeleteTest { get; }
         public TeacherTestsViewModel(TeacherViewViewModel tvvm)
         {
             teacherViewViewModel = tvvm;
             ShowTestCreationView = new ViewModelCommand(ExecuteShowTestCreationView);
             ClearSearch = new ViewModelCommand(ExecuteClearSearch);
+            DeleteTest = new ViewModelCommand(ExecuteDeleteTest);
             testRepository = new TestRepository();
+            Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
+        }
+
+        private void ExecuteDeleteTest(object obj)
+        {
+            TestModel tm = (TestModel)obj;
+            testRepository.RemoveTestById(tm.Id);
             Tests = testRepository.GetTestsByTeacherId(teacherViewViewModel.CurrentTeacher.Id);
         }
 

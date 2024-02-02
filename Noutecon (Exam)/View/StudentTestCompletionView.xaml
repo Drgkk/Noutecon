@@ -201,7 +201,7 @@ Saves changes done to question.
                         <StackPanel Orientation="Vertical">
                             <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Finish Test"/>
                             <TextBlock FontFamily="Gautami" FontSize="11">
-            Finish creating test
+            Finish completing test
                             </TextBlock>
                         </StackPanel>
                     </Button.ToolTip>
@@ -210,11 +210,9 @@ Saves changes done to question.
                     <fa:IconImage Icon="Xmark" Height="20" Foreground="{StaticResource Color2}"/>
                     <Button.ToolTip>
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Delete Test"/>
+                            <TextBlock FontFamily="Gautami" FontWeight="Bold" FontSize="14" Text="Cancel Test"/>
                             <TextBlock FontFamily="Gautami" FontSize="11">
-            Cancel test creation and
-            <LineBreak/>
-            delete it.
+            Cancel test completion
                             </TextBlock>
                         </StackPanel>
                     </Button.ToolTip>

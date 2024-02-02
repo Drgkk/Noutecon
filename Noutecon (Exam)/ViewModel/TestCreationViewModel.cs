@@ -30,6 +30,7 @@ namespace Noutecon__Exam_.ViewModel
 			set { selectedIndex = value; OnPropertyChanged(nameof(SelectedIndex)); OnIndexChanged(); }
 		}
 
+
         
 
         //Visibilities

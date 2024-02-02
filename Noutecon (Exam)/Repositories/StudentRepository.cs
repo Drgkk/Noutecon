@@ -359,5 +359,29 @@ namespace Noutecon__Exam_.Repositories
             return grades;
         }
 
+        public ObservableCollection<double> GetAllGradesFromStudentOfTeacher(int studentId, int teacherId)
+        {
+            ObservableCollection<double> grades = new ObservableCollection<double>();
+            using (var conn = GetConnection())
+            {
+                using (var command = new SqlCommand())
+                {
+                    conn.Open();
+                    command.Connection = conn;
+                    command.CommandText = "select Result from [TestStudent] where TestId in (select Id from [Test] where TeacherId = @teachedId) and StudentId = @studentId";
+                    command.Parameters.Add("@teachedId", System.Data.SqlDbType.Int).Value = teacherId;
+                    command.Parameters.Add("@studentId", System.Data.SqlDbType.Int).Value = studentId;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            grades.Add(reader.GetDouble(0));
+                        }
+                    }
+                }
+            }
+            return grades;
+        }
+
     }
 }

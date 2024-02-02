@@ -45,7 +45,7 @@ namespace Noutecon__Exam_.ViewModel
 			Students = new ObservableCollection<StudentAccountModelForClassDetailedListView>();
 			foreach(var st in studentRepository.GetStudentsAccountsByClassId(currentClass.Id))
 			{
-				Students.Add(new StudentAccountModelForClassDetailedListView() { Student = st });
+				Students.Add(new StudentAccountModelForClassDetailedListView(teacherViewViewModel.CurrentTeacher.Id) { Student = st });
 			}
 			ShowStudentDetails = new ViewModelCommand(ExecuteShowStudentDetails);
 			DeleteStudent = new ViewModelCommand(ExecuteDeleteStudent);
@@ -84,7 +84,7 @@ namespace Noutecon__Exam_.ViewModel
 			studentRepository.RemoveFromClassById(currentStudent.Id, currentClass.Id);
             foreach (var st in studentRepository.GetStudentsAccountsByClassId(currentClass.Id))
             {
-                Students.Add(new StudentAccountModelForClassDetailedListView() { Student = st });
+                Students.Add(new StudentAccountModelForClassDetailedListView(teacherViewViewModel.CurrentTeacher.Id) { Student = st });
             }
         }
 
@@ -116,14 +116,16 @@ namespace Noutecon__Exam_.ViewModel
 		}
 
 		private IStudentRepository studentRepository;
-        public StudentAccountModelForClassDetailedListView()
+		private int currentTeacherOfStudent;
+        public StudentAccountModelForClassDetailedListView(int currentTeacherOfStudent)
         {
 			studentRepository = new StudentRepository();
+            this.currentTeacherOfStudent = currentTeacherOfStudent;
         }
 
         private void OnStudentChanged()
         {
-			ObservableCollection<double> grades = studentRepository.GetAllGradesFromTeacher(Student.Id);
+			ObservableCollection<double> grades = studentRepository.GetAllGradesFromStudentOfTeacher(Student.Id, currentTeacherOfStudent);
 		    if(grades.Count > 0)
 			{
                 AverageGrade = Math.Round(grades.Average(), 1);
