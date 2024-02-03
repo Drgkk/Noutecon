@@ -82,6 +82,7 @@ namespace Noutecon__Exam_.ViewModel
 				return;
 			}
 			studentRepository.RemoveFromClassById(currentStudent.Id, currentClass.Id);
+			Students.Clear();
             foreach (var st in studentRepository.GetStudentsAccountsByClassId(currentClass.Id))
             {
                 Students.Add(new StudentAccountModelForClassDetailedListView(teacherViewViewModel.CurrentTeacher.Id) { Student = st });
