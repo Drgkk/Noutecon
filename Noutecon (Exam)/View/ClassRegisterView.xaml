@@ -98,7 +98,7 @@
                 VerticalContentAlignment="Bottom"
                 Padding="0, 0, 0, 2"
                 Margin="0, 5, 0, 0"
-                MaxLength="20"
+                MaxLength="5"
                 Background="Transparent">
         </TextBox>
 
