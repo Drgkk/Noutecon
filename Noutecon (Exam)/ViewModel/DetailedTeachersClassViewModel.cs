@@ -76,7 +76,7 @@ namespace Noutecon__Exam_.ViewModel
 
         private void ExecuteDeleteStudent(object obj)
         {
-			StudentAccountModel currentStudent = (StudentAccountModel)obj;
+			StudentAccountModel currentStudent = ((StudentAccountModelForClassDetailedListView)obj).Student;
 			if(MessageBox.Show($"Are you sure you want to delete student {currentStudent.Username} from class {currentClass.Name}?", "Delete a Student", MessageBoxButton.YesNo) == MessageBoxResult.No)
 			{
 				return;
